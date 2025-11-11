@@ -34,6 +34,8 @@ The goal of **GymFlex** is to create a practical and user-friendly platform for 
 - **Database:** SQLite (development) / PostgreSQL (production)  
 - **Hosting:** Heroku  
 - **Version Control:** Git & GitHub  
+- **Authentication** JWT(json web token)
+- **Authentication** Django REST Framework (DRF)
 
 ---
 
