@@ -17,6 +17,7 @@ Check out the live demo here:
 - [GymFlex](#gymflex)
 - [Link → GymFlex](#link--gymflex)
   - [Table of Contents](#table-of-contents)
+  - [Testing Overview](#testing-overview)
   - [Installation / Setup](#installation--setup)
     - [1. Clone the repository](#1-clone-the-repository)
     - [2. Create a virtual environment (optional but recommended)](#2-create-a-virtual-environment-optional-but-recommended)
@@ -24,7 +25,7 @@ Check out the live demo here:
     - [4. Apply database migrations](#4-apply-database-migrations)
     - [5. Create a superuser (optional, for admin access)](#5-create-a-superuser-optional-for-admin-access)
     - [6. Run the development server](#6-run-the-development-server)
-  - [Testing Overview](#testing-overview)
+  - [Testing Overview](#testing-overview-1)
   - [Key Outline](#key-outline)
 - [Introduction](#introduction)
   - [Vision](#vision)
@@ -54,6 +55,20 @@ Check out the live demo here:
   - [Author](#author)
 
 ---
+
+## Testing Overview
+
+To ensure GymFlex is reliable, user-friendly, and accessible across different devices and browsers, a comprehensive testing strategy was followed.  
+The approach combined **Behaviour-Driven Development (BDD)** and **Test-Driven Development (TDD)** principles, focusing on both user experience and code reliability.
+
+- **BDD** focused on real-world user scenarios, such as:  
+  *“As a user, I want to book a gym session so that I can secure my spot in advance.”*
+
+- **TDD** ensured that each feature was supported by automated tests written before implementation, improving long-term stability and maintainability.
+
+This combined approach kept testing user-centred while maintaining strong technical quality and confidence in the codebase.  
+
+For detailed information on all tests, validations, bugs, and results, please refer to the [TESTING.md](./TESTING.md) document.
 
 ## Installation / Setup
 
