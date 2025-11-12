@@ -20,8 +20,13 @@ class UserSerializer(serializers.ModelSerializer):
         return user
     
 
+# Serializer for the Note model
+# - Converts Note instances to JSON and vice versa for API responses and requests
+# - Includes id, title, content, timestamps, and author fields
+# - Author field is read-only, so it cannot be modified via the API
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note  # Model to serialise
         fields = ['id', 'title', 'content', 'created_at', 'updated_at', 'author']  # Fields included
         extra_kwargs = {'author': {'read_only': True}}  # Author is read-only
+
