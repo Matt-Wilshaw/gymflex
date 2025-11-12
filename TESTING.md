@@ -43,6 +43,7 @@ For additional project details and technical information, including instructions
   - [6. Trainer Session Management](#6-trainer-session-management)
   - [7. Track Bookings](#7-track-bookings)
   - [8. Accessibility](#8-accessibility)
+  - [Bug Log](#bug-log)
 
 
 # GymFlex – UAT / Black Box Testing
@@ -215,3 +216,10 @@ As a visually impaired or mobility-challenged user, I want to navigate GymFlex u
 
 **Bug Tracking / Notes:**  
 - [ ]  
+
+## Bug Log
+
+| User Story / Feature          | Bug Description                                                               | Severity | Status | Notes / Steps to Reproduce                                                                                                                                                                     |
+| ----------------------------- | ----------------------------------------------------------------------------- | -------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| User Registration / App Start | ImportError: cannot import name 'Note' from 'api.models'                      | High     | Fixed  | Issue caused by importing `Note` in `serializers.py` without a corresponding model. Removed the import. App now starts successfully.                                                           |
+| User Registration / App Start | OperationalError: connection to PostgreSQL failed due to no password supplied | High     | Fixed  | Issue caused by Django trying to connect to a PostgreSQL server without credentials. Switched `DATABASES` to use SQLite for local development. App now starts and migrations run successfully. |
