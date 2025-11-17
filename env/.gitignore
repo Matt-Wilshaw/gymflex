@@ -9,7 +9,7 @@ env/
 db.sqlite3
 *.log
 /staticfiles/
-media/
+/media/
 
 # Node / Frontend
 node_modules/
