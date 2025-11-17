@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+
+# Django
+db.sqlite3
+
+# Node
+node_modules/
+
+# Frontend builds (if you have a build)
+dist/
+build/
