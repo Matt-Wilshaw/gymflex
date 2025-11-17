@@ -1,96 +1,64 @@
-// Import Navigate for redirecting users to a different route
-import { Navigate } from "react-router-dom";
-// Import jwtDecode for decoding JWT tokens
-import jwtDecode from "jwt-decode";
-// Import your API helper for making HTTP requests
-import api from "../api.js";
-// Import constants for token storage keys
-import { REFRESH_TOKEN, ACCESS_TOKEN } from "../constants.js";
-// Import React hooks for managing state and side effects
-import { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom" // Navigate allows redirecting to another route
+import jwtDecode from "jwt-decode" // Decode JWT tokens to check expiration
+import api from "../api" // Your API helper for making requests
+import { REFRESH_TOKEN, ACCESS_TOKEN } from "../constants" // Constants for localStorage keys
+import { useState, useEffect } from "react" // React hooks
 
-// ProtectedRoute component ensures that children are only accessible if the user is authorised
+// ProtectedRoute component wraps routes that require authentication
 function ProtectedRoute({ children }) {
-    // State to track whether the user is authorised
-    // null = still checking, true = authorised, false = not authorised
-    const [isAuthorised, setIsAuthorised] = useState(null);
+    const [isAuthorized, setIsAuthorized] = useState(null) // null = loading, true = allowed, false = not allowed
 
-    // Run the authentication check once when the component mounts
-    // If auth() fails for any reason, default to unauthorised
+    // Run authentication check once when the component mounts
     useEffect(() => {
-        auth().catch(() => setIsAuthorised(false));
-    }, []);
+        auth().catch(() => setIsAuthorized(false)) // If auth fails, mark as unauthorized
+    }, [])
 
-    // Function to refresh the access token using the stored refresh token
-    // This is called when the existing access token has expired
+    // Function to refresh the access token using the refresh token
     const refreshToken = async () => {
-        const refreshToken = localStorage.getItem(REFRESH_TOKEN);
-
-        // If no refresh token exists, the user clearly isn't authorised
-        if (!refreshToken) {
-            setIsAuthorised(false);
-            return;
-        }
-
+        const refreshToken = localStorage.getItem(REFRESH_TOKEN) // Get refresh token from localStorage
         try {
-            // Attempt to request a new access token from the API
-            const response = await api.post("/api/token/refresh/", {
-                refresh: refreshToken
-            });
-
-            // If successful, store the new access token and confirm authorisation
-            if (response.status === 200) {
-                localStorage.setItem(ACCESS_TOKEN, response.data.access);
-                setIsAuthorised(true);
+            const res = await api.post("/api/token/refresh/", {
+                refresh: refreshToken, // Send refresh token to backend
+            })
+            if (res.status === 200) {
+                localStorage.setItem(ACCESS_TOKEN, res.data.access) // Store new access token
+                setIsAuthorized(true) // User is now authorised
             } else {
-                // Any unexpected status means the user cannot be authorised
-                setIsAuthorised(false);
+                setIsAuthorized(false) // Refresh failed, user not authorised
             }
         } catch (error) {
-            // Log the error for debugging and mark the user as unauthorised
-            console.log(error);
-            setIsAuthorised(false);
-
-            // NOTE: You may want to handle refreshing logic further here,
-            // for example automatically logging the user out.
+            console.log(error) // Log any errors
+            setIsAuthorized(false) // Mark user as not authorised
         }
-    };
-
-    // Function to check if the user is currently authenticated
-    const auth = async () => {
-        const token = localStorage.getItem(ACCESS_TOKEN);
-
-        // If no access token exists, the user is not authenticated
-        if (!token) {
-            setIsAuthorised(false);
-            return;
-        }
-
-        // Decode the token to check its expiry timestamp
-        const decoded = jwtDecode(token);
-        const tokenExpiry = decoded.exp;
-        const now = Date.now() / 1000; // Current time in seconds
-
-        // If the token has expired, attempt to refresh it
-        if (tokenExpiry < now) {
-            await refreshToken();
-        } else {
-            // If token is still valid, authorise the user
-            setIsAuthorised(true);
-        }
-
-        // NOTE: You could add backend verification here if needed.
-    };
-
-    // While authorisation status is being determined, show a loading indicator
-    if (isAuthorised === null) {
-        return <div>Loading...</div>;
     }
 
-    // If authorised, render the protected content
-    // If not authorised, redirect the user to the login page
-    return isAuthorised ? children : <Navigate to="/login" />;
+    // Main authentication function
+    const auth = async () => {
+        const token = localStorage.getItem(ACCESS_TOKEN) // Get access token from localStorage
+        if (!token) {
+            setIsAuthorized(false) // No token, user not authorised
+            return
+        }
+
+        const decoded = jwtDecode(token) // Decode JWT to check expiration
+        const tokenExpiration = decoded.exp
+        const now = Date.now() / 1000
+
+        if (tokenExpiration < now) {
+            await refreshToken() // Token expired → try to refresh
+        } else {
+            setIsAuthorized(true) // Token valid → user authorised
+        }
+    }
+
+    // While we are checking the token, show a loading message
+    if (isAuthorized === null) {
+        return <div>Loading...</div>
+    }
+
+    // If authorised, render children (protected route)
+    // If not authorised, redirect to /login
+    return isAuthorized ? children : <Navigate to="/login" />
 }
 
-// Export the component so it can be used in other parts of your app
-export default ProtectedRoute;
+export default ProtectedRoute // Export component for use in App.jsx

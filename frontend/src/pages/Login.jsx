@@ -1,5 +1,13 @@
-function Login() {
-    return <div>Login</div>
-}
+// pages/Login.jsx
+import React from "react";
 
-export default Login
+const Login = () => {
+    return (
+        <div style={{ padding: "20px" }}>
+            <h1>Login Page</h1>
+            <p>Type your credentials here.</p>
+        </div>
+    );
+};
+
+export default Login;
