@@ -27,10 +27,17 @@ Check out the live demo here:
   - [Installation / Setup](#installation--setup)
     - [1. Clone the repository](#1-clone-the-repository)
     - [2. Create a virtual environment (optional but recommended)](#2-create-a-virtual-environment-optional-but-recommended)
+- [Activate it:](#activate-it)
+- [Windows](#windows)
+- [macOS/Linux](#macoslinux)
     - [3. Install dependencies](#3-install-dependencies)
     - [4. Apply database migrations](#4-apply-database-migrations)
     - [5. Create a superuser (optional, for admin access)](#5-create-a-superuser-optional-for-admin-access)
     - [6. Run the development server](#6-run-the-development-server)
+    - [Frontend (React)](#frontend-react)
+    - [1. Navigate to the frontend folder:](#1-navigate-to-the-frontend-folder)
+    - [2. Install dependencies:](#2-install-dependencies)
+    - [3. Start the React development server:](#3-start-the-react-development-server)
   - [Testing Overview](#testing-overview-1)
   - [Key Outline](#key-outline)
 - [Introduction](#introduction)
@@ -131,48 +138,42 @@ Use this checklist as a single source of truth for GymFlex development. Update i
 Follow these steps to set up GymFlex locally:
 
 ### 1. Clone the repository
-
-```bash
 git clone https://github.com/your-username/gymflex.git
 cd gymflex
-```
 
 ### 2. Create a virtual environment (optional but recommended)
-
-```bash
 python -m venv venv
 # Activate it:
 # Windows
 venv\Scripts\activate
 # macOS/Linux
 source venv/bin/activate
-```
+
 
 ### 3. Install dependencies
-
-```bash
 pip install -r requirements.txt
-```
 
 ### 4. Apply database migrations
-
-```bash
 python manage.py migrate
-```
 
 ### 5. Create a superuser (optional, for admin access)
-
-```bash
 python manage.py createsuperuser
-```
 
 ### 6. Run the development server
-
-```bash
 python manage.py runserver
-```
 
-Visit `http://127.0.0.1:8000/` in your browser to access GymFlex locally.
+### Frontend (React)
+
+### 1. Navigate to the frontend folder:
+cd frontend
+
+### 2. Install dependencies:
+npm install
+
+### 3. Start the React development server:
+npm start
+
+Visit in your browser to access GymFlex locally.](http://localhost:5173/)
 
 **Notes:**
 
