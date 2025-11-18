@@ -43,6 +43,23 @@ For additional project details and technical information, including instructions
   - [6. Trainer Session Management](#6-trainer-session-management)
   - [7. Track Bookings](#7-track-bookings)
   - [8. Accessibility](#8-accessibility)
+  - [9. Adding Test Data to the Database](#9-adding-test-data-to-the-database)
+    - [Using Django Admin](#using-django-admin)
+      - [1. Create a superuser (if required)](#1-create-a-superuser-if-required)
+- [Activate your virtual environment first](#activate-your-virtual-environment-first)
+- [Windows](#windows)
+- [macOS/Linux](#macoslinux)
+- [Create Django superuser](#create-django-superuser)
+- [Using Django Shell](#using-django-shell)
+- [Examples of testing data added below](#examples-of-testing-data-added-below)
+- [Run the following commands as needed:](#run-the-following-commands-as-needed)
+- [Windows](#windows-1)
+- [Select Backend](#select-backend)
+- [Start Django shell:\*\*](#start-django-shell)
+- [Add test data](#add-test-data)
+- [Get existing users](#get-existing-users)
+- [Create sessions](#create-sessions)
+- [Add test user as attendee](#add-test-user-as-attendee)
   - [Bug Log](#bug-log)
 
 
@@ -216,6 +233,89 @@ As a visually impaired or mobility-challenged user, I want to navigate GymFlex u
 
 **Bug Tracking / Notes:**  
 - [ ]  
+
+## 9. Adding Test Data to the Database
+
+**Story:**  
+As a developer, I want to populate the GymFlex database with test data so that I can verify features without manually creating records.
+
+**Acceptance Criteria:**  
+- Given I have VS Code open with the GymFlex project  
+- When I run Django shell commands, load fixtures, or use the admin panel  
+- Then users, sessions, and bookings are created for testing  
+- And data is immediately available to the React frontend via API
+
+**Tasks:**  
+- [ ] Add sample users, trainers, sessions, and bookings  
+- [ ] Load data using shell, fixtures, or admin  
+- [ ] Verify data exists via admin, DB viewer, or API
+
+### Using Django Admin
+
+#### 1. Create a superuser (if required)
+
+In VS Code terminal:
+
+```bash
+# Activate your virtual environment first
+
+# Windows
+.\venv\Scripts\activate
+
+# macOS/Linux
+source venv/bin/activate
+
+# Create Django superuser
+python manage.py createsuperuser
+
+# Using Django Shell
+
+# Examples of testing data added below
+
+1. **Open VS Code terminal:**
+
+# Run the following commands as needed:
+```bash
+
+# Windows
+.\venv\Scripts\activate
+
+# Select Backend
+cd backend
+
+# Start Django shell:**
+python manage.py shell
+
+# Add test data
+from django.contrib.auth.models import User
+from api.models import Session
+from datetime import date, time, timedelta
+from django.utils import timezone
+
+# Get existing users
+admin_trainer = User.objects.get(username='admin')
+test_user = User.objects.get(username='test1')
+
+# Create sessions
+session1, created = Session.objects.get_or_create(
+    title="Morning Strength",
+    trainer=admin_trainer,
+    date=timezone.now().date() + timedelta(days=1),
+    time=time(9, 0),
+    capacity=12
+)
+
+session2, created = Session.objects.get_or_create(
+    title="Evening Cardio",
+    trainer=admin_trainer,
+    date=timezone.now().date() + timedelta(days=1),
+    time=time(18, 0),
+    capacity=15
+)
+
+# Add test user as attendee
+session1.attendees.add(test_user)
+session2.attendees.add(test_user)
 
 ## Bug Log
 
