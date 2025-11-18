@@ -1,43 +1,39 @@
-import React from "react" // Import React
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom" // Import routing components
-import Login from "./pages/Login" // Login page component
-import Register from "./pages/Register" // Register page component
-import Home from "./pages/Home" // Home page component
-import NotFound from "./pages/NotFound" // 404 page component
-import ProtectedRoute from "./components/ProtectedRoute" // Component to protect routes that need login
+import React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Home from "./pages/Home";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-// Logout component: clears localStorage and redirects to login page
-function Logout() {
-  localStorage.clear() // Remove all stored data (like JWT token)
-  return <Navigate to="/login" /> // Redirect user to login
-}
-
-// RegisterAndLogout component: clears localStorage before showing the Register page
-function RegisterAndLogout() {
-  localStorage.clear() // Remove any existing stored data
-  return <Register /> // Render Register page
-}
-
-function App() {
+// The main App component that sets up routing for the GymFlex application
+export default function App() {
   return (
-    <BrowserRouter> {/* Wrap the app in BrowserRouter to enable routing */}
-      <Routes> {/* Define all routes for the app */}
-        {/* Home route, protected by ProtectedRoute */}
+    // BrowserRouter provides the routing context to the entire app
+    <BrowserRouter>
+      {/* Routes defines all the possible routes for the app */}
+      <Routes>
+        {/* 
+          Home route ("/") is protected. 
+          Only accessible if the user is authenticated via ProtectedRoute.
+        */}
         <Route
           path="/"
           element={
-            <ProtectedRoute> {/* Only allows access if user is logged in */}
-              <Home /> {/* Render Home page */}
+            <ProtectedRoute>
+              <Home />
             </ProtectedRoute>
           }
         />
-        <Route path="/login" element={<Login />} /> {/* Login page route */}
-        <Route path="/logout" element={<Logout />} /> {/* Logout route */}
-        <Route path="/register" element={<RegisterAndLogout />} /> {/* Register page with auto logout */}
-        <Route path="*" element={<NotFound />}></Route> {/* Catch-all route for unknown paths */}
+
+        {/* Login page route */}
+        <Route path="/login" element={<Login />} />
+
+        {/* Register page route */}
+        <Route path="/register" element={<Register />} />
+
+        {/* Catch-all route for any undefined paths. Redirects to home page */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
-
-export default App // Export App component as default

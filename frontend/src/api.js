@@ -1,36 +1,24 @@
-// Import the axios library for making HTTP requests
 import axios from "axios";
-
-// Import a constant representing the key used for storing the access token in localStorage
+// Corrected path assuming both are in the same 'src' directory
 import { ACCESS_TOKEN } from "./constants.js";
 
-// Create an instance of axios with a default base URL
-// The base URL is read from environment variables (Vite project)
+// Create an Axios instance with the base URL for the Django API
+// NOTE: You must set VITE_API_URL in your .env file (e.g., http://localhost:8000/api)
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL // e.g., "http://localhost:8000/api"
+    baseURL: import.meta.env.VITE_API_URL,
 });
 
-// Add a request interceptor to automatically include the Authorization header
-// This runs before every request made with this axios instance
+// Request Interceptor: Automatically attach the JWT Access Token to every request
 api.interceptors.request.use(
     (config) => {
-        // Get the access token from localStorage
         const token = localStorage.getItem(ACCESS_TOKEN);
-
-        // If a token exists, attach it to the request headers
-        // as a Bearer token for JWT authorisation
         if (token) {
+            // Format required by Django Simple JWT: 'Bearer <token>'
             config.headers["Authorization"] = `Bearer ${token}`;
         }
-
-        // Return the updated config to continue the request
         return config;
     },
-    (error) => {
-        // If there was an error setting up the request, reject the promise
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
-// Export the configured axios instance so it can be used throughout the project
 export default api;
