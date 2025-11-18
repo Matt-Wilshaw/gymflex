@@ -9,11 +9,22 @@ export default function Timetable() {
     useEffect(() => {
         const fetchSessions = async () => {
             try {
-                const res = await api.get("/sessions/"); // backend endpoint for sessions
+                // Get JWT token from localStorage
+                const token = localStorage.getItem(ACCESS_TOKEN);
+
+                // Fetch sessions from backend with authentication
+                const res = await api.get("/sessions/", {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // Include token in request header
+                    },
+                });
+
+                // Save sessions in state
                 setSessions(res.data);
             } catch (err) {
                 console.error("Failed to fetch sessions:", err);
             } finally {
+                // Stop loading indicator
                 setLoading(false);
             }
         };
@@ -21,6 +32,7 @@ export default function Timetable() {
         fetchSessions();
     }, []);
 
+    // Show loading message while fetching data
     if (loading) return <p>Loading timetable...</p>;
 
     return (
@@ -32,7 +44,8 @@ export default function Timetable() {
                 <ul>
                     {sessions.map((session) => (
                         <li key={session.id}>
-                            {session.title} — {session.trainer.username} — {session.date} {session.time}
+                            {/* Display session details: title, trainer, date and time */}
+                            {session.title} — {session.trainer_username} — {session.date} {session.time}
                         </li>
                     ))}
                 </ul>
