@@ -110,7 +110,7 @@ Use this checklist as a single source of truth for GymFlex development. Update i
 - [x] Basic form and layout styling  
 
 ### Sessions & Booking
-- [ ] Timetable display for gym sessions  
+- [ ] Timetable display for gym sessions, react-big-calendar  
 - [ ] Book session  
 - [ ] Cancel/unbook session  
 - [ ] View booking status/history  
@@ -284,6 +284,7 @@ The platform is structured around key user flows:
 * User registration and authentication
 * Trainer and client profile management
 * Create, view, edit, and cancel bookings (CRUD functionality)
+* Interactive calendar view for gym sessions** powered by react-big-calendar
 * Responsive front-end built with Bootstrap and custom CSS
 * Secure, relational data handling via Django
 * Deployed on Heroku with a managed relational database (PostgreSQL)
@@ -292,7 +293,7 @@ The platform is structured around key user flows:
 
 ## Technologies Used
 
-* Frontend: HTML, CSS, JavaScript, Bootstrap
+* Frontend: HTML, CSS, JavaScript, Bootstrap, react-big-calendar
 * Backend: Django (Python)
 * Database: SQLite (development) / PostgreSQL (production)
 * Hosting: Heroku
