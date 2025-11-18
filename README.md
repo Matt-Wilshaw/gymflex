@@ -18,6 +18,12 @@ Check out the live demo here:
 - [Link → GymFlex](#link--gymflex)
   - [Table of Contents](#table-of-contents)
   - [Testing Overview](#testing-overview)
+  - [Development Checklist](#development-checklist)
+    - [Authentication \& User Management](#authentication--user-management)
+    - [Sessions \& Booking](#sessions--booking)
+    - [User Profiles](#user-profiles)
+    - [Trainer/Admin Features](#traineradmin-features)
+    - [Future Enhancements](#future-enhancements)
   - [Installation / Setup](#installation--setup)
     - [1. Clone the repository](#1-clone-the-repository)
     - [2. Create a virtual environment (optional but recommended)](#2-create-a-virtual-environment-optional-but-recommended)
@@ -38,7 +44,7 @@ Check out the live demo here:
     - [Skeleton (Layout and Interaction)](#skeleton-layout-and-interaction)
   - [Features](#features)
   - [Technologies Used](#technologies-used)
-  - [Future Enhancements](#future-enhancements)
+  - [Future Enhancements](#future-enhancements-1)
 - [GymFlex Deployment Guide](#gymflex-deployment-guide)
   - [Prerequisites](#prerequisites)
   - [Steps](#steps)
@@ -69,6 +75,56 @@ The approach combined **Behaviour-Driven Development (BDD)** and **Test-Driven D
 This combined approach kept testing user-centred while maintaining strong technical quality and confidence in the codebase.  
 
 For detailed information on all tests, validations, bugs, and results, please refer to the [TESTING.md](./TESTING.md) document.
+
+## Development Checklist
+
+This checklist shows what has been done and what is planned, all in one place for easy progress tracking. It is designed to help the development team (or yourself) maintain a clear overview of progress, identify what still needs work, and prioritise upcoming tasks. Each section is organised by major areas of functionality, with GitHub-flavoured checkboxes that can be ticked off as features are completed.  
+
+The checklist is intended to serve multiple purposes:
+
+- **Progress tracking:** Quickly see which features are implemented, in progress, or not started.  
+- **Planning:** Outline the scope of work, break down tasks into manageable pieces, and plan next steps.  
+- **Documentation:** Provide a live snapshot of project development for team members, supervisors, or portfolio purposes.  
+- **Quality assurance:** Highlight areas where testing is needed, ensuring no functionality is overlooked.  
+
+Use this checklist as a single source of truth for GymFlex development. Update it regularly as features move from “To Do” → “In Progress” → “Done.”
+
+
+### Authentication & User Management
+- [x] Django backend with REST Framework  
+- [x] JWT authentication for login/logout  
+- [x] React frontend with routing (React Router)  
+- [x] Login page  
+- [x] Logout functionality  
+- [x] Registration page  
+- [x] Protected routes for authenticated users  
+- [x] LocalStorage storing access and refresh tokens  
+- [x] 404 NotFound page  
+- [x] Basic form and layout styling  
+
+### Sessions & Booking
+- [ ] Timetable display for gym sessions  
+- [ ] Book session  
+- [ ] Cancel/unbook session  
+- [ ] View booking status/history  
+
+### User Profiles
+- [ ] View profile details (username, age, membership type)  
+- [ ] Edit profile  
+- [ ] Display past bookings  
+
+### Trainer/Admin Features
+- [ ] Create, edit, delete sessions  
+- [ ] View client bookings  
+- [ ] Communicate with clients (notifications/messages)  
+
+### Future Enhancements
+- [ ] Email notifications for bookings and reminders  
+- [ ] Calendar view for trainers  
+- [ ] Ratings and reviews for trainers  
+- [ ] Blog/news section  
+- [ ] Payment integration (e.g., Stripe)  
+- [ ] Improved responsive design and accessibility  
 
 ## Installation / Setup
 
