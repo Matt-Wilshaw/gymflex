@@ -1,18 +1,22 @@
 from django.contrib import admin
-from .models import Note, Session   # Import your models so Django can register them
-
+from django.contrib.auth.models import User
+from .models import Note, Session
 
 # -------------------------
-# Register the Note model
+# Note Admin
 # -------------------------
-# This makes the Note model appear in the Django admin page.
-# Without this, you cannot add/edit/delete Notes through the admin interface.
 admin.site.register(Note)
 
+# -------------------------
+# Session Admin (force admin as trainer)
+# -------------------------
+class SessionAdmin(admin.ModelAdmin):
+    # Hide the trainer field in the admin form
+    exclude = ('trainer',)
 
-# -------------------------
-# Register the Session model
-# -------------------------
-# Same idea—this allows you to manage all gym sessions (HIIT, Yoga, etc.)
-# directly from the admin dashboard.
-admin.site.register(Session)
+    # Always assign the first superuser as the trainer
+    def save_model(self, request, obj, form, change):
+        obj.trainer = User.objects.filter(is_superuser=True).first()
+        super().save_model(request, obj, form, change)
+
+admin.site.register(Session, SessionAdmin)

@@ -14,13 +14,11 @@ const Home = () => {
     const [sessions, setSessions] = useState([]);
     const [activityFilter, setActivityFilter] = useState("");
     const [currentUser, setCurrentUser] = useState(() => {
-        // Load user from localStorage if available
         const savedUser = localStorage.getItem("currentUser");
         return savedUser ? JSON.parse(savedUser) : null;
     });
     const token = localStorage.getItem(ACCESS_TOKEN) || "";
 
-    // Redirect if not authenticated, fetch sessions and user info
     useEffect(() => {
         if (!token) {
             navigate("/login");
@@ -30,7 +28,6 @@ const Home = () => {
         }
     }, [token, navigate, currentUser]);
 
-    // Fetch sessions from backend
     const fetchSessions = async () => {
         try {
             const res = await axios.get("http://localhost:8000/api/sessions/", {
@@ -44,7 +41,8 @@ const Home = () => {
 
             const events = filtered.map((s) => ({
                 id: s.id,
-                title: `${s.activity_type.toUpperCase()} - Slots: ${s.available_slots}`,
+                // Format: ACTIVITY - Slots left - HH:MM
+                title: `${s.activity_type.toUpperCase()} - Slots: ${s.available_slots} - ${s.time.slice(0, 5)}`,
                 start: new Date(`${s.date}T${s.time}`),
                 end: new Date(`${s.date}T${s.time}`),
                 booked: s.booked,
@@ -60,7 +58,6 @@ const Home = () => {
         }
     };
 
-    // Fetch current user to check if admin
     const fetchCurrentUser = async () => {
         try {
             const res = await axios.get("http://localhost:8000/api/users/me/", {
@@ -73,7 +70,6 @@ const Home = () => {
         }
     };
 
-    // Book or unbook a session
     const handleBook = async (session) => {
         try {
             const res = await axios.post(
@@ -88,7 +84,6 @@ const Home = () => {
         }
     };
 
-    // Logout user
     const handleLogout = () => {
         localStorage.removeItem(ACCESS_TOKEN);
         localStorage.removeItem(REFRESH_TOKEN);
@@ -96,7 +91,6 @@ const Home = () => {
         navigate("/login");
     };
 
-    // Style events based on booked status
     const eventStyleGetter = (event) => {
         const style = {
             backgroundColor: event.booked ? "#dc3545" : "#198754",
