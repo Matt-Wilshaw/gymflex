@@ -47,6 +47,7 @@ class SessionSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
+            "activity_type",           # Activity type for frontend dropdown
             "trainer",
             "trainer_username",
             "date",

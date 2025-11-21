@@ -133,6 +133,52 @@ Use this checklist as a single source of truth for GymFlex development. Update i
 - [ ] Payment integration (e.g., Stripe)  
 - [ ] Improved responsive design and accessibility  
 
+## Database Structure
+
+GymFlex stores data in two main tables: **Users** and **Sessions**.  
+The database is normalised to avoid duplication and maintain clear relationships:
+
+- Trainers (`is_staff=True`) can create and manage sessions.
+- Clients can view sessions and book/unbook them.
+- Each session is linked to a trainer and can have multiple attendees.
+
+---
+
+### User Table (`auth_user`)
+Stores all users, including trainers and clients.
+
+| Field        | Description          |
+| ------------ | -------------------- |
+| id           | Primary Key          |
+| username     | User’s username      |
+| email        | Email address        |
+| password     | Hashed password      |
+| is_staff     | Trainer/admin flag   |
+| is_superuser | Superuser/admin flag |
+
+---
+
+### Session Table (`Session`)
+Stores all gym sessions.
+
+| Field      | Description                               |
+| ---------- | ----------------------------------------- |
+| id         | Primary Key                               |
+| title      | Session name or type                      |
+| trainer_id | FK → `User.id` (who runs the session)     |
+| date       | Session date                              |
+| time       | Session time                              |
+| capacity   | Maximum number of clients                 |
+| attendees  | ManyToMany → Users who booked the session |
+
+---
+
+### Relationships
+
+- `trainer_sessions` links trainers to the sessions they run (One-to-Many).  
+- `booked_sessions` links users to sessions they have booked (Many-to-Many).  
+- Trainers can create/edit/delete sessions; clients can only view and book/unbook.  
+
 ## Installation / Setup
 
 Follow these steps to set up GymFlex locally:
