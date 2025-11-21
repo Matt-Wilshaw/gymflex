@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 # ---------------------
 class Note(models.Model):
     title = models.CharField(max_length=100)
-    content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes')
@@ -18,8 +17,6 @@ class Note(models.Model):
 # Session model
 # ---------------------
 class Session(models.Model):
-    title = models.CharField(max_length=100)
-
     # Activity type for dropdown (cardio, weights, etc.)
     ACTIVITY_CHOICES = [
         ('cardio', 'Cardio'),
@@ -34,11 +31,19 @@ class Session(models.Model):
         default='cardio'
     )
 
+    # Trainer running the session
     trainer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="trainer_sessions")
+    
+    # Session schedule
     date = models.DateField()
     time = models.TimeField()
+    
+    # Max clients for session
     capacity = models.IntegerField(default=10)
+    
+    # Users who booked this session
     attendees = models.ManyToManyField(User, related_name="booked_sessions", blank=True)
 
     def __str__(self):
-        return f"{self.title} ({self.activity_type}) with {self.trainer.username} on {self.date} at {self.time}"
+        # String representation using activity type instead of title
+        return f"{self.activity_type} with {self.trainer.username} on {self.date} at {self.time}"

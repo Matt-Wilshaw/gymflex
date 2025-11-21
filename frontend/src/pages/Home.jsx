@@ -1,10 +1,11 @@
+// src/pages/Home.jsx
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // for redirect
+import { useNavigate } from "react-router-dom";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import axios from "axios";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants.js"; // import your token keys
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants.js";
 
 const localizer = momentLocalizer(moment);
 
@@ -14,44 +15,48 @@ const Home = () => {
     const [activityFilter, setActivityFilter] = useState("");
     const token = localStorage.getItem(ACCESS_TOKEN) || "";
 
+    // Redirect to login if not authenticated
     useEffect(() => {
-        // Redirect to login if not logged in
         if (!token) {
             navigate("/login");
         } else {
             fetchSessions();
         }
-    }, [activityFilter, token, navigate]);
+    }, [token, navigate]);
 
+    // Fetch sessions from backend
     const fetchSessions = async () => {
         try {
             const res = await axios.get("http://localhost:8000/api/sessions/", {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
+            // Filter by activity if selected
             let filtered = res.data;
             if (activityFilter !== "") {
                 filtered = filtered.filter((s) => s.activity_type === activityFilter);
             }
 
+            // Map backend data to calendar events
             const events = filtered.map((s) => ({
                 id: s.id,
-                title: `${s.title} (${s.activity_type}) - Slots: ${s.available_slots}`,
+                title: `${s.activity_type.toUpperCase()} - Slots: ${s.available_slots}`,
                 start: new Date(`${s.date}T${s.time}`),
                 end: new Date(`${s.date}T${s.time}`),
                 booked: s.booked,
-                raw: s,
-            }));
+                raw: s, // full session object for booking
+            })) || [];
 
             setSessions(events);
         } catch (err) {
-            console.error(err);
+            console.error("Error fetching sessions:", err);
             if (err.response && err.response.status === 401) {
-                handleLogout(); // token invalid
+                handleLogout(); // invalid or expired token
             }
         }
     };
 
+    // Book or unbook a session
     const handleBook = async (session) => {
         try {
             const res = await axios.post(
@@ -66,12 +71,14 @@ const Home = () => {
         }
     };
 
+    // Logout user
     const handleLogout = () => {
         localStorage.removeItem(ACCESS_TOKEN);
         localStorage.removeItem(REFRESH_TOKEN);
         navigate("/login");
     };
 
+    // Style events based on booked status
     const eventStyleGetter = (event) => {
         const style = {
             backgroundColor: event.booked ? "#dc3545" : "#198754",
@@ -111,16 +118,19 @@ const Home = () => {
             </div>
 
             {/* Calendar */}
-            <Calendar
-                localizer={localizer}
-                events={sessions}
-                startAccessor="start"
-                endAccessor="end"
-                style={{ height: 600 }}
-                eventPropGetter={eventStyleGetter}
-                onSelectEvent={(event) => handleBook(event.raw)}
-            />
-            <p>
+            <div style={{ height: 600 }}>
+                <Calendar
+                    localizer={localizer}
+                    events={sessions}
+                    startAccessor="start"
+                    endAccessor="end"
+                    style={{ height: "100%" }}
+                    eventPropGetter={eventStyleGetter}
+                    onSelectEvent={(event) => handleBook(event.raw)}
+                />
+            </div>
+
+            <p className="mt-3">
                 Click on a session in the calendar to <strong>book/unbook</strong> it.
             </p>
         </div>
