@@ -13,7 +13,11 @@ const Home = () => {
     const navigate = useNavigate();
     const [sessions, setSessions] = useState([]);
     const [activityFilter, setActivityFilter] = useState("");
-    const [currentUser, setCurrentUser] = useState(null); // Track logged-in user
+    const [currentUser, setCurrentUser] = useState(() => {
+        // Load user from localStorage if available
+        const savedUser = localStorage.getItem("currentUser");
+        return savedUser ? JSON.parse(savedUser) : null;
+    });
     const token = localStorage.getItem(ACCESS_TOKEN) || "";
 
     // Redirect if not authenticated, fetch sessions and user info
@@ -22,9 +26,9 @@ const Home = () => {
             navigate("/login");
         } else {
             fetchSessions();
-            fetchCurrentUser();
+            if (!currentUser) fetchCurrentUser();
         }
-    }, [token, navigate]);
+    }, [token, navigate, currentUser]);
 
     // Fetch sessions from backend
     const fetchSessions = async () => {
@@ -33,7 +37,6 @@ const Home = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            // Filter by activity if selected
             let filtered = res.data;
             if (activityFilter !== "") {
                 filtered = filtered.filter((s) => s.activity_type === activityFilter);
@@ -64,6 +67,7 @@ const Home = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setCurrentUser(res.data);
+            localStorage.setItem("currentUser", JSON.stringify(res.data));
         } catch (err) {
             console.error("Error fetching current user:", err);
         }
@@ -88,6 +92,7 @@ const Home = () => {
     const handleLogout = () => {
         localStorage.removeItem(ACCESS_TOKEN);
         localStorage.removeItem(REFRESH_TOKEN);
+        localStorage.removeItem("currentUser");
         navigate("/login");
     };
 
@@ -105,14 +110,19 @@ const Home = () => {
 
     return (
         <div className="container mt-4">
-            {/* Header with logout and admin button */}
+            {/* Header with welcome message, logout, and admin button */}
             <div className="d-flex justify-content-between align-items-center mb-3">
-                <h2>GymFlex Calendar</h2>
+                <div>
+                    <h2>GymFlex Calendar</h2>
+                    {currentUser && (
+                        <h4 className="mt-1">Welcome, {currentUser.username}!</h4>
+                    )}
+                </div>
                 <div>
                     {currentUser?.is_superuser && (
                         <button
                             className="btn btn-primary me-2"
-                            onClick={() => window.location.href = "http://127.0.0.1:8000/admin/"}
+                            onClick={() => window.open("http://127.0.0.1:8000/admin/", "_blank")}
                         >
                             Admin Panel
                         </button>
