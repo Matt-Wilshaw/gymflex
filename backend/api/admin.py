@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
+from django import forms
 from .models import Note, Session
+import datetime
 
 # -------------------------
 # Note Admin
@@ -8,14 +10,35 @@ from .models import Note, Session
 admin.site.register(Note)
 
 # -------------------------
-# Session Admin (force admin as trainer)
+# Generate 30-minute time choices
+# -------------------------
+def generate_time_choices():
+    times = []
+    for hour in range(24):
+        for minute in (0, 30):
+            t = datetime.time(hour, minute)
+            times.append((t.strftime("%H:%M"), t.strftime("%H:%M")))
+    return times
+
+# -------------------------
+# Custom form for Session admin
+# -------------------------
+class SessionAdminForm(forms.ModelForm):
+    time = forms.ChoiceField(choices=generate_time_choices(), label="Time")
+
+    class Meta:
+        model = Session
+        fields = "__all__"
+
+# -------------------------
+# Session Admin
 # -------------------------
 class SessionAdmin(admin.ModelAdmin):
-    # Hide the trainer field in the admin form
-    exclude = ('trainer',)
+    form = SessionAdminForm
+    exclude = ('trainer',)  # hide trainer field
 
-    # Always assign the first superuser as the trainer
     def save_model(self, request, obj, form, change):
+        # Always assign the first superuser as trainer
         obj.trainer = User.objects.filter(is_superuser=True).first()
         super().save_model(request, obj, form, change)
 
