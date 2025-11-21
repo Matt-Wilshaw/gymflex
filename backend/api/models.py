@@ -1,8 +1,23 @@
+from django.db import models
+from django.contrib.auth.models import User
+
+# ---------------------
+# Note model
+# ---------------------
+class Note(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes')
+
+    def __str__(self):
+        return self.title
+
 # ---------------------
 # Session model
 # ---------------------
 class Session(models.Model):
-    # Name or type of the session
     title = models.CharField(max_length=100)
 
     # Activity type for dropdown (cardio, weights, etc.)
@@ -19,19 +34,11 @@ class Session(models.Model):
         default='cardio'
     )
 
-    # Which trainer runs this session
     trainer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="trainer_sessions")
-
-    # Date and time of the session
     date = models.DateField()
     time = models.TimeField()
-
-    # Maximum number of clients who can attend
     capacity = models.IntegerField(default=10)
-
-    # Users who have booked this session
     attendees = models.ManyToManyField(User, related_name="booked_sessions", blank=True)
 
-    # String representation for admin/debugging
     def __str__(self):
         return f"{self.title} ({self.activity_type}) with {self.trainer.username} on {self.date} at {self.time}"
