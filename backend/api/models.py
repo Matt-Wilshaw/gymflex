@@ -1,37 +1,23 @@
-from django.db import models
-from django.contrib.auth.models import User
-
-# ---------------------
-# Note model
-# ---------------------
-class Note(models.Model):
-    # The title of the note, limited to 100 characters
-    title = models.CharField(max_length=100)
-
-    # The main content/body of the note
-    content = models.TextField()
-
-    # Automatically stores the date and time when the note is first created
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    # Automatically updates the date and time whenever the note is modified
-    updated_at = models.DateTimeField(auto_now=True)
-
-    # A foreign key linking each note to a specific user
-    # If the user is deleted, all their notes are also deleted (CASCADE)
-    # 'related_name' allows reverse access — e.g. user.notes.all()
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes')
-
-    # String representation for admin/debugging
-    def __str__(self):
-        return self.title
-
 # ---------------------
 # Session model
 # ---------------------
 class Session(models.Model):
     # Name or type of the session
     title = models.CharField(max_length=100)
+
+    # Activity type for dropdown (cardio, weights, etc.)
+    ACTIVITY_CHOICES = [
+        ('cardio', 'Cardio'),
+        ('weights', 'Weightlifting'),
+        ('yoga', 'Yoga'),
+        ('hiit', 'HIIT'),
+        ('pilates', 'Pilates'),
+    ]
+    activity_type = models.CharField(
+        max_length=20,
+        choices=ACTIVITY_CHOICES,
+        default='cardio'
+    )
 
     # Which trainer runs this session
     trainer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="trainer_sessions")
@@ -48,4 +34,4 @@ class Session(models.Model):
 
     # String representation for admin/debugging
     def __str__(self):
-        return f"{self.title} with {self.trainer.username} on {self.date} at {self.time}"
+        return f"{self.title} ({self.activity_type}) with {self.trainer.username} on {self.date} at {self.time}"
