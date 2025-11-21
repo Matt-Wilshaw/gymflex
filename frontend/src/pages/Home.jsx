@@ -13,14 +13,16 @@ const Home = () => {
     const navigate = useNavigate();
     const [sessions, setSessions] = useState([]);
     const [activityFilter, setActivityFilter] = useState("");
+    const [currentUser, setCurrentUser] = useState(null); // Track logged-in user
     const token = localStorage.getItem(ACCESS_TOKEN) || "";
 
-    // Redirect to login if not authenticated
+    // Redirect if not authenticated, fetch sessions and user info
     useEffect(() => {
         if (!token) {
             navigate("/login");
         } else {
             fetchSessions();
+            fetchCurrentUser();
         }
     }, [token, navigate]);
 
@@ -37,22 +39,33 @@ const Home = () => {
                 filtered = filtered.filter((s) => s.activity_type === activityFilter);
             }
 
-            // Map backend data to calendar events
             const events = filtered.map((s) => ({
                 id: s.id,
                 title: `${s.activity_type.toUpperCase()} - Slots: ${s.available_slots}`,
                 start: new Date(`${s.date}T${s.time}`),
                 end: new Date(`${s.date}T${s.time}`),
                 booked: s.booked,
-                raw: s, // full session object for booking
+                raw: s,
             })) || [];
 
             setSessions(events);
         } catch (err) {
             console.error("Error fetching sessions:", err);
             if (err.response && err.response.status === 401) {
-                handleLogout(); // invalid or expired token
+                handleLogout();
             }
+        }
+    };
+
+    // Fetch current user to check if admin
+    const fetchCurrentUser = async () => {
+        try {
+            const res = await axios.get("http://localhost:8000/api/users/me/", {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setCurrentUser(res.data);
+        } catch (err) {
+            console.error("Error fetching current user:", err);
         }
     };
 
@@ -92,12 +105,22 @@ const Home = () => {
 
     return (
         <div className="container mt-4">
-            {/* Header with logout button */}
+            {/* Header with logout and admin button */}
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <h2>GymFlex Calendar</h2>
-                <button className="btn btn-warning" onClick={handleLogout}>
-                    Logout
-                </button>
+                <div>
+                    {currentUser?.is_superuser && (
+                        <button
+                            className="btn btn-primary me-2"
+                            onClick={() => window.location.href = "http://127.0.0.1:8000/admin/"}
+                        >
+                            Admin Panel
+                        </button>
+                    )}
+                    <button className="btn btn-warning" onClick={handleLogout}>
+                        Logout
+                    </button>
+                </div>
             </div>
 
             {/* Activity Filter */}

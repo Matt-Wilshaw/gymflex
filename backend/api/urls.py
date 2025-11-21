@@ -10,6 +10,9 @@ urlpatterns = [
     # User registration endpoint
     path('users/register/', views.CreateUserView.as_view(), name='register'),
 
+    # Endpoint to fetch the currently logged-in user
+    path('users/me/', views.CurrentUserView.as_view(), name='current-user'),
+
     # Note endpoints
     path('notes/', views.NoteListCreate.as_view(), name='note-list'),
     path('notes/<int:pk>/', views.NoteDelete.as_view(), name='delete-note'),
