@@ -36,6 +36,9 @@ const Home = () => {
     const [bookedSessions, setBookedSessions] = useState([]);
     // Admin-only: full sessions list (unfiltered) so admins see every session and attendees
     const [adminSessions, setAdminSessions] = useState([]);
+    // Admin selected date (YYYY-MM-DD). Default to today to minimize list.
+    const [selectedAdminDate, setSelectedAdminDate] = useState(moment().format("YYYY-MM-DD"));
+    const [adminLoading, setAdminLoading] = useState(false);
 
     // JWT token stored in localStorage
     const token = localStorage.getItem(ACCESS_TOKEN) || "";
@@ -46,7 +49,6 @@ const Home = () => {
         if (!token) {
             // Redirect to login if no token exists
             navigate("/login");
-            const [adminLoading, setAdminLoading] = useState(false);
         } else {
             // Fetch all sessions and current user information
             fetchSessions();
@@ -93,20 +95,21 @@ const Home = () => {
         } catch (err) {
             console.error("Error fetching booked sessions:", err);
             return [];
-            setAdminLoading(true);
         }
     };
 
     // Fetch unfiltered sessions for admins so they can see all bookings
     const fetchAllSessions = async () => {
+        setAdminLoading(true);
         try {
             const res = await api.get(`/sessions/`);
             setAdminSessions(res.data);
-            setAdminLoading(false);
             return res.data;
         } catch (err) {
             console.error("Error fetching all sessions:", err);
             return [];
+        } finally {
+            setAdminLoading(false);
         }
     };
 
@@ -176,9 +179,15 @@ const Home = () => {
         navigate("/login");
     };
 
-    // Clicking a calendar day → open modal showing sessions
+    // Clicking a calendar day → open modal showing sessions (non-admin).
+    // For admins, filter the admin sessions list to that date instead.
     const handleDrillDown = (date) => {
         const dateStr = moment(date).format("YYYY-MM-DD");
+        if (currentUser?.is_staff) {
+            setSelectedAdminDate(dateStr);
+            return false; // don't open modal for admins
+        }
+
         const eventsForDate = sessions.filter(
             (s) => moment(s.date).format("YYYY-MM-DD") === dateStr
         );
@@ -267,7 +276,17 @@ const Home = () => {
         };
 
         return (
-            <div style={containerStyle}>
+            <div
+                style={containerStyle}
+                onClick={(e) => {
+                    // Allow admins to click anywhere in the cell to select the date
+                    if (currentUser?.is_staff) {
+                        e.stopPropagation();
+                        const dateStr = moment(value).format("YYYY-MM-DD");
+                        setSelectedAdminDate(dateStr);
+                    }
+                }}
+            >
                 <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>{children}</div>
                 <div style={emojiBarStyle} title={uniqueActivities.join(", ")}>
                     {emojis}
@@ -356,37 +375,87 @@ const Home = () => {
                 <h5>{currentUser?.is_staff ? "All Sessions (Admin)" : "My Bookings"}</h5>
 
                 {currentUser?.is_staff ? (
-                    adminSessions.length === 0 ? (
-                        <p style={{ color: "#666" }}>No sessions available.</p>
+                    adminLoading ? (
+                        <p style={{ color: "#666" }}>Loading attendees...</p>
                     ) : (
-                        <ul>
-                            {adminSessions.map((s) => (
-                                <li key={s.id} style={{ marginBottom: 12 }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        (() => {
+                            const displayed = selectedAdminDate
+                                ? adminSessions.filter((s) => moment(s.date).format("YYYY-MM-DD") === selectedAdminDate)
+                                : adminSessions;
+                            return (
+                                <div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                                        <div style={{ fontWeight: 600 }}>
+                                            Showing: {selectedAdminDate ? moment(selectedAdminDate).format('MMMM D, YYYY') : 'All Dates'}
+                                        </div>
                                         <div>
-                                            <strong>{s.activity_type.toUpperCase()}</strong> —{' '}
-                                            {moment(s.date).format("MMMM D, YYYY")} @ {s.time.slice(0, 5)}
-                                            {s.available_slots !== undefined && (
-                                                <span style={{ marginLeft: 8, color: "#666" }}>({s.available_slots} slots)</span>
-                                            )}
+                                            <button
+                                                onClick={() => setSelectedAdminDate(null)}
+                                                className="btn btn-sm btn-light me-2"
+                                            >
+                                                Show all
+                                            </button>
+                                            <button
+                                                onClick={() => setSelectedAdminDate(moment().format('YYYY-MM-DD'))}
+                                                className="btn btn-sm btn-outline-secondary"
+                                            >
+                                                Today
+                                            </button>
                                         </div>
                                     </div>
-                                    <div style={{ marginTop: 6, paddingLeft: 6 }}>
-                                        {s.attendees && s.attendees.length > 0 ? (
-                                            <div style={{ fontSize: 13, color: '#333' }}>
-                                                {s.attendees.map((a, i) => (
-                                                    <div key={i}>
-                                                        {typeof a === 'object' ? a.username : `User ${a}`}
+                                    {displayed.length === 0 ? (
+                                        <div style={{ color: '#666' }}>No sessions for this date.</div>
+                                    ) : (
+                                        <ul>
+                                            {displayed.map((s) => (
+                                                <li key={s.id} style={{ marginBottom: 12 }}>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                        <div>
+                                                            <strong>{s.activity_type.toUpperCase()}</strong> —{' '}
+                                                            {moment(s.date).format("MMMM D, YYYY")} @ {s.time.slice(0, 5)}
+                                                            {s.available_slots !== undefined && (
+                                                                <span style={{ marginLeft: 8, color: "#666" }}>({s.available_slots} slots)</span>
+                                                            )}
+                                                        </div>
                                                     </div>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <div style={{ fontSize: 13, color: '#666' }}>No bookings</div>
-                                        )}
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
+                                                    <div style={{ marginTop: 6, paddingLeft: 6 }}>
+                                                        {s.attendees && s.attendees.length > 0 ? (
+                                                            <div style={{ fontSize: 13, color: '#333' }}>
+                                                                {s.attendees.map((a, i) => (
+                                                                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: 420 }}>
+                                                                        <div>{typeof a === 'object' ? a.username : `User ${a}`}</div>
+                                                                        <div>
+                                                                            <button
+                                                                                onClick={() => removeAttendee(s.id, typeof a === 'object' ? a.id : a)}
+                                                                                style={{
+                                                                                    marginLeft: 12,
+                                                                                    padding: '4px 8px',
+                                                                                    fontSize: 12,
+                                                                                    borderRadius: 6,
+                                                                                    border: '1px solid rgba(0,0,0,0.1)',
+                                                                                    background: '#dc3545',
+                                                                                    color: 'white',
+                                                                                    cursor: 'pointer',
+                                                                                }}
+                                                                                title="Remove attendee"
+                                                                            >
+                                                                                Remove
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        ) : (
+                                                            <div style={{ fontSize: 13, color: '#666' }}>No bookings</div>
+                                                        )}
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </div>
+                            );
+                        })()
                     )
                 ) : (
                     bookedSessions.length === 0 ? (
