@@ -39,7 +39,7 @@ const Home = () => {
         }
     }, [token, navigate, currentUser]);
 
-    // Fetch sessions
+    // Fetch sessions (returns the filtered sessions array)
     const fetchSessions = async () => {
         try {
             const res = await axios.get("http://localhost:8000/api/sessions/", {
@@ -53,10 +53,12 @@ const Home = () => {
 
             // Store raw sessions only, we don't need default events
             setSessions(filtered);
+            return filtered;
         } catch (err) {
             console.error("Error fetching sessions:", err);
             if (err.response?.status === 401) handleLogout();
             else alert("Failed to load sessions. Please refresh.");
+            return [];
         }
     };
 
@@ -83,7 +85,15 @@ const Home = () => {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             alert(`Booking status: ${res.data.status}`);
-            await fetchSessions();
+            // Refresh sessions and update modal contents if modal is open for the same date
+            const refreshed = await fetchSessions();
+            if (showModal && modalDate) {
+                const dateStr = moment(modalDate).format("YYYY-MM-DD");
+                const eventsForDate = refreshed.filter(
+                    (s) => moment(s.date).format("YYYY-MM-DD") === dateStr
+                );
+                setModalEvents(eventsForDate);
+            }
         } catch (err) {
             const errorMsg =
                 err.response?.data?.status ||

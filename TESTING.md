@@ -36,7 +36,6 @@ For additional project details and technical information, including instructions
   - [Introduction](#introduction)
 - [GymFlex – UAT / Black Box Testing](#gymflex--uat--black-box-testing)
   - [1. User Registration](#1-user-registration)
-  - [2. User Login](#2-user-login)
   - [3. View Timetable](#3-view-timetable)
   - [4. Book a Session](#4-book-a-session)
   - [5. Cancel a Booking](#5-cancel-a-booking)
@@ -44,6 +43,7 @@ For additional project details and technical information, including instructions
   - [7. Track Bookings](#7-track-bookings)
   - [8. Accessibility](#8-accessibility)
   - [9. Adding Test Data to the Database](#9-adding-test-data-to-the-database)
+  - [Bug Log](#bug-log)
     - [Using Django Admin](#using-django-admin)
       - [1. Create a superuser (if required)](#1-create-a-superuser-if-required)
 - [Activate your virtual environment first](#activate-your-virtual-environment-first)
@@ -60,7 +60,6 @@ For additional project details and technical information, including instructions
 - [Get existing users](#get-existing-users)
 - [Create sessions](#create-sessions)
 - [Add test user as attendee](#add-test-user-as-attendee)
-  - [Bug Log](#bug-log)
 
 
 # GymFlex – UAT / Black Box Testing
@@ -82,31 +81,6 @@ As a new user, I want to create an account so that I can access GymFlex features
 - [ ] Test registration workflow  
 
 **Bug Tracking / Notes:**  
-- [ ]  
-
----
-
-## 2. User Login
-
-**Story:**  
-As a registered user, I want to log in so that I can securely access my account and personal timetable.
-
-**Acceptance Criteria:**  
-- Given I am a registered user  
-- When I submit correct credentials  
-- Then I am redirected to my dashboard  
-- And an authentication token/session is created
-
-**Tasks:**  
-- [ ] Implement login form UI  
-- [ ] Connect to backend authentication (JWT/DRF)  
-- [ ] Handle login errors and messages  
-- [ ] Test login flow  
-
-**Bug Tracking / Notes:**  
-- [ ]  
-
----
 
 ## 3. View Timetable
 
@@ -250,6 +224,15 @@ As a developer, I want to populate the GymFlex database with test data so that I
 - [ ] Load data using shell, fixtures, or admin  
 - [ ] Verify data exists via admin, DB viewer, or API
 
+## Bug Log
+
+| #   | Area / Feature                  | Bug Description                                                               | Priority | Status | Notes (cause & fix)                                                                                                                                                                                                                                                                                                                                      |
+| --- | ------------------------------- | ----------------------------------------------------------------------------- | :------: | :----: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | User Registration / App Start   | ImportError: cannot import name 'Note' from api.models                        |   High   | Fixed  | Cause: serializers.py referenced a non-existent Note import.<br>Fix: Removed the bad import; application starts normally.                                                                                                                                                                                                                                |
+| 2   | Database connection / App Start | OperationalError: connection to PostgreSQL failed due to no password supplied |   High   | Fixed  | Cause: Django attempted to connect to PostgreSQL without credentials in dev environment.<br>Fix: Switched DATABASES to use SQLite for local development (backend/settings.py). Migrations run successfully.                                                                                                                                              |
+| 3   | App Routing / URL Mapping       | Root path (/) returned no matching URL patterns                               |  Medium  | Fixed  | Cause: No default route/homepage configured; root returned a "no matching URL patterns" message.<br>Fix: Added a default route/homepage entry in backend/urls.py to resolve the issue.                                                                                                                                                                   |
+| 4   | Booking UI / Modal              | Modal didn't refresh after booking a session (stale availability)             |  Medium  | Fixed  | Reproduction: Open day modal, click a session to book/unbook; modal continued to display stale availability until closed and reopened.<br>Fix: In frontend/src/pages/Home.jsx, after a booking request the client now re-fetches sessions and, when the modal is open, updates modalEvents so availability and the Booked indicator refresh immediately. |
+
 ### Using Django Admin
 
 #### 1. Create a superuser (if required)
@@ -294,7 +277,7 @@ from django.utils import timezone
 
 # Get existing users
 admin_trainer = User.objects.get(username='admin')
-test_user = User.objects.get(username='test1')
+test_user = User.objects.get(username='client')
 
 # Create sessions
 session1, created = Session.objects.get_or_create(
@@ -317,10 +300,3 @@ session2, created = Session.objects.get_or_create(
 session1.attendees.add(test_user)
 session2.attendees.add(test_user)
 
-## Bug Log
-
-| User Story / Feature          | Bug Description                                                               | Severity | Status | Notes / Steps to Reproduce                                                                                                                                                                                                                   |
-| ----------------------------- | ----------------------------------------------------------------------------- | -------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| User Registration / App Start | ImportError: cannot import name 'Note' from 'api.models'                      | High     | Fixed  | Issue caused by importing `Note` in `serializers.py` without a corresponding model. Removed the import. App now starts successfully.                                                                                                         |
-| User Registration / App Start | OperationalError: connection to PostgreSQL failed due to no password supplied | High     | Fixed  | Issue caused by Django trying to connect to a PostgreSQL server without credentials. Switched `DATABASES` to use SQLite for local development. App now starts and migrations run successfully.                                               |
-| App Routing / URL Mapping     | The empty path didn’t match any of these.                                     | Medium   | Open   | Running the app root URL (`/`) produced a “no matching URL patterns” message. Django tried the following paths: `admin/`, `api/register/`, `api/token/`, `api/token/refresh/`, and `api-auth/`. Add a default route or homepage view to fix. |
