@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
-import axios from "axios";
+import api from "../api";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants.js";
 
@@ -28,6 +28,9 @@ const Home = () => {
         return savedUser ? JSON.parse(savedUser) : null;
     });
 
+    // Booked sessions for the current user (fetched without activity filter)
+    const [bookedSessions, setBookedSessions] = useState([]);
+
     const token = localStorage.getItem(ACCESS_TOKEN) || "";
 
     useEffect(() => {
@@ -36,15 +39,15 @@ const Home = () => {
         } else {
             fetchSessions();
             if (!currentUser) fetchCurrentUser();
+            // always refresh booked sessions (independent of activityFilter)
+            fetchBookedSessions();
         }
     }, [token, navigate, currentUser]);
 
     // Fetch sessions (returns the filtered sessions array)
     const fetchSessions = async () => {
         try {
-            const res = await axios.get("http://localhost:8000/api/sessions/", {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const res = await api.get(`/sessions/`);
 
             let filtered = res.data;
             if (activityFilter) {
@@ -62,12 +65,25 @@ const Home = () => {
         }
     };
 
+    // Fetch sessions and return only those the current user has booked
+    const fetchBookedSessions = async () => {
+        try {
+            const res = await api.get(`/sessions/`);
+
+            // Backend serializer exposes `booked` for the requesting user
+            const userBooked = res.data.filter((s) => s.booked === true);
+            setBookedSessions(userBooked);
+            return userBooked;
+        } catch (err) {
+            console.error("Error fetching booked sessions:", err);
+            return [];
+        }
+    };
+
     // Fetch current user
     const fetchCurrentUser = async () => {
         try {
-            const res = await axios.get("http://localhost:8000/api/users/me/", {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const res = await api.get(`/users/me/`);
             setCurrentUser(res.data);
             localStorage.setItem("currentUser", JSON.stringify(res.data));
         } catch (err) {
@@ -79,14 +95,12 @@ const Home = () => {
     // Book a session
     const handleBook = async (session) => {
         try {
-            const res = await axios.post(
-                `http://localhost:8000/api/sessions/${session.id}/book/`,
-                {},
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            const res = await api.post(`/sessions/${session.id}/book/`);
             alert(`Booking status: ${res.data.status}`);
             // Refresh sessions and update modal contents if modal is open for the same date
             const refreshed = await fetchSessions();
+            // Also refresh booked sessions list for the user so "My Bookings" updates immediately
+            await fetchBookedSessions();
             if (showModal && modalDate) {
                 const dateStr = moment(modalDate).format("YYYY-MM-DD");
                 const eventsForDate = refreshed.filter(
@@ -305,6 +319,49 @@ const Home = () => {
                     Activity icons: 🏃 Cardio | 🏋️ Weights | 🧘 Yoga | ⚡ HIIT | 🤸 Pilates
                 </small>
             </p>
+
+            <div className="mb-4">
+                <h5>My Bookings</h5>
+                {bookedSessions.length === 0 ? (
+                    <p style={{ color: "#666" }}>You have no bookings yet.</p>
+                ) : (
+                    <ul>
+                        {bookedSessions.map((s) => (
+                            <li key={s.id} style={{ marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <div>
+                                    <strong>{s.activity_type.toUpperCase()}</strong>
+                                    {' — '}
+                                    {moment(s.date).format("MMMM D, YYYY")} @ {s.time.slice(0, 5)}
+                                    {s.available_slots !== undefined && (
+                                        <span style={{ marginLeft: 8, color: "#666" }}>({s.available_slots} slots)</span>
+                                    )}
+                                </div>
+                                <div>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleBook(s);
+                                        }}
+                                        style={{
+                                            marginLeft: 12,
+                                            padding: '6px 10px',
+                                            fontSize: 12,
+                                            borderRadius: 6,
+                                            border: '1px solid rgba(0,0,0,0.1)',
+                                            background: '#dc3545',
+                                            color: 'white',
+                                            cursor: 'pointer',
+                                        }}
+                                        title="Cancel booking"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
 
             {/* Modal */}
             {showModal && (
