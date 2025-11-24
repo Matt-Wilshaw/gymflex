@@ -8,43 +8,54 @@ import api from "../api";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants.js";
 
-const localizer = momentLocalizer(moment);
+// Setup calendar localiser using Moment.js
+const localiser = momentLocalizer(moment);
 
 const Home = () => {
     const navigate = useNavigate();
 
-    // Calendar data
+    // ------------------ STATE ------------------
+
+    // All sessions to display in the calendar (filtered client-side)
     const [sessions, setSessions] = useState([]);
+    // Currently selected activity filter from dropdown
     const [activityFilter, setActivityFilter] = useState("");
 
-    // Modal data
+    // Modal visibility and content
     const [showModal, setShowModal] = useState(false);
     const [modalEvents, setModalEvents] = useState([]);
     const [modalDate, setModalDate] = useState(null);
 
-    // Current user
+    // Current logged-in user information
     const [currentUser, setCurrentUser] = useState(() => {
         const savedUser = localStorage.getItem("currentUser");
         return savedUser ? JSON.parse(savedUser) : null;
     });
 
-    // Booked sessions for the current user (fetched without activity filter)
+    // Sessions booked by current user (for "My Bookings" list)
     const [bookedSessions, setBookedSessions] = useState([]);
 
+    // JWT token stored in localStorage
     const token = localStorage.getItem(ACCESS_TOKEN) || "";
+
+    // ------------------ EFFECTS ------------------
 
     useEffect(() => {
         if (!token) {
+            // Redirect to login if no token exists
             navigate("/login");
         } else {
+            // Fetch all sessions and current user information
             fetchSessions();
             if (!currentUser) fetchCurrentUser();
-            // always refresh booked sessions (independent of activityFilter)
+            // Always refresh booked sessions for current user
             fetchBookedSessions();
         }
     }, [token, navigate, currentUser]);
 
-    // Fetch sessions (returns the filtered sessions array)
+    // ------------------ API CALLS ------------------
+
+    // Fetch sessions from backend; apply client-side activity filter
     const fetchSessions = async () => {
         try {
             const res = await api.get(`/sessions/`);
@@ -54,7 +65,7 @@ const Home = () => {
                 filtered = filtered.filter((s) => s.activity_type === activityFilter);
             }
 
-            // Store raw sessions only, we don't need default events
+            // Save filtered sessions to state
             setSessions(filtered);
             return filtered;
         } catch (err) {
@@ -65,12 +76,12 @@ const Home = () => {
         }
     };
 
-    // Fetch sessions and return only those the current user has booked
+    // Fetch only sessions booked by current user
     const fetchBookedSessions = async () => {
         try {
             const res = await api.get(`/sessions/`);
 
-            // Backend serializer exposes `booked` for the requesting user
+            // Filter sessions where booked is true for this user
             const userBooked = res.data.filter((s) => s.booked === true);
             setBookedSessions(userBooked);
             return userBooked;
@@ -80,7 +91,7 @@ const Home = () => {
         }
     };
 
-    // Fetch current user
+    // Fetch currently logged-in user's profile
     const fetchCurrentUser = async () => {
         try {
             const res = await api.get(`/users/me/`);
@@ -92,15 +103,18 @@ const Home = () => {
         }
     };
 
-    // Book a session
+    // ------------------ HANDLERS ------------------
+
+    // Handle booking/unbooking a session
     const handleBook = async (session) => {
         try {
             const res = await api.post(`/sessions/${session.id}/book/`);
             alert(`Booking status: ${res.data.status}`);
-            // Refresh sessions and update modal contents if modal is open for the same date
+
+            // Refresh sessions and update modal if open
             const refreshed = await fetchSessions();
-            // Also refresh booked sessions list for the user so "My Bookings" updates immediately
             await fetchBookedSessions();
+
             if (showModal && modalDate) {
                 const dateStr = moment(modalDate).format("YYYY-MM-DD");
                 const eventsForDate = refreshed.filter(
@@ -117,6 +131,7 @@ const Home = () => {
         }
     };
 
+    // Logout user and clear tokens
     const handleLogout = () => {
         localStorage.removeItem(ACCESS_TOKEN);
         localStorage.removeItem(REFRESH_TOKEN);
@@ -124,7 +139,7 @@ const Home = () => {
         navigate("/login");
     };
 
-    // Clicking a day → show modal with all sessions that day
+    // Clicking a calendar day → open modal showing sessions
     const handleDrillDown = (date) => {
         const dateStr = moment(date).format("YYYY-MM-DD");
         const eventsForDate = sessions.filter(
@@ -135,10 +150,12 @@ const Home = () => {
             setModalEvents(eventsForDate);
             setShowModal(true);
         }
-        return false;
+        return false; // Prevent default drilldown
     };
 
-    // Map activity type to emoji
+    // ------------------ UTILS ------------------
+
+    // Map activity type to emoji icon
     const getActivityEmoji = (activityType) => {
         const emojis = {
             cardio: "🏃",
@@ -150,12 +167,12 @@ const Home = () => {
         return emojis[activityType] || "💪";
     };
 
-    // Date cell wrapper: render unique emojis for the day.
-    // Uses sessions (and current activityFilter) to compute the day's activities.
+    // ------------------ CALENDAR CELL WRAPPER ------------------
+
     const DateCellWrapper = ({ children, value }) => {
         const dateStr = moment(value).format("YYYY-MM-DD");
 
-        // Apply activityFilter client-side so the calendar icons reflect the selected filter
+        // Apply current activity filter to decide which emojis to show
         const displayedSessions = activityFilter
             ? sessions.filter((s) => s.activity_type === activityFilter)
             : sessions;
@@ -164,22 +181,17 @@ const Home = () => {
             (s) => moment(s.date).format("YYYY-MM-DD") === dateStr
         );
 
-        // Render a full-size container so absolute positioning aligns with the calendar cell
-        const containerStyle = {
-            position: "relative",
-            width: "100%",
-            height: "100%",
-            boxSizing: "border-box",
-        };
-
+        const containerStyle = { position: "relative", width: "100%", height: "100%", boxSizing: "border-box" };
         if (dayEvents.length === 0) return <div style={containerStyle}>{children}</div>;
 
-        // Unique activity types for the day
+        // Determine unique activities to display only one emoji per type
         const uniqueActivities = [...new Set(dayEvents.map((e) => e.activity_type))];
+        const emojis = uniqueActivities.map(getActivityEmoji).join(" ");
 
-        // The button is absolutely positioned at the bottom center of the cell.
-        // It replaces the emoji bar and opens the day's modal when clicked.
-        const buttonStyle = {
+        const countText = `${dayEvents.length} ${dayEvents.length === 1 ? "session" : "sessions"}`;
+
+        // Styles for the button and emoji bar
+        const buttonStyleWithFlex = {
             position: "absolute",
             bottom: 6,
             left: "50%",
@@ -190,9 +202,10 @@ const Home = () => {
             maxWidth: "90%",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            display: "inline-block",
-            textAlign: "center",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 6,
             borderRadius: 8,
             padding: "4px 8px",
             border: "1px solid rgba(0,0,0,0.1)",
@@ -200,20 +213,9 @@ const Home = () => {
             color: "white",
         };
 
-        // Wrap children in a container that will take available space so the button aligns to the bottom
-        const contentWrapperStyle = {
-            display: "flex",
-            flexDirection: "column",
-            height: "100%",
-        };
-
-        const countText = `${dayEvents.length} ${dayEvents.length === 1 ? "session" : "sessions"}`;
-        const emojis = uniqueActivities.map(getActivityEmoji).join(" ");
-
-        // Emoji bar style (placed above the button)
         const emojiBarStyle = {
             position: "absolute",
-            bottom: 36, // place just above the button (button bottom is 6)
+            bottom: 36,
             left: "50%",
             transform: "translateX(-50%)",
             fontSize: 14,
@@ -227,20 +229,9 @@ const Home = () => {
             background: "transparent",
         };
 
-        // Button content only shows the count (no emojis)
-        const buttonContent = <span>{countText}</span>;
-
-        const buttonStyleWithFlex = {
-            ...buttonStyle,
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 6,
-        };
-
         return (
             <div style={containerStyle}>
-                <div style={contentWrapperStyle}>{children}</div>
+                <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>{children}</div>
                 <div style={emojiBarStyle} title={uniqueActivities.join(", ")}>
                     {emojis}
                 </div>
@@ -252,11 +243,13 @@ const Home = () => {
                     style={buttonStyleWithFlex}
                     title={uniqueActivities.join(", ")}
                 >
-                    {buttonContent}
+                    <span>{countText}</span>
                 </button>
             </div>
         );
     };
+
+    // ------------------ JSX ------------------
 
     return (
         <div className="container mt-4">
@@ -281,7 +274,7 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* Activity filter */}
+            {/* Activity Filter */}
             <div className="mb-3">
                 <label>Filter by Activity: </label>
                 <select
@@ -301,17 +294,18 @@ const Home = () => {
             {/* Calendar */}
             <div style={{ height: 600 }}>
                 <Calendar
-                    localizer={localizer}
-                    events={[]} // Don't render default events
+                    localizer={localiser}
+                    events={[]} // Hide default events
                     startAccessor="start"
                     endAccessor="end"
                     style={{ height: "100%" }}
                     onDrillDown={handleDrillDown}
                     views={["month"]}
-                    components={{ event: () => null, dateCellWrapper: DateCellWrapper }} // Hide default events and render date wrapper
+                    components={{ event: () => null, dateCellWrapper: DateCellWrapper }}
                 />
             </div>
 
+            {/* Legend / Info */}
             <p className="mt-3">
                 <strong>Click a day to view sessions in the modal.</strong>
                 <br />
@@ -320,6 +314,7 @@ const Home = () => {
                 </small>
             </p>
 
+            {/* My Bookings */}
             <div className="mb-4">
                 <h5>My Bookings</h5>
                 {bookedSessions.length === 0 ? (
@@ -327,13 +322,22 @@ const Home = () => {
                 ) : (
                     <ul>
                         {bookedSessions.map((s) => (
-                            <li key={s.id} style={{ marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <li
+                                key={s.id}
+                                style={{
+                                    marginBottom: 8,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                }}
+                            >
                                 <div>
-                                    <strong>{s.activity_type.toUpperCase()}</strong>
-                                    {' — '}
+                                    <strong>{s.activity_type.toUpperCase()}</strong> —{" "}
                                     {moment(s.date).format("MMMM D, YYYY")} @ {s.time.slice(0, 5)}
                                     {s.available_slots !== undefined && (
-                                        <span style={{ marginLeft: 8, color: "#666" }}>({s.available_slots} slots)</span>
+                                        <span style={{ marginLeft: 8, color: "#666" }}>
+                                            ({s.available_slots} slots)
+                                        </span>
                                     )}
                                 </div>
                                 <div>
@@ -344,13 +348,13 @@ const Home = () => {
                                         }}
                                         style={{
                                             marginLeft: 12,
-                                            padding: '6px 10px',
+                                            padding: "6px 10px",
                                             fontSize: 12,
                                             borderRadius: 6,
-                                            border: '1px solid rgba(0,0,0,0.1)',
-                                            background: '#dc3545',
-                                            color: 'white',
-                                            cursor: 'pointer',
+                                            border: "1px solid rgba(0,0,0,0.1)",
+                                            background: "#dc3545",
+                                            color: "white",
+                                            cursor: "pointer",
                                         }}
                                         title="Cancel booking"
                                     >
@@ -366,6 +370,7 @@ const Home = () => {
             {/* Modal */}
             {showModal && (
                 <>
+                    {/* Background overlay */}
                     <div
                         style={{
                             position: "fixed",
@@ -377,6 +382,8 @@ const Home = () => {
                         }}
                         onClick={() => setShowModal(false)}
                     />
+
+                    {/* Modal content */}
                     <div
                         style={{
                             position: "fixed",
@@ -395,7 +402,7 @@ const Home = () => {
                         }}
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Modal header */}
+                        {/* Modal Header */}
                         <div
                             style={{
                                 padding: "20px",
@@ -418,7 +425,7 @@ const Home = () => {
                             </button>
                         </div>
 
-                        {/* Modal content */}
+                        {/* Modal Body */}
                         <div style={{ padding: "16px", overflowY: "auto", flex: 1 }}>
                             {modalEvents.length === 0 ? (
                                 <p style={{ textAlign: "center", color: "#666" }}>No sessions available on this day.</p>
