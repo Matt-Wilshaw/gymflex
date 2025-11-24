@@ -8,6 +8,11 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 // Setup localizer for react-big-calendar using moment.js
 const localizer = momentLocalizer(moment);
 
+// Timetable: a simpler calendar view intended for normal clients. It
+// fetches sessions from the API and maps them to react-big-calendar
+// events. Note: the component uses `session.title` and
+// `session.trainer_username` when building event titles; if the backend
+// does not provide those fields they may render as `undefined`.
 export default function Timetable() {
     // State to store calendar events
     const [events, setEvents] = useState([]);
