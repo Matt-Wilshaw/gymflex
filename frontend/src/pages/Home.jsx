@@ -34,6 +34,8 @@ const Home = () => {
 
     // Sessions booked by current user (for "My Bookings" list)
     const [bookedSessions, setBookedSessions] = useState([]);
+    // Admin-only: full sessions list (unfiltered) so admins see every session and attendees
+    const [adminSessions, setAdminSessions] = useState([]);
 
     // JWT token stored in localStorage
     const token = localStorage.getItem(ACCESS_TOKEN) || "";
@@ -44,12 +46,15 @@ const Home = () => {
         if (!token) {
             // Redirect to login if no token exists
             navigate("/login");
+            const [adminLoading, setAdminLoading] = useState(false);
         } else {
             // Fetch all sessions and current user information
             fetchSessions();
             if (!currentUser) fetchCurrentUser();
             // Always refresh booked sessions for current user
             fetchBookedSessions();
+            // If current user is admin we want to load the unfiltered sessions list
+            if (currentUser?.is_staff) fetchAllSessions();
         }
     }, [token, navigate, currentUser]);
 
@@ -88,6 +93,20 @@ const Home = () => {
         } catch (err) {
             console.error("Error fetching booked sessions:", err);
             return [];
+            setAdminLoading(true);
+        }
+    };
+
+    // Fetch unfiltered sessions for admins so they can see all bookings
+    const fetchAllSessions = async () => {
+        try {
+            const res = await api.get(`/sessions/`);
+            setAdminSessions(res.data);
+            setAdminLoading(false);
+            return res.data;
+        } catch (err) {
+            console.error("Error fetching all sessions:", err);
+            return [];
         }
     };
 
@@ -114,6 +133,8 @@ const Home = () => {
             // Refresh sessions and update modal if open
             const refreshed = await fetchSessions();
             await fetchBookedSessions();
+            // If admin, refresh the unfiltered admin sessions list as well
+            if (currentUser?.is_staff) await fetchAllSessions();
 
             if (showModal && modalDate) {
                 const dateStr = moment(modalDate).format("YYYY-MM-DD");
@@ -128,6 +149,22 @@ const Home = () => {
                 err.response?.data?.error ||
                 "Booking failed. Please try again.";
             alert(errorMsg);
+        }
+    };
+
+    // Admin: remove an attendee from a session
+    const removeAttendee = async (sessionId, attendeeId) => {
+        if (!window.confirm("Remove this attendee from the session?")) return;
+        try {
+            await api.post(`/sessions/${sessionId}/remove_attendee/`, { user_id: attendeeId });
+            // Refresh admin sessions and other lists
+            await fetchAllSessions();
+            await fetchSessions();
+            await fetchBookedSessions();
+            alert("Attendee removed.");
+        } catch (err) {
+            console.error("Error removing attendee:", err);
+            alert(err.response?.data?.detail || "Failed to remove attendee.");
         }
     };
 
@@ -314,56 +351,92 @@ const Home = () => {
                 </small>
             </p>
 
-            {/* My Bookings */}
+            {/* My Bookings / Admin View */}
             <div className="mb-4">
-                <h5>My Bookings</h5>
-                {bookedSessions.length === 0 ? (
-                    <p style={{ color: "#666" }}>You have no bookings yet.</p>
+                <h5>{currentUser?.is_staff ? "All Sessions (Admin)" : "My Bookings"}</h5>
+
+                {currentUser?.is_staff ? (
+                    adminSessions.length === 0 ? (
+                        <p style={{ color: "#666" }}>No sessions available.</p>
+                    ) : (
+                        <ul>
+                            {adminSessions.map((s) => (
+                                <li key={s.id} style={{ marginBottom: 12 }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div>
+                                            <strong>{s.activity_type.toUpperCase()}</strong> —{' '}
+                                            {moment(s.date).format("MMMM D, YYYY")} @ {s.time.slice(0, 5)}
+                                            {s.available_slots !== undefined && (
+                                                <span style={{ marginLeft: 8, color: "#666" }}>({s.available_slots} slots)</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div style={{ marginTop: 6, paddingLeft: 6 }}>
+                                        {s.attendees && s.attendees.length > 0 ? (
+                                            <div style={{ fontSize: 13, color: '#333' }}>
+                                                {s.attendees.map((a, i) => (
+                                                    <div key={i}>
+                                                        {typeof a === 'object' ? a.username : `User ${a}`}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div style={{ fontSize: 13, color: '#666' }}>No bookings</div>
+                                        )}
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    )
                 ) : (
-                    <ul>
-                        {bookedSessions.map((s) => (
-                            <li
-                                key={s.id}
-                                style={{
-                                    marginBottom: 8,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                }}
-                            >
-                                <div>
-                                    <strong>{s.activity_type.toUpperCase()}</strong> —{" "}
-                                    {moment(s.date).format("MMMM D, YYYY")} @ {s.time.slice(0, 5)}
-                                    {s.available_slots !== undefined && (
-                                        <span style={{ marginLeft: 8, color: "#666" }}>
-                                            ({s.available_slots} slots)
-                                        </span>
-                                    )}
-                                </div>
-                                <div>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleBook(s);
-                                        }}
-                                        style={{
-                                            marginLeft: 12,
-                                            padding: "6px 10px",
-                                            fontSize: 12,
-                                            borderRadius: 6,
-                                            border: "1px solid rgba(0,0,0,0.1)",
-                                            background: "#dc3545",
-                                            color: "white",
-                                            cursor: "pointer",
-                                        }}
-                                        title="Cancel booking"
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+                    bookedSessions.length === 0 ? (
+                        <p style={{ color: "#666" }}>You have no bookings yet.</p>
+                    ) : (
+                        <ul>
+                            {bookedSessions.map((s) => (
+                                <li
+                                    key={s.id}
+                                    style={{
+                                        marginBottom: 8,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                    }}
+                                >
+                                    <div>
+                                        <strong>{s.activity_type.toUpperCase()}</strong> —{' '}
+                                        {moment(s.date).format("MMMM D, YYYY")} @ {s.time.slice(0, 5)}
+                                        {s.available_slots !== undefined && (
+                                            <span style={{ marginLeft: 8, color: "#666" }}>
+                                                ({s.available_slots} slots)
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleBook(s);
+                                            }}
+                                            style={{
+                                                marginLeft: 12,
+                                                padding: "6px 10px",
+                                                fontSize: 12,
+                                                borderRadius: 6,
+                                                border: "1px solid rgba(0,0,0,0.1)",
+                                                background: "#dc3545",
+                                                color: "white",
+                                                cursor: "pointer",
+                                            }}
+                                            title="Cancel booking"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    )
                 )}
             </div>
 

@@ -98,9 +98,14 @@ class SessionSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         user = request.user if request and request.user.is_authenticated else None
 
-        # Trainer/Admin sees full details
+        # Trainer/Admin sees full details (include id + username for attendees)
         if user and user.is_staff:
-            representation['attendees'] = list(instance.attendees.values_list('id', flat=True))
+            attendees_qs = instance.attendees.all()
+            representation['attendees'] = [
+                {"id": a.id, "username": a.username} for a in attendees_qs
+            ]
+            # ensure trainer_username is accurate for staff
+            representation['trainer_username'] = instance.trainer.username
             return representation
 
         is_booked = representation.get('booked', False)

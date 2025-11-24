@@ -76,6 +76,31 @@ class SessionViewSet(viewsets.ModelViewSet):
             else:
                 return Response({"status": "full"}, status=400)
 
+    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated, IsTrainerOrReadOnly])
+    def remove_attendee(self, request, pk=None):
+        """
+        Admin-only endpoint to remove an attendee from a session.
+        Expects JSON payload: { "user_id": <id> }
+        """
+        session = self.get_object()
+        if not request.user.is_staff:
+            return Response({"detail": "Not authorized"}, status=403)
+
+        user_id = request.data.get("user_id")
+        if not user_id:
+            return Response({"detail": "user_id is required"}, status=400)
+
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return Response({"detail": "User not found"}, status=404)
+
+        if user in session.attendees.all():
+            session.attendees.remove(user)
+            return Response({"status": "removed"})
+        else:
+            return Response({"status": "not_booked"}, status=400)
+
 
 # -----------------------------
 # Current User View
@@ -92,4 +117,6 @@ class CurrentUserView(APIView):
         serializer = UserSerializer(request.user)
         data = serializer.data
         data['is_superuser'] = request.user.is_superuser
+        # Also include is_staff so frontend can detect admin users correctly
+        data['is_staff'] = request.user.is_staff
         return Response(data)
