@@ -6,7 +6,9 @@
     "npm": "10.x"
   },
   "scripts": {
+    "_comment_build": "Custom build script for Heroku deployment - navigates to frontend/, installs dependencies, and runs production build",
     "build": "cd frontend && npm install && npm run build --prod",
+    "_comment_heroku-postbuild": "Heroku automatically runs this script after installing dependencies. It triggers the build script above to compile React assets",
     "heroku-postbuild": "npm run build"
   },
   "dependencies": {
