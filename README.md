@@ -19,8 +19,6 @@ Privacy & masking: session responses hide trainer and attendee details for unboo
 
 For the full in-depth architecture (middleware order, lifecycle, masking matrix) see: `[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)`.
 
-"When is my next session, and can I book it easily?"
-
 Check out the live demo here:
 
 # Link → [GymFlex](https://matt-wilshaw.github.io/gymflex/)
@@ -30,15 +28,22 @@ Check out the live demo here:
 ## Table of Contents
 
 - [GymFlex](#gymflex)
+  - [Architecture Overview (Summary)](#architecture-overview-summary)
 - [Link → GymFlex](#link--gymflex)
   - [Table of Contents](#table-of-contents)
   - [Testing Overview](#testing-overview)
+    - [Deployed Test Environment](#deployed-test-environment)
+      - [Smoke Test (Production)](#smoke-test-production)
   - [Development Checklist](#development-checklist)
     - [Authentication \& User Management](#authentication--user-management)
     - [Sessions \& Booking](#sessions--booking)
     - [User Profiles](#user-profiles)
     - [Trainer/Admin Features](#traineradmin-features)
     - [Future Enhancements](#future-enhancements)
+  - [Database Structure](#database-structure)
+    - [User Table (`auth_user`)](#user-table-auth_user)
+    - [Session Table (`Session`)](#session-table-session)
+    - [Relationships](#relationships)
   - [Installation / Setup](#installation--setup)
     - [1. Clone the repository](#1-clone-the-repository)
     - [2. Create a virtual environment (optional but recommended)](#2-create-a-virtual-environment-optional-but-recommended)
@@ -53,7 +58,6 @@ Check out the live demo here:
     - [1. Navigate to the frontend folder:](#1-navigate-to-the-frontend-folder)
     - [2. Install dependencies:](#2-install-dependencies)
     - [3. Start the React development server:](#3-start-the-react-development-server)
-  - [Testing Overview](#testing-overview-1)
   - [Key Outline](#key-outline)
 - [Introduction](#introduction)
   - [Vision](#vision)
@@ -97,6 +101,24 @@ The approach combined **Behaviour-Driven Development (BDD)** and **Test-Driven D
 This combined approach kept testing user-centred while maintaining strong technical quality and confidence in the codebase.  
 
 For detailed information on all tests, validations, bugs, and results, please refer to the [TESTING.md](./TESTING.md) document.
+
+### Deployed Test Environment
+Production (Heroku) app: https://gymflex-5bb1d582f94c.herokuapp.com/  
+API base URL: https://gymflex-5bb1d582f94c.herokuapp.com/api  
+Use this environment for manual end-to-end verification (JWT login, session listing, booking/unbooking). Local development tests should continue to use `http://localhost:8000/api`. Note: if the dyno has been idle it may take a few seconds to “wake” on the first request.
+
+#### Smoke Test (Production)
+Run these quick steps after each deploy to verify core functionality:
+1. Obtain tokens: `POST /api/token/` with valid JSON credentials; expect `200` and `{"access","refresh"}`.
+2. List sessions: `GET /api/sessions/` with `Authorization: Bearer <access>`; expect `200` and an array. Confirm masking (trainer shows `TBA` if viewing an unbooked session as non-staff).
+3. Book a session: `POST /api/sessions/{id}/book/` (same Authorization); expect `200` and `booked: true`, `available_slots` decrements.
+4. Toggle (unbook): Repeat step 3 on same session; expect `booked: false`, `available_slots` increments.
+5. Refresh token: `POST /api/token/refresh/` with `{"refresh": "<refresh>"}`; expect new `access`, then repeat step 2 to confirm continued authorised access.
+
+Notes:
+- Initial request may be slower due to Heroku dyno wake-up.
+- If any step fails with `401`, check token expiry and repeat step 1.
+- For debugging, compare the same endpoint locally (`http://localhost:8000/api/sessions/`) to distinguish deployment vs code issues.
 
 ## Development Checklist
 
@@ -234,7 +256,7 @@ npm install
 ### 3. Start the React development server:
 npm start
 
-Visit in your browser to access GymFlex locally.](http://localhost:5173/)
+Visit in your browser: http://localhost:5173/
 
 **Notes:**
 
@@ -243,17 +265,6 @@ Visit in your browser to access GymFlex locally.](http://localhost:5173/)
 * If using PostgreSQL locally, update `settings.py` with your local database credentials.
 
 ---
-
-## Testing Overview
-
-To ensure GymFlex is reliable, user-friendly, and works across devices and browsers, a comprehensive testing strategy was followed. The approach combined Behaviour-Driven Development (BDD) and Test-Driven Development (TDD):
-
-BDD focused on user stories and real-world scenarios, for example:
-"As a client, I want to book a gym session so I can secure my spot in advance."
-
-TDD ensured that features were designed, implemented, and tested iteratively, with automated tests written before the functionality to guarantee correctness from the start.
-
-This strategy kept testing user-focused while maintaining high technical quality. For full details on all tests, validations, and results, see the TESTING.md document.
 
 ## Key Outline
 

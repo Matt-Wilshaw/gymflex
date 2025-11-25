@@ -6,6 +6,7 @@ This document provides a detailed, developer‑level walkthrough of how a reques
 ```
 Browser → Heroku Router → Gunicorn (WSGI) → Django (middleware + URL routing) → View / Serializer → Django ORM → psycopg2 → PostgreSQL → Response
 ```
+ 
 
 ## Layer Responsibilities
 - **Browser**: Issues HTTP requests (e.g. `GET /api/sessions/`).
@@ -59,11 +60,11 @@ Decision:
 9. **Response** constructed and returned through Gunicorn → Heroku → Browser.
 
 ## Role-Based Masking Summary
-| User Type        | Trainer Name | Attendees Field            | Activity Type |
-|------------------|--------------|----------------------------|---------------|
-| Staff/Trainer    | Real name    | List of `{id, username}`   | Real          |
-| Booked Client    | Real name    | Own user ID only           | Real          |
-| Unbooked Client  | TBA          | Empty list                 | Real          |
+| User Type       | Trainer Name | Attendees Field          | Activity Type |
+| --------------- | ------------ | ------------------------ | ------------- |
+| Staff/Trainer   | Real name    | List of `{id, username}` | Real          |
+| Booked Client   | Real name    | Own user ID only         | Real          |
+| Unbooked Client | TBA          | Empty list               | Real          |
 
 ## Multiple Queries Notes
 - `attendees.count()` issues a `COUNT(*)` per session.
