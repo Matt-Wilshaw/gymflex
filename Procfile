@@ -1,1 +1,1 @@
-web: gunicorn gymflex.wsgi
+web: cd backend && python manage.py migrate && gunicorn backend.wsgi --bind 0.0.0.0:$PORT --log-file -
