@@ -22,8 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 SECRET_KEY = "django-insecure-nma=xi6x2p-crjg^ifqqkapyu1qjd0l=+wn)-rijk_o%$!k3w_"
-DEBUG = True
-ALLOWED_HOSTS = ["*"]
+DEBUG = False
+ALLOWED_HOSTS = ['.herokuapp.com', 'localhost']
 
 # REST framework and JWT
 REST_FRAMEWORK = {
