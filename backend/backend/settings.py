@@ -140,6 +140,8 @@ CORS_ALLOW_CREDENTIALS = True  # fixed typo
 CSRF_TRUSTED_ORIGINS = [
     'https://gymflex-5bb1d582f94c.herokuapp.com',
 ]
+CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript to read CSRF cookie
+CSRF_USE_SESSIONS = False  # Don't store CSRF token in session
 
 # Session and Cookie settings
 SESSION_COOKIE_SAMESITE = 'Lax'
