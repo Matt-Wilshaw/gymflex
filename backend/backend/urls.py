@@ -1,5 +1,6 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+from django.views.generic import TemplateView
 from api.views import CreateUserView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -19,4 +20,7 @@ urlpatterns = [
 
     # Include all app-specific API endpoints
     path("api/", include("api.urls")),
+    
+    # Serve React app for all other routes
+    re_path(r"^.*$", TemplateView.as_view(template_name="index.html")),
 ]
