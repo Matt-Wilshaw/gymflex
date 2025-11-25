@@ -135,3 +135,14 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True  # fixed typo
+
+# CSRF settings for same-origin deployment
+CSRF_TRUSTED_ORIGINS = [
+    'https://gymflex-5bb1d582f94c.herokuapp.com',
+]
+
+# Session and Cookie settings
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = True  # HTTPS only
+CSRF_COOKIE_SECURE = True  # HTTPS only
