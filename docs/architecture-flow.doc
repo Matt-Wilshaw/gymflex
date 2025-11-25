@@ -1,0 +1,144 @@
+GYMFLEX REQUEST FLOW & POSTGRES DECISION LOGIC
+====================================================
+
+1. High-Level Overview
+Browser → Heroku Router → Gunicorn (WSGI server) → Django (middleware stack + URL resolver) → View / Serializer → Django ORM → psycopg2 → PostgreSQL → Response back through the chain.
+
+2. Layer Responsibilities
+- Browser: Sends HTTP request (e.g. GET /api/sessions/).
+- Heroku Router: Receives request for the app’s domain and forwards it to the running dyno.
+- Gunicorn: Production WSGI server; hands each request into Django’s WSGI application.
+- Django WSGI App: Constructs the Request object and runs middleware + routing.
+- Middleware Stack: Applies security, sessions, CSRF exemptions, auth user attachment.
+- URL Resolver: Matches path (/api/sessions/) to a view/viewset method.
+- View / ViewSet: Executes business logic (e.g. SessionViewSet.list()).
+- Serializer: Converts model instances to JSON with role-based masking.
+- Django ORM: Translates Python model/queryset operations into SQL.
+- psycopg2 Driver: Low-level adapter that sends SQL to PostgreSQL and returns rows.
+- PostgreSQL: Executes queries (SELECT, INSERT, UPDATE) and returns results.
+
+3. How PostgreSQL Is Chosen (Database Selection)
+At startup Django loads settings.py. The line:
+DATABASES = {
+  "default": dj_database_url.config(
+      default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+      conn_max_age=600
+  )
+}
+does this:
+- Checks for the environment variable DATABASE_URL.
+- If DATABASE_URL exists (on Heroku), it parses that URL and returns a PostgreSQL configuration (ENGINE = django.db.backends.postgresql).
+- If DATABASE_URL does NOT exist (local dev), it falls back to SQLite using the default= value.
+Result: Heroku → PostgreSQL; Local → SQLite.
+
+4. Request Lifecycle (Detailed Steps)
+Step 1: User navigates to https://gymflex-...herokuapp.com/api/sessions/
+Step 2: Heroku router forwards request to the dyno (container) on an internal port.
+Step 3: Gunicorn (started from Procfile) receives the HTTP request.
+Step 4: Gunicorn calls Django’s WSGI application (created in backend/wsgi.py).
+Step 5: Django builds a Request object and runs middleware in order:
+  - SecurityMiddleware
+  - WhiteNoiseMiddleware (may serve static assets early)
+  - CORS middleware
+  - SessionMiddleware
+  - CommonMiddleware
+  - DisableCSRFForAPI (custom exemption for /api/)
+  - CsrfViewMiddleware (skipped if exempted)
+  - AuthenticationMiddleware (attaches request.user)
+  - MessageMiddleware
+  - Clickjacking protection
+Step 6: URL resolver matches /api/sessions/ to SessionViewSet list action.
+Step 7: ViewSet issues a queryset: Session.objects.all().order_by('date', 'time').
+Step 8: QuerySet evaluation triggers ORM SQL generation (SELECT … FROM api_session …).
+Step 9: psycopg2 sends SQL to PostgreSQL using credentials parsed from DATABASE_URL.
+Step 10: PostgreSQL returns rows; ORM wraps them as Session instances.
+Step 11: Serializer runs:
+  - Computes attendees_count, available_slots, booked.
+  - Applies role-based masking (full detail for staff, limited for unbooked users).
+Step 12: Response object built with JSON payload.
+Step 13: Gunicorn sends response back through Heroku router to the browser.
+
+5. Role-Based Serialization (Privacy Logic)
+- Staff (is_staff True): Full attendee list with IDs/usernames.
+- Booked user: Sees full session details but only their own attendee ID.
+- Unbooked user: Sees activity type + available slots; trainer masked as “TBA”; attendees list empty.
+
+6. Database Query Examples (Conceptual)
+Session.objects.all() → Django builds:
+SELECT ... FROM api_session ORDER BY date, time;
+obj.attendees.count() → COUNT(*) on join table api_session_attendees.
+obj.attendees.filter(pk=user.pk).exists() → SELECT 1 WHERE attendee matches user.
+
+7. Connection Reuse
+conn_max_age=600 keeps the PostgreSQL connection alive for up to 600 seconds (10 minutes), reducing overhead of reconnecting for each request.
+
+8. Why Gunicorn Matters
+- Gunicorn is the production WSGI server that continuously runs and hands requests into Django.
+- It does not choose the database; Django settings do.
+
+9. Security/Authentication Touchpoints
+- AuthenticationMiddleware attaches request.user.
+- Serializer checks request.user to compute booked flag.
+- Permission classes (IsAuthenticated, IsTrainerOrReadOnly) guard access to session modification.
+
+10. Differences Between Local and Heroku
+Local:
+- Run with python manage.py runserver.
+- No DATABASE_URL → SQLite.
+- Two processes (Django dev server + React dev server).
+Heroku:
+- Gunicorn (via Procfile) serves both API and built React assets.
+- DATABASE_URL exists → PostgreSQL.
+
+11. Optional Debug (Local)
+Add logging to see SQL:
+LOGGING = {
+  "version": 1,
+  "handlers": {"console": {"class": "logging.StreamHandler"}},
+  "loggers": {
+    "django.db.backends": {"level": "DEBUG", "handlers": ["console"]}
+  }
+}
+Then hit an endpoint; SQL prints in terminal.
+
+12. ASCII Flow Diagram
+Browser
+  ↓
+Heroku Router
+  ↓
+Gunicorn (WSGI server)
+  ↓
+Django WSGI App
+  ↓
+Middleware Chain
+  ↓
+URL Resolver
+  ↓
+View/ViewSet
+  ↓
+Serializer
+  ↓
+Django ORM
+  ↓
+psycopg2 (DB driver)
+  ↓
+PostgreSQL
+  ↑
+Response JSON back up the chain
+
+13. Key Files Involved
+- Procfile: Starts Gunicorn.
+- backend/backend/wsgi.py: Boots Django with correct settings.
+- backend/backend/settings.py: Decides database (PostgreSQL vs SQLite).
+- backend/api/models.py: Defines Session model.
+- backend/api/views.py: SessionViewSet business logic.
+- backend/api/serializers.py: Masking logic + computed fields.
+- backend/api/urls.py & backend/backend/urls.py: Route mapping.
+
+14. Common Misconceptions
+- Gunicorn does not select the database; Django settings do.
+- DATABASE_URL is not a web URL for users; it is a connection string for the backend only.
+- Switching databases does not require code changes—only environment changes (DATABASE_URL presence).
+
+15. Summary Sentence
+Django chooses PostgreSQL at startup by detecting DATABASE_URL in the environment; every incoming request flows through Gunicorn → Django → ORM → psycopg2 → PostgreSQL, with serializers enforcing privacy rules before the JSON response returns.

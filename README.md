@@ -4,6 +4,21 @@ GymFlex is a web-based gym management platform designed to help users book sessi
 
 At its core, GymFlex is built with HTML, CSS, JavaScript, Python, React, Django, and Bootstrap. These technologies power an interactive, responsive experience that makes managing gym schedules and bookings simple and intuitive.
 
+## Architecture Overview (Summary)
+GymFlex is a full-stack application where a React (Vite) frontend is built into static assets and served by the Django backend in production (Heroku). Requests flow:
+
+```
+Browser → Heroku Router → Gunicorn → Django (middleware + URL routing) → View/Serializer → ORM → PostgreSQL → JSON Response
+```
+
+Database selection is automatic:
+- Local development: falls back to SQLite (no `DATABASE_URL` set)
+- Heroku deployment: PostgreSQL used via `DATABASE_URL` and `dj_database_url`
+
+Privacy & masking: session responses hide trainer and attendee details for unbooked, non-staff users; booked users see their own ID only; staff see full context.
+
+For the full in-depth architecture (middleware order, lifecycle, masking matrix) see: `[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)`.
+
 "When is my next session, and can I book it easily?"
 
 Check out the live demo here:
