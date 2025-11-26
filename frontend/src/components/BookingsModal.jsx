@@ -74,14 +74,23 @@ const BookingsModal = ({ showModal, modalEvents, modalDate, setShowModal, handle
                             <div
                                 key={event.id}
                                 style={{
-                                    backgroundColor: event.booked ? "#fff5f5" : "#f0fdf4",
-                                    border: event.booked ? "2px solid #dc3545" : "2px solid #198754",
+                                    backgroundColor: event.has_started 
+                                        ? "#e9ecef" 
+                                        : event.booked 
+                                        ? "#fff5f5" 
+                                        : "#f0fdf4",
+                                    border: event.has_started
+                                        ? "2px solid #adb5bd"
+                                        : event.booked 
+                                        ? "2px solid #dc3545" 
+                                        : "2px solid #198754",
                                     borderRadius: "12px",
                                     padding: "16px",
                                     marginBottom: "12px",
-                                    cursor: "pointer",
+                                    cursor: event.has_started ? "not-allowed" : "pointer",
+                                    opacity: event.has_started ? 0.6 : 1,
                                 }}
-                                onClick={() => handleBook(event)}
+                                onClick={() => !event.has_started && handleBook(event)}
                             >
                                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                                     <div style={{ flex: 1 }}>
@@ -93,13 +102,13 @@ const BookingsModal = ({ showModal, modalEvents, modalDate, setShowModal, handle
                                     <div style={{ textAlign: "right" }}>
                                         <div
                                             style={{
-                                                backgroundColor: "#6c757d",
+                                                backgroundColor: event.has_started ? "#adb5bd" : "#6c757d",
                                                 color: "white",
                                                 padding: "6px 12px",
                                                 borderRadius: "6px",
                                             }}
                                         >
-                                            {event.available_slots} slots
+                                            {event.has_started ? "Past" : `${event.available_slots} slots`}
                                         </div>
                                         <div style={{ color: event.booked ? "#dc3545" : "transparent", fontWeight: "600" }}>
                                             {event.booked ? "✓ Booked" : ""}

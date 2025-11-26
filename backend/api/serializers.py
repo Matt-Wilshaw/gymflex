@@ -117,6 +117,7 @@ class SessionSerializer(serializers.ModelSerializer):
     attendees_count = serializers.SerializerMethodField()
     available_slots = serializers.SerializerMethodField()
     booked = serializers.SerializerMethodField()
+    has_started = serializers.SerializerMethodField()
 
     class Meta:
         model = Session
@@ -130,6 +131,7 @@ class SessionSerializer(serializers.ModelSerializer):
             "attendees_count",
             "available_slots",
             "booked",
+            "has_started",
             "attendees",
         ]
         extra_kwargs = {
@@ -181,6 +183,25 @@ class SessionSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             return obj.attendees.filter(pk=request.user.pk).exists()
         return False
+
+    def get_has_started(self, obj):
+        """
+        Check if the session has already started (past date+time).
+        
+        Compares session datetime against current time to determine if the
+        session is in the past. Used by frontend to grey out and disable
+        booking for sessions that have already occurred.
+        
+        Args:
+            obj: Session model instance
+            
+        Returns:
+            bool: True if session datetime is in the past, False otherwise
+        """
+        from datetime import datetime
+        now = datetime.now()
+        session_datetime = datetime.combine(obj.date, obj.time)
+        return session_datetime < now
 
     # -------------------
     # Custom Creation Logic
