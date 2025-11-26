@@ -238,15 +238,16 @@ class SessionViewSet(viewsets.ModelViewSet):
         Returns:
             Response: JSON with status message and HTTP status code
         """
-        from datetime import date
+        from datetime import datetime
         
         session = self.get_object()  # Retrieves Session with pk={pk}
         user = request.user
 
-        # Prevent booking sessions with past dates
-        if session.date < date.today():
+        # Prevent booking sessions that have already started (check date AND time)
+        session_datetime = datetime.combine(session.date, session.time)
+        if session_datetime < datetime.now():
             return Response(
-                {"status": "past", "message": "Cannot book sessions that have already occurred"}, 
+                {"status": "past", "message": "Cannot book sessions that have already started"}, 
                 status=400
             )
 
