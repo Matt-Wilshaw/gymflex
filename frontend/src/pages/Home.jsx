@@ -163,7 +163,7 @@ const Home = () => {
                     {currentUser?.is_superuser && (
                         <button
                             className="btn btn-primary me-2"
-                            onClick={() => window.open("http://127.0.0.1:8000/admin/", "_blank")}
+                            onClick={() => window.open(import.meta.env.VITE_API_URL.replace('/api', '/admin/'), "_blank")}
                         >
                             Admin Panel
                         </button>
