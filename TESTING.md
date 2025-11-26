@@ -232,6 +232,28 @@ As a visually impaired or mobility-challenged user, I want to navigate GymFlex u
 
 ---
 
+## 9. Security & Data Protection
+
+**Story:**  
+As a developer, I want to ensure that no sensitive information (passwords, API keys, secrets) has been accidentally committed to version control so that user data and system credentials remain secure.
+
+**Acceptance Criteria:**  
+- Given the project is under version control  
+- When I audit Git history for sensitive files  
+- Then no `.env` files, passwords, or API keys are found in commit history  
+- And `.gitignore` properly prevents future leaks
+
+**Tasks:**  
+- [x] Verify `.env` files are not tracked by Git  
+- [x] Confirm `.gitignore` includes `.env` patterns  
+- [x] Audit Git history for accidentally committed secrets  
+- [x] Document findings and risk assessment  
+
+**Bug Tracking / Notes:**  
+Historical audit completed on November 26, 2025. One `.env` file was found in early commit (f6811aa) but contained only non-sensitive localhost URL (`VITE_API_URL="http://localhost:8000"`). No passwords, API keys, or secrets were leaked. Risk level: Very Low. `.gitignore` now properly configured to prevent future leaks.
+
+---
+
 | #   | Area / Feature                  | Bug Description                                                               | Priority | Status | Notes (cause & fix)                                                                                                                                                                                                                                                                                                                                      |
 | --- | ------------------------------- | ----------------------------------------------------------------------------- | :------: | :----: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1   | User Registration / App Start   | ImportError: cannot import name 'Note' from api.models                        |   High   | Fixed  | Cause: serializers.py referenced a non-existent Note import.<br>Fix: Removed the bad import; application starts normally.                                                                                                                                                                                                                                |
