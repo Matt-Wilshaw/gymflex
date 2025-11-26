@@ -1,5 +1,3 @@
-# GymFlex Testing
-
 # GymFlex Testing Documentation
 
 ## Introduction
@@ -31,38 +29,45 @@ For additional project details and technical information, including instructions
 
 ---
 
-- [GymFlex Testing](#gymflex-testing)
-- [GymFlex Testing Documentation](#gymflex-testing-documentation)
-  - [Introduction](#introduction)
-- [GymFlex – UAT / Black Box Testing](#gymflex--uat--black-box-testing)
-  - [1. User Registration](#1-user-registration)
-  - [3. View Timetable](#3-view-timetable)
-  - [4. Book a Session](#4-book-a-session)
-  - [5. Cancel a Booking](#5-cancel-a-booking)
-  - [6. Trainer Session Management](#6-trainer-session-management)
-  - [7. Track Bookings](#7-track-bookings)
-  - [8. Accessibility](#8-accessibility)
-  - [9. Adding Test Data to the Database](#9-adding-test-data-to-the-database)
-  - [Bug Log](#bug-log)
-    - [Using Django Admin](#using-django-admin)
-      - [1. Create a superuser (if required)](#1-create-a-superuser-if-required)
-- [Activate your virtual environment first](#activate-your-virtual-environment-first)
-- [Windows](#windows)
-- [macOS/Linux](#macoslinux)
-- [Create Django superuser](#create-django-superuser)
-- [Using Django Shell](#using-django-shell)
-- [Examples of testing data added below](#examples-of-testing-data-added-below)
-- [Run the following commands as needed:](#run-the-following-commands-as-needed)
-- [Windows](#windows-1)
-- [Select Backend](#select-backend)
-- [Start Django shell:\*\*](#start-django-shell)
-- [Add test data](#add-test-data)
-- [Get existing users](#get-existing-users)
-- [Create sessions](#create-sessions)
-- [Add test user as attendee](#add-test-user-as-attendee)
+## Testing Environments
 
+GymFlex is tested in two environments with different purposes and workflows:
 
-# GymFlex – UAT / Black Box Testing
+### Local Development (http://localhost:8000/api)
+- **Purpose:** Feature development, debugging, rapid iteration
+- **Database:** SQLite (`db.sqlite3`)
+- **Start:** `python manage.py runserver` (backend) + `npm run dev` (frontend at `localhost:5173`)
+- **Use for:**
+  - New feature development before committing
+  - Database migrations and schema changes
+  - Debugging with print statements or breakpoints
+  - Django admin access: `http://localhost:8000/admin`
+- **Fast feedback loop:** Code changes reflect immediately without deployment delay
+
+### Production (Heroku) (https://gymflex-5bb1d582f94c.herokuapp.com)
+- **Purpose:** End-to-end validation, user acceptance testing
+- **Database:** PostgreSQL (via `DATABASE_URL`)
+- **Deploy:** `git push heroku main` (triggers build, migrations, restart)
+- **Use for:**
+  - Post-deployment smoke tests (see README smoke test checklist)
+  - Cross-browser/device testing on live URL
+  - Role-based masking verification (client vs trainer vs staff)
+  - Performance checks (cold start latency, real-world load)
+- **Monitor:** `heroku logs --tail` for errors
+
+### Workflow Summary
+1. **Develop locally** → test locally → commit when working
+2. **Push to GitHub** (`git push origin main`) for version control
+3. **Deploy to Heroku** (`git push heroku main`) when ready to release
+4. **Run production smoke tests** (authentication, session CRUD, masking logic)
+5. **Check Heroku logs** for runtime errors
+6. If issues found → debug locally → redeploy
+
+**Important:** Always test destructive operations (delete, bulk updates) locally first. Never experiment directly on production data.
+
+---
+
+## User Acceptance Testing (UAT)
 
 ## 1. User Registration
 
@@ -82,6 +87,29 @@ As a new user, I want to create an account so that I can access GymFlex features
 
 **Bug Tracking / Notes:**  
 
+---
+
+## 2. User Login
+
+**Story:**  
+As a registered user, I want to log in to my account so that I can access my bookings and book new sessions.
+
+**Acceptance Criteria:**  
+- Given I have a registered account  
+- When I provide valid username and password  
+- Then I am logged in and redirected to the home page  
+- And I receive a valid JWT access token
+
+**Tasks:**  
+- [ ] Design login form UI  
+- [ ] Implement JWT authentication backend  
+- [ ] Handle invalid credentials gracefully  
+- [ ] Test token refresh mechanism  
+
+**Bug Tracking / Notes:**
+
+---
+
 ## 3. View Timetable
 
 **Story:**  
@@ -98,8 +126,7 @@ As a user, I want to view the gym timetable so that I can see available sessions
 - [ ] Implement backend session retrieval  
 - [ ] Test real-time updates or refresh functionality  
 
-**Bug Tracking / Notes:**  
-- [ ]  
+**Bug Tracking / Notes:**
 
 ---
 
@@ -120,8 +147,7 @@ As a user, I want to book a gym session so that I can reserve my spot in advance
 - [ ] Provide confirmation feedback to the user  
 - [ ] Test booking process  
 
-**Bug Tracking / Notes:**  
-- [ ]  
+**Bug Tracking / Notes:**
 
 ---
 
@@ -141,8 +167,7 @@ As a user, I want to cancel a previously booked session so that I can free up my
 - [ ] Update backend booking status  
 - [ ] Test cancellation flow and availability updates  
 
-**Bug Tracking / Notes:**  
-- [ ]  
+**Bug Tracking / Notes:**
 
 ---
 
@@ -162,8 +187,7 @@ As a trainer, I want to create, edit, and delete sessions so that I can manage m
 - [ ] Implement session CRUD functionality  
 - [ ] Test session updates on client dashboards  
 
-**Bug Tracking / Notes:**  
-- [ ]  
+**Bug Tracking / Notes:**
 
 ---
 
@@ -183,8 +207,7 @@ As a user, I want to view my past and upcoming bookings so that I can track my g
 - [ ] Fetch data from backend  
 - [ ] Test correct ordering and completeness  
 
-**Bug Tracking / Notes:**  
-- [ ]  
+**Bug Tracking / Notes:**
 
 ---
 
@@ -205,26 +228,9 @@ As a visually impaired or mobility-challenged user, I want to navigate GymFlex u
 - [ ] Verify screen reader compatibility  
 - [ ] Ensure responsive layout under zoom/high-contrast  
 
-**Bug Tracking / Notes:**  
-- [ ]  
+**Bug Tracking / Notes:**
 
-## 9. Adding Test Data to the Database
-
-**Story:**  
-As a developer, I want to populate the GymFlex database with test data so that I can verify features without manually creating records.
-
-**Acceptance Criteria:**  
-- Given I have VS Code open with the GymFlex project  
-- When I run Django shell commands, load fixtures, or use the admin panel  
-- Then users, sessions, and bookings are created for testing  
-- And data is immediately available to the React frontend via API
-
-**Tasks:**  
-- [ ] Add sample users, trainers, sessions, and bookings  
-- [ ] Load data using shell, fixtures, or admin  
-- [ ] Verify data exists via admin, DB viewer, or API
-
-## Bug Log
+---
 
 | #   | Area / Feature                  | Bug Description                                                               | Priority | Status | Notes (cause & fix)                                                                                                                                                                                                                                                                                                                                      |
 | --- | ------------------------------- | ----------------------------------------------------------------------------- | :------: | :----: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -232,47 +238,49 @@ As a developer, I want to populate the GymFlex database with test data so that I
 | 2   | Database connection / App Start | OperationalError: connection to PostgreSQL failed due to no password supplied |   High   | Fixed  | Cause: Django attempted to connect to PostgreSQL without credentials in dev environment.<br>Fix: Switched DATABASES to use SQLite for local development (backend/settings.py). Migrations run successfully.                                                                                                                                              |
 | 3   | App Routing / URL Mapping       | Root path (/) returned no matching URL patterns                               |  Medium  | Fixed  | Cause: No default route/homepage configured; root returned a "no matching URL patterns" message.<br>Fix: Added a default route/homepage entry in backend/urls.py to resolve the issue.                                                                                                                                                                   |
 | 4   | Booking UI / Modal              | Modal didn't refresh after booking a session (stale availability)             |  Medium  | Fixed  | Reproduction: Open day modal, click a session to book/unbook; modal continued to display stale availability until closed and reopened.<br>Fix: In frontend/src/pages/Home.jsx, after a booking request the client now re-fetches sessions and, when the modal is open, updates modalEvents so availability and the Booked indicator refresh immediately. |
+| 5   | Session Booking / Validation    | Users can book sessions with historic dates (e.g., yesterday)                 |  Medium  |  Open  | Reproduction: Create or view a session with a past date; booking is allowed even though the session has already occurred.<br>Expected: System should prevent bookings for past dates and optionally hide/archive past sessions from the timetable.                                                                                                       |
+
+---
+
+## Appendix: Adding Test Data
 
 ### Using Django Admin
 
-#### 1. Create a superuser (if required)
-
-In VS Code terminal:
+1. **Create a superuser** (if needed):
 
 ```bash
-# Activate your virtual environment first
-
+# Activate virtual environment
 # Windows
 .\venv\Scripts\activate
 
 # macOS/Linux
 source venv/bin/activate
 
-# Create Django superuser
-python manage.py createsuperuser
-
-# Using Django Shell
-
-# Examples of testing data added below
-
-1. **Open VS Code terminal:**
-
-# Run the following commands as needed:
-```bash
-
-# Windows
-.\venv\Scripts\activate
-
-# Select Backend
+# Create superuser
 cd backend
+python manage.py createsuperuser
+```
 
-# Start Django shell:**
+2. **Access Django admin**: Navigate to `http://localhost:8000/admin` and log in.
+3. **Add test data**: Create users, sessions, and bookings manually via the admin interface.
+
+### Using Django Shell
+
+1. **Open Django shell**:
+
+```bash
+# Activate environment and navigate to backend
+.\venv\Scripts\activate
+cd backend
 python manage.py shell
+```
 
-# Add test data
+2. **Add test data**:
+
+```python
 from django.contrib.auth.models import User
 from api.models import Session
-from datetime import date, time, timedelta
+from datetime import time, timedelta
 from django.utils import timezone
 
 # Get existing users
@@ -299,4 +307,6 @@ session2, created = Session.objects.get_or_create(
 # Add test user as attendee
 session1.attendees.add(test_user)
 session2.attendees.add(test_user)
+```
 
+3. **Verify data**: Check via admin panel or API endpoint (`GET /api/sessions/`).
