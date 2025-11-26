@@ -215,6 +215,7 @@ class SessionViewSet(viewsets.ModelViewSet):
         - If user is already booked: Remove them (cancel booking)
         - If user is not booked and space available: Add them (confirm booking)
         - If session is full: Return error
+        - If session date is in the past: Return error
         
         Example request:
         POST /api/sessions/5/book/
@@ -224,6 +225,7 @@ class SessionViewSet(viewsets.ModelViewSet):
         - {"status": "booked"} - User successfully booked
         - {"status": "unbooked"} - Booking cancelled
         - {"status": "full"} - Session at capacity (400 error)
+        - {"status": "past"} - Session date has already occurred (400 error)
         
         Security:
         - Requires authentication (users can only book for themselves)
@@ -236,8 +238,17 @@ class SessionViewSet(viewsets.ModelViewSet):
         Returns:
             Response: JSON with status message and HTTP status code
         """
+        from datetime import date
+        
         session = self.get_object()  # Retrieves Session with pk={pk}
         user = request.user
+
+        # Prevent booking sessions with past dates
+        if session.date < date.today():
+            return Response(
+                {"status": "past", "message": "Cannot book sessions that have already occurred"}, 
+                status=400
+            )
 
         # Check if user is already booked - toggle behaviour
         if user in session.attendees.all():
