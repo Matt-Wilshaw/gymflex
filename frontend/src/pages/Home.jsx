@@ -19,11 +19,6 @@ const localiser = momentLocalizer(moment);
 // bookings lists. Data fetching and mutation logic are provided by the
 // `useSessions` hook so this file focuses on composition and UI state.
 const Home = () => {
-    const navigate = useNavigate();
-
-    // ------------------ STATE ------------------
-
-    // All sessions to display in the calendar (filtered client-side)
     const {
         sessions,
         bookedSessions,
@@ -64,9 +59,6 @@ const Home = () => {
             navigate("/login");
         } else {
             // Fetch all sessions and current user information
-            fetchSessions(activityFilter);
-            if (!currentUser) fetchCurrentUser();
-            // Always refresh booked sessions for current user
             fetchBookedSessions();
             // If current user is admin we want to load the unfiltered sessions list
             if (currentUser?.is_staff) fetchAllSessions();
@@ -151,6 +143,9 @@ const Home = () => {
 
     // ------------------ JSX ------------------
 
+    // Only show upcoming bookings (hide past ones)
+    const upcomingBookings = bookedSessions.filter((s) => !s.has_started);
+
     return (
         <div className="container mt-4">
             {/* Header */}
@@ -222,11 +217,11 @@ const Home = () => {
                         removeAttendee={removeAttendee}
                     />
                 ) : (
-                    bookedSessions.length === 0 ? (
-                        <p style={{ color: "#666" }}>You have no bookings yet.</p>
+                    upcomingBookings.length === 0 ? (
+                        <p style={{ color: "#666" }}>You have no upcoming bookings.</p>
                     ) : (
                         <ul>
-                            {bookedSessions.map((s) => (
+                            {upcomingBookings.map((s) => (
                                 <li
                                     key={s.id}
                                     style={{
@@ -237,7 +232,7 @@ const Home = () => {
                                     }}
                                 >
                                     <div>
-                                        <strong>{s.activity_type.toUpperCase()}</strong> —{' '}
+                                        <strong>{s.activity_type.toUpperCase()}</strong> —{" "}
                                         {moment(s.date).format("MMMM D, YYYY")} @ {s.time.slice(0, 5)}
                                         {s.available_slots !== undefined && (
                                             <span style={{ marginLeft: 8, color: "#666" }}>
