@@ -253,6 +253,12 @@ class SessionViewSet(viewsets.ModelViewSet):
 
         # Check if user is already booked - toggle behaviour
         if user in session.attendees.all():
+            # Prevent cancelling booking after the session has started
+            if session_datetime < datetime.now():
+                return Response(
+                    {"status": "past", "message": "Cannot cancel after session start"},
+                    status=400
+                )
             session.attendees.remove(user)
             return Response({"status": "unbooked"})
         else:
