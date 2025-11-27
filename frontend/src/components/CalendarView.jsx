@@ -16,6 +16,7 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
     // project convention.
     const DateCellWrapper = ({ children, value }) => {
         const dateStr = moment(value).format("YYYY-MM-DD");
+        const isPastDate = moment(value).isBefore(moment(), 'day');
 
         // Apply current activity filter to decide which emojis to show
         const displayedSessions = activityFilter
@@ -29,7 +30,16 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
         // containerStyle ensures the emoji bar and button are positioned
         // relative to the calendar cell. If there are no events for the
         // day we just render the default cell contents.
-        const containerStyle = { position: "relative", width: "100%", height: "100%", boxSizing: "border-box" };
+        // Grey out past dates with reduced opacity
+        const containerStyle = {
+            position: "relative",
+            width: "100%",
+            height: "100%",
+            boxSizing: "border-box",
+            backgroundColor: isPastDate ? "#f5f5f5" : "transparent",
+            opacity: isPastDate ? 0.5 : 1,
+            cursor: isPastDate ? "not-allowed" : "default"
+        };
         if (dayEvents.length === 0) return <div style={containerStyle}>{children}</div>;
 
         const uniqueActivities = [...new Set(dayEvents.map((e) => e.activity_type))];
@@ -90,10 +100,15 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
         // for the admin bookings list; for non-staff users the small button
         // will call `handleDrillDown` to open the sessions modal. We stop
         // propagation on the button so the two actions do not conflict.
+        // Prevent clicks on past dates.
         return (
             <div
                 style={containerStyle}
                 onClick={(e) => {
+                    if (isPastDate) {
+                        e.stopPropagation();
+                        return;
+                    }
                     if (currentUser?.is_staff) {
                         e.stopPropagation();
                         const dateStr = moment(value).format("YYYY-MM-DD");
@@ -107,11 +122,16 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
                 </div>
                 <button
                     onClick={(e) => {
+                        if (isPastDate) {
+                            e.stopPropagation();
+                            return;
+                        }
                         e.stopPropagation();
                         handleDrillDown(value);
                     }}
                     style={buttonStyleWithFlex}
                     title={uniqueActivities.join(", ")}
+                    disabled={isPastDate}
                 >
                     <span>{countText}</span>
                 </button>

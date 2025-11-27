@@ -74,16 +74,16 @@ const BookingsModal = ({ showModal, modalEvents, modalDate, setShowModal, handle
                             <div
                                 key={event.id}
                                 style={{
-                                    backgroundColor: event.has_started 
-                                        ? "#e9ecef" 
-                                        : event.booked 
-                                        ? "#fff5f5" 
-                                        : "#f0fdf4",
+                                    backgroundColor: event.has_started
+                                        ? "#e9ecef"
+                                        : event.booked
+                                            ? "#fff5f5"
+                                            : "#f0fdf4",
                                     border: event.has_started
                                         ? "2px solid #adb5bd"
-                                        : event.booked 
-                                        ? "2px solid #dc3545" 
-                                        : "2px solid #198754",
+                                        : event.booked
+                                            ? "2px solid #dc3545"
+                                            : "2px solid #198754",
                                     borderRadius: "12px",
                                     padding: "16px",
                                     marginBottom: "12px",
