@@ -45,6 +45,9 @@ const Home = () => {
     const [modalEvents, setModalEvents] = useState([]);
     const [modalDate, setModalDate] = useState(null);
 
+    // Bookings view grouping: "day" or "week"
+    const [bookingsGroupBy, setBookingsGroupBy] = useState("day");
+
     // Current logged-in user information is provided by the `useSessions` hook
 
     // (bookedSessions, adminSessions, adminLoading, currentUser, selectedAdminDate are provided by the hook)
@@ -149,10 +152,43 @@ const Home = () => {
         return emojis[activityType] || "💪";
     };
 
+    // Group bookings by day or week
+    const groupBookings = (bookings, groupBy) => {
+        if (groupBy === "day") {
+            // Group by exact date
+            const grouped = {};
+            bookings.forEach((session) => {
+                const dateKey = moment(session.date).format("YYYY-MM-DD");
+                if (!grouped[dateKey]) grouped[dateKey] = [];
+                grouped[dateKey].push(session);
+            });
+            return Object.entries(grouped).map(([date, sessions]) => ({
+                label: moment(date).format("dddd, MMMM D, YYYY"),
+                sessions,
+            }));
+        } else {
+            // Group by week (starting Monday)
+            const grouped = {};
+            bookings.forEach((session) => {
+                const weekStart = moment(session.date).startOf("isoWeek").format("YYYY-MM-DD");
+                if (!grouped[weekStart]) grouped[weekStart] = [];
+                grouped[weekStart].push(session);
+            });
+            return Object.entries(grouped).map(([weekStart, sessions]) => {
+                const weekEnd = moment(weekStart).endOf("isoWeek");
+                return {
+                    label: `Week of ${moment(weekStart).format("MMM D")} - ${weekEnd.format("MMM D, YYYY")}`,
+                    sessions: sessions.sort((a, b) => moment(a.date).diff(moment(b.date))),
+                };
+            });
+        }
+    };
+
     // ------------------ JSX ------------------
 
     // Only show upcoming bookings (hide past ones)
     const upcomingBookings = bookedSessions.filter((s) => !s.has_started);
+    const groupedBookings = groupBookings(upcomingBookings, bookingsGroupBy);
 
     return (
         <div className="container mt-4">
@@ -214,7 +250,27 @@ const Home = () => {
 
             {/* My Bookings / Admin View */}
             <div className="mb-4">
-                <h5>{currentUser?.is_staff ? "All Sessions (Admin)" : "My Bookings"}</h5>
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                    <h5>{currentUser?.is_staff ? "All Sessions (Admin)" : "My Bookings"}</h5>
+                    {!currentUser?.is_staff && upcomingBookings.length > 0 && (
+                        <div className="btn-group btn-group-sm" role="group">
+                            <button
+                                type="button"
+                                className={`btn ${bookingsGroupBy === "day" ? "btn-primary" : "btn-outline-primary"}`}
+                                onClick={() => setBookingsGroupBy("day")}
+                            >
+                                By Day
+                            </button>
+                            <button
+                                type="button"
+                                className={`btn ${bookingsGroupBy === "week" ? "btn-primary" : "btn-outline-primary"}`}
+                                onClick={() => setBookingsGroupBy("week")}
+                            >
+                                By Week
+                            </button>
+                        </div>
+                    )}
+                </div>
                 {currentUser?.is_staff ? (
                     <AdminBookingsList
                         currentUser={currentUser}
@@ -228,50 +284,66 @@ const Home = () => {
                     upcomingBookings.length === 0 ? (
                         <p style={{ color: "#666" }}>You have no upcoming bookings.</p>
                     ) : (
-                        <ul>
-                            {upcomingBookings.map((s) => (
-                                <li
-                                    key={s.id}
-                                    style={{
-                                        marginBottom: 8,
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "space-between",
-                                    }}
-                                >
-                                    <div>
-                                        <strong>{s.activity_type.toUpperCase()}</strong> —{" "}
-                                        {moment(s.date).format("MMMM D, YYYY")} @ {s.time.slice(0, 5)}
-                                        {s.available_slots !== undefined && (
-                                            <span style={{ marginLeft: 8, color: "#666" }}>
-                                                ({s.available_slots} slots)
-                                            </span>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleBook(s);
-                                            }}
-                                            style={{
-                                                marginLeft: 12,
-                                                padding: "6px 10px",
-                                                fontSize: 12,
-                                                borderRadius: 6,
-                                                border: "1px solid rgba(0,0,0,0.1)",
-                                                background: "#dc3545",
-                                                color: "white",
-                                                cursor: "pointer",
-                                            }}
-                                            title="Cancel booking"
-                                        >
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </li>
+                        <div>
+                            {groupedBookings.map((group, idx) => (
+                                <div key={idx} style={{ marginBottom: 24 }}>
+                                    <h6 style={{ color: "#333", marginBottom: 8 }}>{group.label}</h6>
+                                    <ul style={{ listStyle: "none", paddingLeft: 0 }}>
+                                        {group.sessions.map((s) => (
+                                            <li
+                                                key={s.id}
+                                                style={{
+                                                    marginBottom: 8,
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "space-between",
+                                                    padding: "8px 12px",
+                                                    background: "#f8f9fa",
+                                                    borderRadius: 6,
+                                                    border: "1px solid #dee2e6",
+                                                }}
+                                            >
+                                                <div>
+                                                    <strong>{s.activity_type.toUpperCase()}</strong>
+                                                    {bookingsGroupBy === "week" && (
+                                                        <span style={{ marginLeft: 8, color: "#666" }}>
+                                                            {moment(s.date).format("ddd MMM D")}
+                                                        </span>
+                                                    )}
+                                                    <span style={{ marginLeft: 8 }}>@ {s.time.slice(0, 5)}</span>
+                                                    {s.available_slots !== undefined && (
+                                                        <span style={{ marginLeft: 8, color: "#666" }}>
+                                                            ({s.available_slots} slots)
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleBook(s);
+                                                        }}
+                                                        style={{
+                                                            marginLeft: 12,
+                                                            padding: "6px 10px",
+                                                            fontSize: 12,
+                                                            borderRadius: 6,
+                                                            border: "1px solid rgba(0,0,0,0.1)",
+                                                            background: "#dc3545",
+                                                            color: "white",
+                                                            cursor: "pointer",
+                                                        }}
+                                                        title="Cancel booking"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             ))}
-                        </ul>
+                        </div>
                     )
                 )}
             </div>
