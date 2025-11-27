@@ -30,7 +30,8 @@ if (-not (heroku config:get ADMIN_USERNAME)) {
 heroku run python backend/manage.py create_default_admin
 
 Write-Host "=== 5. Seed sessions (idempotent) ==="
-heroku run python backend/manage.py shell < backend/seed_sessions.py
+# Seed sessions: read file content and pipe into shell (PowerShell cannot use '<' inside script reliably)
+Get-Content backend/seed_sessions.py | heroku run python backend/manage.py shell
 
 Write-Host "=== 6. Health check ==="
 Invoke-RestMethod https://gymflex-5bb1d582f94c.herokuapp.com/api/health/ | ConvertTo-Json -Depth 4
