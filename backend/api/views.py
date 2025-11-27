@@ -17,10 +17,10 @@ Endpoints defined in this module:
 
 from django.contrib.auth.models import User
 from rest_framework import generics, viewsets, permissions
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Note, Session
+from .models import Note, Session, SessionAttendee
 from .serializers import UserSerializer, NoteSerializer, SessionSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
@@ -330,6 +330,88 @@ class SessionViewSet(viewsets.ModelViewSet):
         else:
             return Response({"status": "not_booked"}, status=400)
 
+    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated, IsTrainerOrReadOnly])
+    def mark_attendance(self, request, pk=None):
+        """
+        Admin/trainer action to mark attendance status for a session attendee.
+        
+        Endpoint: POST /api/sessions/{id}/mark_attendance/
+        
+        Use case:
+        - After a session ends, trainers mark who attended vs no-show
+        - Updates the SessionAttendee.attended field for a specific booking
+        - Only works on past sessions to prevent premature marking
+        
+        Example request:
+        POST /api/sessions/5/mark_attendance/
+        Authorization: Bearer <staff_access_token>
+        {
+            "attendance_id": 42,
+            "attended": false
+        }
+        
+        Responses:
+        - {"status": "updated", "attended": false} - Attendance marked successfully
+        - {"status": "future_session"} - Cannot mark attendance for future sessions (400)
+        - {"detail": "Not authorized"} - Non-staff user attempted action (403)
+        - {"detail": "attendance_id and attended are required"} - Missing parameters (400)
+        - {"detail": "Attendance record not found"} - Invalid attendance_id (404)
+        
+        Security:
+        - Requires authentication + staff status
+        - Only allows marking attendance for past sessions
+        
+        Args:
+            request: Django Request with staff user and JSON body
+            pk: Primary key of the session (from URL parameter)
+            
+        Returns:
+            Response: JSON with status message and updated attended value
+        """
+        from datetime import datetime
+        
+        session = self.get_object()
+        
+        # Extra security check
+        if not request.user.is_staff:
+            return Response({"detail": "Not authorized"}, status=403)
+
+        # Only allow marking attendance for past sessions
+        session_datetime = datetime.combine(session.date, session.time)
+        if session_datetime >= datetime.now():
+            return Response(
+                {"status": "future_session", "message": "Can only mark attendance for past sessions"}, 
+                status=400
+            )
+
+        # Extract parameters from request body
+        attendance_id = request.data.get("attendance_id")
+        attended = request.data.get("attended")
+        
+        if attendance_id is None or attended is None:
+            return Response(
+                {"detail": "attendance_id and attended are required"}, 
+                status=400
+            )
+
+        # Validate attendance record exists and belongs to this session
+        try:
+            attendance = SessionAttendee.objects.get(pk=attendance_id, session=session)
+        except SessionAttendee.DoesNotExist:
+            return Response({"detail": "Attendance record not found"}, status=404)
+
+        # Update attendance status
+        attendance.attended = attended
+        attendance.save()
+
+        return Response({
+            "status": "updated",
+            "attended": attendance.attended,
+            "user_id": attendance.user.id,
+            "username": attendance.user.username
+        })
+
+
 
 # -----------------------------
 # Current User View
@@ -386,3 +468,36 @@ class CurrentUserView(APIView):
         data['is_superuser'] = request.user.is_superuser
         data['is_staff'] = request.user.is_staff
         return Response(data)
+
+
+# -----------------------------
+# Health Check Endpoint
+# -----------------------------
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def health(request):
+    """Simple diagnostics endpoint.
+
+    Returns JSON with:
+    - status: "ok" if view executed
+    - db_engine: Django DB engine string
+    - auth_required: whether most API endpoints need auth
+    - user_authenticated: boolean if request has a logged-in user
+    - has_sessions: count of Session rows (may be 0 on fresh deploy)
+    - has_admin: whether any superuser exists
+
+    Safe for public exposure (no sensitive data). Enables external uptime checks
+    and quick determination if production is using expected database backend.
+    """
+    from django.db import connection
+    db_engine = connection.settings_dict.get("ENGINE")
+    session_count = Session.objects.count()
+    has_admin = User.objects.filter(is_superuser=True).exists()
+    return Response({
+        "status": "ok",
+        "db_engine": db_engine,
+        "auth_required": True,
+        "user_authenticated": bool(request.user and request.user.is_authenticated),
+        "sessions": session_count,
+        "has_admin": has_admin,
+    })

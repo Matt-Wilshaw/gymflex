@@ -59,6 +59,9 @@ urlpatterns = [
     # DELETE /api/notes/{id}/ → Delete specific note (if owned by user)
     path('notes/<int:pk>/', views.NoteDelete.as_view(), name='delete-note'),
 
+    # Health check (public) - basic diagnostics: DB engine, counts
+    path('health/', views.health, name='health'),
+
     # Include all router-generated URLs for sessions
     # This adds the SessionViewSet endpoints at /api/sessions/
     # The router handles both standard CRUD and custom actions automatically
