@@ -203,11 +203,12 @@ As a user, I want to view my past and upcoming bookings so that I can track my g
 - And bookings are ordered chronologically
 
 **Tasks:**  
-- [ ] Implement bookings list UI  
-- [ ] Fetch data from backend  
-- [ ] Test correct ordering and completeness  
+- [x] Implement bookings list UI  
+- [x] Fetch data from backend  
+- [x] Test correct ordering and completeness  
 
-**Bug Tracking / Notes:**
+**Bug Tracking / Notes:**  
+*Enhancement (November 27, 2025):* Added day/week grouping with toggle buttons to improve readability and prevent long flat lists when users have many bookings. Users can switch between "By Day" view (sessions grouped by exact date) and "By Week" view (sessions grouped by week range with day labels). This proactive UX improvement addresses scalability concerns before they impact user experience. Deployed with Heroku release v42.
 
 ---
 
