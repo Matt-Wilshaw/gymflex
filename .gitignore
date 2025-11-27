@@ -27,3 +27,7 @@ backend/staticfiles/
 # OS
 .DS_Store
 Thumbs.db
+
+# Temporary files
+backend/_seed_temp.py
+docs/~$*
