@@ -13,6 +13,19 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # ---------------------
+# SessionAttendee Through Model
+# ---------------------
+class SessionAttendee(models.Model):  # Through model linking Session and User with attendance flag
+    session = models.ForeignKey('Session', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    attended = models.BooleanField(default=True, help_text="True if user attended; False if marked as no-show by admin")
+
+    class Meta:
+        unique_together = ('session', 'user')
+
+    def __str__(self):
+        return f"{self.user.username} in {self.session} (attended: {self.attended})"
+# ---------------------
 # Note Model
 # ---------------------
 class Note(models.Model):
@@ -100,11 +113,12 @@ class Session(models.Model):
         help_text="Maximum number of attendees allowed to book this session"
     )
     
-    # Attendee bookings - many-to-many relationship (multiple users can book multiple sessions)
+    # Attendee bookings - many-to-many relationship via SessionAttendee
     attendees = models.ManyToManyField(
-        User, 
-        related_name="booked_sessions",  # Access user's bookings via user.booked_sessions.all()
-        blank=True,                       # Sessions can exist with no attendees
+        User,
+        through='SessionAttendee',
+        related_name="booked_sessions",
+        blank=True,
         help_text="Users who have booked a spot in this session"
     )
 
