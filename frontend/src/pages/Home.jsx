@@ -56,15 +56,22 @@ const Home = () => {
 
     useEffect(() => {
         if (!token) {
-            // Redirect to login if no token exists
             navigate("/login");
-        } else {
-            // Fetch all sessions and current user information
-            fetchBookedSessions();
-            // If current user is admin we want to load the unfiltered sessions list
-            if (currentUser?.is_staff) fetchAllSessions();
+            return;
         }
-    }, [token, navigate, currentUser]);
+        (async () => {
+            const user = await fetchCurrentUser();
+            await fetchSessions(activityFilter);
+            await fetchBookedSessions();
+            if (user?.is_staff) await fetchAllSessions();
+        })();
+    }, [token, navigate]);
+
+    // Re-fetch sessions when activity filter changes
+    useEffect(() => {
+        if (!token) return;
+        fetchSessions(activityFilter);
+    }, [activityFilter, token]);
 
     // ------------------ API CALLS ------------------
 
