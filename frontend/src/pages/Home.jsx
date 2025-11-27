@@ -36,6 +36,7 @@ const Home = () => {
         removeAttendee: hookRemoveAttendee,
         handleLogout: hookHandleLogout,
     } = useSessions();
+    const navigate = useNavigate();
     // Currently selected activity filter from dropdown
     const [activityFilter, setActivityFilter] = useState("");
 
