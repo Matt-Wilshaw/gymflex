@@ -105,54 +105,52 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
             <div
                 style={containerStyle}
                 onClick={(e) => {
-                    if (isPastDate) {
-                        e.stopPropagation();
-                        return;
-                    }
                     if (currentUser?.is_staff) {
                         e.stopPropagation();
                         const dateStr = moment(value).format("YYYY-MM-DD");
                         setSelectedAdminDate(dateStr);
+                    } else if (isPastDate) {
+                        e.stopPropagation();
+                        return;
                     }
                 }}
-            >
-                <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>{children}</div>
-                <div style={emojiBarStyle} title={uniqueActivities.join(", ")}>
-                    {emojis}
-                </div>
-                <button
-                    onClick={(e) => {
-                        if (isPastDate) {
-                            e.stopPropagation();
-                            return;
-                        }
-                        e.stopPropagation();
-                        handleDrillDown(value);
-                    }}
-                    style={buttonStyleWithFlex}
-                    title={uniqueActivities.join(", ")}
-                    disabled={isPastDate}
-                >
-                    <span>{countText}</span>
-                </button>
-            </div>
+}                <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>{children}</div>
+        <div style={emojiBarStyle} title={uniqueActivities.join(", ")}>
+            {emojis}
+        </div>
+        <button
+            onClick={(e) => {
+                if (isPastDate) {
+                    e.stopPropagation();
+                    return;
+                }
+                e.stopPropagation();
+                handleDrillDown(value);
+            }}
+            style={buttonStyleWithFlex}
+            title={uniqueActivities.join(", ")}
+            disabled={isPastDate}
+        >
+            <span>{countText}</span>
+        </button>
+            </div >
         );
     };
 
-    return (
-        <div style={{ height: 600 }}>
-            <Calendar
-                localizer={localiser}
-                events={[]}
-                startAccessor="start"
-                endAccessor="end"
-                style={{ height: "100%" }}
-                onDrillDown={handleDrillDown}
-                views={["month"]}
-                components={{ event: () => null, dateCellWrapper: DateCellWrapper }}
-            />
-        </div>
-    );
+return (
+    <div style={{ height: 600 }}>
+        <Calendar
+            localizer={localiser}
+            events={[]}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: "100%" }}
+            onDrillDown={handleDrillDown}
+            views={["month"]}
+            components={{ event: () => null, dateCellWrapper: DateCellWrapper }}
+        />
+    </div>
+);
 };
 
 export default CalendarView;
