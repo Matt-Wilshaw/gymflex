@@ -150,5 +150,6 @@ export default function useSessions() {
         handleBook,
         removeAttendee,
         handleLogout,
+        markAttendance,
     };
 }

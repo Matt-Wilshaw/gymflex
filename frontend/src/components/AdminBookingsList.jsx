@@ -60,10 +60,13 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
                                             <div style={{ fontSize: 13, color: '#333' }}>
                                                 {s.attendees.map((a, i) => {
                                                     const isPast = moment(s.date).add(s.time.slice(0, 5), 'hours').isBefore(moment());
+                                                    const isNoShow = isPast && typeof a === 'object' && a.attended === false;
                                                     return (
                                                         <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: 520 }}>
                                                             <div>
-                                                                {typeof a === 'object' ? a.username : `User ${a}`}
+                                                                <span style={isNoShow ? { textDecoration: 'line-through', color: '#888' } : {}}>
+                                                                    {typeof a === 'object' ? a.username : `User ${a}`}
+                                                                </span>
                                                                 {isPast && typeof a === 'object' && a.attended !== undefined && (
                                                                     <span style={{ marginLeft: 12, color: a.attended ? 'green' : 'red', fontWeight: 600 }}>
                                                                         {a.attended ? 'Attended' : 'No Show'}
