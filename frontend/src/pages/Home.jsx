@@ -206,7 +206,7 @@ const Home = () => {
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <div>
                     <h2>GymFlex Calendar</h2>
-                    {currentUser && <h4 className="mt-1">Welcome, {currentUser.username}!</h4>}
+                    {currentUser && <h4 className="mt-1">Welcome, {currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}</h4>}
                 </div>
                 <div>
                     {currentUser?.is_superuser && (
