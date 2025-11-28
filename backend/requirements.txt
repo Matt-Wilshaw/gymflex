@@ -1,6 +1,6 @@
 asgiref==3.10.0
-# Align Django version with current running environment (4.2.25) for stability (LTS)
-Django==4.2.25
+# Align Django version with current running environment (5.2.8) for stability (LTS)
+Django==5.2.8
 django-cors-headers==4.9.0
 djangorestframework==3.16.1
 djangorestframework_simplejwt==5.5.1
