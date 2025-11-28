@@ -78,8 +78,7 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
                                 <li key={s.id} style={{ marginBottom: 12 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <div>
-                                            <strong>{s.activity_type.toUpperCase()}</strong> —{' '}
-                                            {moment(s.date).format("MMMM D, YYYY")} @ {s.time.slice(0, 5)}
+                                            <strong>{s.activity_type.toUpperCase()}</strong> @ {s.time.slice(0, 5)}
                                             {s.available_slots !== undefined && (
                                                 <span style={{ marginLeft: 8, color: "#666" }}>({s.available_slots} slots)</span>
                                             )}
