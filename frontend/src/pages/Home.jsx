@@ -240,6 +240,7 @@ const Home = () => {
                 activityFilter={activityFilter}
                 handleDrillDown={handleDrillDown}
                 currentUser={currentUser}
+                selectedAdminDate={selectedAdminDate}
                 setSelectedAdminDate={setSelectedAdminDate}
             />
 
@@ -311,15 +312,20 @@ const Home = () => {
                     )}
                 </div>
                 {currentUser?.is_staff ? (
-                    <AdminBookingsList
-                        currentUser={currentUser}
-                        adminSessions={adminSessions}
-                        selectedAdminDate={selectedAdminDate}
-                        setSelectedAdminDate={setSelectedAdminDate}
-                        adminLoading={adminLoading}
-                        removeAttendee={removeAttendee}
-                        markAttendance={markAttendance}
-                    />
+                    <>
+                        <div style={{ fontWeight: 600, marginBottom: 4, textAlign: 'left' }}>
+                            Showing: {selectedAdminDate ? moment(selectedAdminDate).format('MMMM D, YYYY') : moment().format('MMMM D, YYYY')}
+                        </div>
+                        <AdminBookingsList
+                            currentUser={currentUser}
+                            adminSessions={adminSessions}
+                            selectedAdminDate={selectedAdminDate}
+                            setSelectedAdminDate={setSelectedAdminDate}
+                            adminLoading={adminLoading}
+                            removeAttendee={removeAttendee}
+                            markAttendance={markAttendance}
+                        />
+                    </>
                 ) : (
                     upcomingBookings.length === 0 ? (
                         <p style={{ color: "#666" }}>You have no upcoming bookings.</p>

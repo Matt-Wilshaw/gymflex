@@ -10,9 +10,25 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
     // non-staff so this component would not be useful otherwise.
     if (!currentUser?.is_staff) return null;
 
-    const displayed = selectedAdminDate
-        ? adminSessions.filter((s) => moment(s.date).format("YYYY-MM-DD") === selectedAdminDate)
-        : adminSessions;
+    // Get all unique session dates (sorted)
+    // Generate a full date range for admin scrolling
+    let minDate = moment();
+    let maxDate = moment();
+    if (adminSessions.length > 0) {
+        minDate = moment(Math.min(...adminSessions.map(s => moment(s.date).valueOf())));
+        maxDate = moment(Math.max(...adminSessions.map(s => moment(s.date).valueOf())));
+    }
+    // Extend maxDate by 14 days for future planning
+    maxDate = maxDate.clone().add(14, 'days');
+    const allDates = [];
+    let d = minDate.clone();
+    while (d.isSameOrBefore(maxDate, 'day')) {
+        allDates.push(d.format('YYYY-MM-DD'));
+        d.add(1, 'day');
+    }
+    // If no date selected, default to today if available, else first available
+    const currentDate = selectedAdminDate || (allDates.includes(moment().format('YYYY-MM-DD')) ? moment().format('YYYY-MM-DD') : allDates[0]);
+    const displayed = adminSessions.filter((s) => moment(s.date).format('YYYY-MM-DD') === currentDate);
 
     return (
         <>
@@ -21,22 +37,36 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
             ) : (
                 <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                        <div style={{ fontWeight: 600 }}>
-                            Showing: {selectedAdminDate ? moment(selectedAdminDate).format('MMMM D, YYYY') : 'All Dates'}
-                        </div>
-                        <div>
-                            {/* Controls to show all dates or jump to today */}
+                        <div className="d-flex align-items-center gap-2">
+                            {/* Day navigation for admin (moved left) */}
                             <button
-                                onClick={() => setSelectedAdminDate(null)}
-                                className="btn btn-sm btn-light me-2"
+                                className="btn btn-sm btn-outline-secondary"
+                                onClick={() => {
+                                    const idx = allDates.indexOf(currentDate);
+                                    if (idx > 0) setSelectedAdminDate(allDates[idx - 1]);
+                                }}
+                                disabled={allDates.indexOf(currentDate) === 0}
+                                title="Previous day"
                             >
-                                Show all
+                                ←
                             </button>
                             <button
-                                onClick={() => setSelectedAdminDate(moment().format('YYYY-MM-DD'))}
                                 className="btn btn-sm btn-outline-secondary"
+                                onClick={() => setSelectedAdminDate(moment().format('YYYY-MM-DD'))}
+                                title="Today"
                             >
                                 Today
+                            </button>
+                            <button
+                                className="btn btn-sm btn-outline-secondary"
+                                onClick={() => {
+                                    const idx = allDates.indexOf(currentDate);
+                                    if (idx < allDates.length - 1) setSelectedAdminDate(allDates[idx + 1]);
+                                }}
+                                disabled={allDates.indexOf(currentDate) === allDates.length - 1}
+                                title="Next day"
+                            >
+                                →
                             </button>
                         </div>
                     </div>
