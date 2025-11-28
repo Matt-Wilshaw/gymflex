@@ -1,32 +1,272 @@
 [
-{"model": "api.sessionattendee", "pk": 1, "fields": {"session": 9, "user": 2, "attended": true}},
-{"model": "api.sessionattendee", "pk": 2, "fields": {"session": 11, "user": 4, "attended": true}},
-{"model": "api.sessionattendee", "pk": 3, "fields": {"session": 3, "user": 2, "attended": true}},
-{"model": "api.sessionattendee", "pk": 4, "fields": {"session": 1, "user": 4, "attended": true}},
-{"model": "api.sessionattendee", "pk": 5, "fields": {"session": 15, "user": 3, "attended": true}},
-{"model": "api.sessionattendee", "pk": 6, "fields": {"session": 13, "user": 4, "attended": true}},
-{"model": "api.sessionattendee", "pk": 7, "fields": {"session": 4, "user": 3, "attended": true}},
-{"model": "api.sessionattendee", "pk": 8, "fields": {"session": 7, "user": 2, "attended": true}},
-{"model": "api.sessionattendee", "pk": 9, "fields": {"session": 4, "user": 2, "attended": true}},
-{"model": "api.sessionattendee", "pk": 10, "fields": {"session": 6, "user": 3, "attended": true}},
-{"model": "api.sessionattendee", "pk": 11, "fields": {"session": 9, "user": 3, "attended": true}},
-{"model": "api.sessionattendee", "pk": 12, "fields": {"session": 10, "user": 3, "attended": true}},
-{"model": "api.sessionattendee", "pk": 13, "fields": {"session": 13, "user": 3, "attended": true}},
-{"model": "api.sessionattendee", "pk": 14, "fields": {"session": 6, "user": 2, "attended": true}},
-{"model": "api.sessionattendee", "pk": 15, "fields": {"session": 6, "user": 4, "attended": true}},
-{"model": "api.sessionattendee", "pk": 16, "fields": {"session": 2, "user": 4, "attended": true}},
-{"model": "api.sessionattendee", "pk": 17, "fields": {"session": 7, "user": 4, "attended": true}},
-{"model": "api.sessionattendee", "pk": 18, "fields": {"session": 5, "user": 2, "attended": true}},
-{"model": "api.sessionattendee", "pk": 19, "fields": {"session": 14, "user": 4, "attended": true}},
-{"model": "api.sessionattendee", "pk": 20, "fields": {"session": 14, "user": 2, "attended": true}},
-{"model": "api.sessionattendee", "pk": 21, "fields": {"session": 10, "user": 2, "attended": true}},
-{"model": "api.sessionattendee", "pk": 22, "fields": {"session": 12, "user": 4, "attended": true}},
-{"model": "api.sessionattendee", "pk": 23, "fields": {"session": 5, "user": 4, "attended": true}},
-{"model": "api.sessionattendee", "pk": 24, "fields": {"session": 15, "user": 4, "attended": true}},
-{"model": "api.sessionattendee", "pk": 25, "fields": {"session": 2, "user": 2, "attended": true}},
-{"model": "api.sessionattendee", "pk": 26, "fields": {"session": 12, "user": 2, "attended": true}},
-{"model": "api.sessionattendee", "pk": 27, "fields": {"session": 3, "user": 4, "attended": true}},
-{"model": "api.sessionattendee", "pk": 28, "fields": {"session": 1, "user": 2, "attended": true}},
-{"model": "api.sessionattendee", "pk": 29, "fields": {"session": 7, "user": 3, "attended": true}},
-{"model": "api.sessionattendee", "pk": 30, "fields": {"session": 11, "user": 3, "attended": true}}
+    {
+        "model": "api.sessionattendee",
+        "pk": 1,
+        "fields": {
+            "session": 9,
+            "user": 2,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 2,
+        "fields": {
+            "session": 11,
+            "user": 4,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 3,
+        "fields": {
+            "session": 3,
+            "user": 2,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 4,
+        "fields": {
+            "session": 1,
+            "user": 4,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 5,
+        "fields": {
+            "session": 15,
+            "user": 3,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 6,
+        "fields": {
+            "session": 13,
+            "user": 4,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 7,
+        "fields": {
+            "session": 4,
+            "user": 3,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 8,
+        "fields": {
+            "session": 7,
+            "user": 2,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 9,
+        "fields": {
+            "session": 4,
+            "user": 2,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 10,
+        "fields": {
+            "session": 6,
+            "user": 3,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 11,
+        "fields": {
+            "session": 9,
+            "user": 3,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 12,
+        "fields": {
+            "session": 10,
+            "user": 3,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 13,
+        "fields": {
+            "session": 13,
+            "user": 3,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 14,
+        "fields": {
+            "session": 6,
+            "user": 2,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 15,
+        "fields": {
+            "session": 6,
+            "user": 4,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 16,
+        "fields": {
+            "session": 2,
+            "user": 4,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 17,
+        "fields": {
+            "session": 7,
+            "user": 4,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 18,
+        "fields": {
+            "session": 5,
+            "user": 2,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 19,
+        "fields": {
+            "session": 14,
+            "user": 4,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 20,
+        "fields": {
+            "session": 14,
+            "user": 2,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 21,
+        "fields": {
+            "session": 10,
+            "user": 2,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 22,
+        "fields": {
+            "session": 12,
+            "user": 4,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 23,
+        "fields": {
+            "session": 5,
+            "user": 4,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 24,
+        "fields": {
+            "session": 15,
+            "user": 4,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 25,
+        "fields": {
+            "session": 2,
+            "user": 2,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 26,
+        "fields": {
+            "session": 12,
+            "user": 2,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 27,
+        "fields": {
+            "session": 3,
+            "user": 4,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 28,
+        "fields": {
+            "session": 1,
+            "user": 2,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 29,
+        "fields": {
+            "session": 7,
+            "user": 3,
+            "attended": true
+        }
+    },
+    {
+        "model": "api.sessionattendee",
+        "pk": 30,
+        "fields": {
+            "session": 11,
+            "user": 3,
+            "attended": true
+        }
+    }
 ]

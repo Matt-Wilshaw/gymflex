@@ -34,6 +34,7 @@ const Home = () => {
         fetchCurrentUser,
         handleBook: hookHandleBook,
         removeAttendee: hookRemoveAttendee,
+        markAttendance,
         handleLogout: hookHandleLogout,
     } = useSessions();
     const navigate = useNavigate();
@@ -288,18 +289,14 @@ const Home = () => {
                                     >
                                         ←
                                     </button>
-                                    <select
-                                        className="form-select form-select-sm"
-                                        style={{ width: "auto", minWidth: "200px" }}
-                                        value={currentDayIndex}
-                                        onChange={(e) => setCurrentDayIndex(parseInt(e.target.value))}
-                                    >
-                                        {groupedBookings.map((group, idx) => (
-                                            <option key={idx} value={idx}>
-                                                {group.label}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    <div className="text-center">
+                                        <div style={{ fontWeight: 600, fontSize: "14px", color: "#333" }}>
+                                            {groupedBookings[currentDayIndex]?.label}
+                                        </div>
+                                        <div style={{ fontSize: "12px", color: "#666" }}>
+                                            Day {currentDayIndex + 1} of {groupedBookings.length}
+                                        </div>
+                                    </div>
                                     <button
                                         className="btn btn-sm btn-outline-secondary"
                                         onClick={() => setCurrentDayIndex(Math.min(groupedBookings.length - 1, currentDayIndex + 1))}
@@ -321,6 +318,7 @@ const Home = () => {
                         setSelectedAdminDate={setSelectedAdminDate}
                         adminLoading={adminLoading}
                         removeAttendee={removeAttendee}
+                        markAttendance={markAttendance}
                     />
                 ) : (
                     upcomingBookings.length === 0 ? (

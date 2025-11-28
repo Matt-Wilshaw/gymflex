@@ -8,4 +8,5 @@
 #    --log-file -                     → Send logs to stdout (captured by Heroku logs)
 #
 # Process type "web" is required by Heroku for web applications (receives HTTP traffic)
-web: cd backend && python manage.py migrate && gunicorn backend.wsgi --bind 0.0.0.0:$PORT --log-file -
+release: python backend/manage.py migrate
+web: gunicorn backend.wsgi --pythonpath backend --bind 0.0.0.0:$PORT --log-file -

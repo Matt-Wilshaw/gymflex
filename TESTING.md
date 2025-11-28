@@ -339,3 +339,15 @@ session2.attendees.add(test_user)
 ```
 
 3. **Verify data**: Check via admin panel or API endpoint (`GET /api/sessions/`).
+
+### Using Django Fixtures
+
+To restore all test data at once, use:
+
+```powershell
+python manage.py loaddata backend/users.json
+python manage.py loaddata backend/sessions.json
+python manage.py loaddata backend/attendees.json
+```
+
+This ensures your local environment matches the expected test scenarios.

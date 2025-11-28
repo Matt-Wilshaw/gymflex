@@ -19,7 +19,24 @@ SessionSerializer implements intelligent privacy controls:
 
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Note, Session
+from .models import Note, Session, SessionAttendee
+
+# -------------------
+# SessionAttendee Serializer
+# -------------------
+class SessionAttendeeSerializer(serializers.ModelSerializer):
+    """
+    Serializer for attendance tracking through the SessionAttendee model.
+    
+    Used by admin users to view and manage attendance for past sessions.
+    Shows which users attended vs marked as no-show.
+    """
+    username = serializers.ReadOnlyField(source='user.username')
+    
+    class Meta:
+        model = SessionAttendee
+        fields = ['id', 'user', 'username', 'attended']
+        read_only_fields = ['user']
 
 # -------------------
 # User Serializer
@@ -263,10 +280,30 @@ class SessionSerializer(serializers.ModelSerializer):
 
         # Staff/trainers see everything - needed for admin booking management
         if user and user.is_staff:
-            attendees_qs = instance.attendees.all()
-            representation['attendees'] = [
-                {"id": a.id, "username": a.username} for a in attendees_qs
-            ]
+            # For past sessions, include full attendance details
+            from datetime import datetime
+            now = datetime.now()
+            session_datetime = datetime.combine(instance.date, instance.time)
+            is_past = session_datetime < now
+            
+            if is_past:
+                # Show detailed attendance for past sessions
+                attendee_data = SessionAttendee.objects.filter(session=instance).select_related('user')
+                representation['attendees'] = [
+                    {
+                        "id": sa.user.id,
+                        "username": sa.user.username,
+                        "attended": sa.attended,
+                        "attendance_id": sa.id
+                    }
+                    for sa in attendee_data
+                ]
+            else:
+                # For future sessions, just show basic attendee info
+                attendees_qs = instance.attendees.all()
+                representation['attendees'] = [
+                    {"id": a.id, "username": a.username} for a in attendees_qs
+                ]
             # Ensure trainer username is accurate for staff views
             representation['trainer_username'] = instance.trainer.username
             return representation

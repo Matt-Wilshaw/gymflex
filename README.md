@@ -85,6 +85,7 @@ Check out the live demo here:
     - [Optional: Monitor Logs](#optional-monitor-logs)
   - [Tips](#tips)
   - [Author](#author)
+  - [Restoring Development Data](#restoring-development-data)
 
 ---
 
@@ -485,3 +486,15 @@ heroku logs --tail
 ## Author
 
 Developed by Matthew Wilson as part of a web development learning project.
+
+## Restoring Development Data
+
+To quickly populate your local database with sample users, sessions, and bookings, run:
+
+```powershell
+python manage.py loaddata backend/users.json
+python manage.py loaddata backend/sessions.json
+python manage.py loaddata backend/attendees.json
+```
+
+This will restore the core data for development and testing.

@@ -1,13 +1,18 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django import forms
-from .models import Note, Session
+from .models import Note, Session, SessionAttendee
 import datetime
 
 # -------------------------
 # Note Admin
 # -------------------------
 admin.site.register(Note)
+
+# -------------------------
+# SessionAttendee Admin
+# -------------------------
+admin.site.register(SessionAttendee)
 
 # -------------------------
 # Generate 30-minute time choices
