@@ -9,7 +9,7 @@ const localiser = momentLocalizer(moment);
 // The cell wrapper shows a compact emoji summary and a small session-count
 // button. For staff users the whole cell is clickable to select a date for
 // admin viewing; for regular users the button opens a modal drill-down.
-const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, setSelectedAdminDate }) => {
+const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, selectedAdminDate, setSelectedAdminDate }) => {
     // DateCellWrapper: computes the events for the given day and renders
     // a small emoji bar plus a session-count button anchored to the cell.
     // Note the UK spelling of 'behaviour' in comments below to match
@@ -139,17 +139,23 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
     };
 
     return (
-        <div style={{ height: 600 }}>
-            <Calendar
-                localizer={localiser}
-                events={[]}
-                startAccessor="start"
-                endAccessor="end"
-                style={{ height: "100%" }}
-                onDrillDown={handleDrillDown}
-                views={["month"]}
-                components={{ event: () => null, dateCellWrapper: DateCellWrapper }}
-            />
+        <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 8 }}>
+                {/* Navigation buttons (if any) can go here */}
+                {/* Example: <button>Prev</button> <button>Next</button> */}
+            </div>
+            <div style={{ height: 600 }}>
+                <Calendar
+                    localizer={localiser}
+                    events={[]}
+                    startAccessor="start"
+                    endAccessor="end"
+                    style={{ height: "100%" }}
+                    onDrillDown={handleDrillDown}
+                    views={["month"]}
+                    components={{ event: () => null, dateCellWrapper: DateCellWrapper }}
+                />
+            </div>
         </div>
     );
 };
