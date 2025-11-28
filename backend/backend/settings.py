@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # DEBUG: Shows detailed error pages when True - should always be False in production
 # ALLOWED_HOSTS: List of domain names that Django will serve - prevents HTTP Host header attacks
 SECRET_KEY = os.environ.get('SECRET_KEY', "django-insecure-nma=xi6x2p-crjg^ifqqkapyu1qjd0l=+wn)-rijk_o%$!k3w_")
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'  # Set DEBUG to True for development
 ALLOWED_HOSTS = ['gymflex-5bb1d582f94c.herokuapp.com', '.herokuapp.com', 'localhost', '127.0.0.1']
 
 # REST Framework configuration - handles API behaviour
@@ -151,7 +151,8 @@ STATICFILES_DIRS = [
     BASE_DIR.parent / "frontend" / "dist" / "assets",
 ]
 # Use WhiteNoise's storage backend for efficient static file serving with compression
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# For development, we disable manifest checking to avoid errors with missing files
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage" if DEBUG else "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type for models
 # BigAutoField allows for larger range of IDs than standard AutoField
