@@ -22,7 +22,8 @@ from django.views.static import serve
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from api.views import CreateUserView
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView
+from api.views_caseinsensitiveauth import CaseInsensitiveTokenObtainPairView
 
 urlpatterns = [
     # Django admin panel - provides web interface for database management
@@ -38,7 +39,7 @@ urlpatterns = [
     # 1. JWT authentication is immune to CSRF attacks (tokens sent explicitly, not automatically)
     # 2. CSRF protection relies on cookies, but JWT uses Authorization headers
     # 3. Our custom middleware also exempts /api/ paths for consistency
-    path("api/token/", csrf_exempt(TokenObtainPairView.as_view()), name="get_token"),
+    path("api/token/", csrf_exempt(CaseInsensitiveTokenObtainPairView.as_view()), name="get_token"),
     path("api/token/refresh/", csrf_exempt(TokenRefreshView.as_view()), name="refresh"),
 
     # Django REST Framework's browsable API authentication

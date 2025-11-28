@@ -66,18 +66,9 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """
         Create new user with properly hashed password.
-        
-        Uses Django's create_user method which:
-        - Hashes the password with PBKDF2 (secure one-way hashing)
-        - Validates username uniqueness
-        - Sets default permissions
-        
-        Args:
-            validated_data: Dictionary with 'username' and 'password' keys
-            
-        Returns:
-            User: Newly created User instance with hashed password
+        Username is normalized to lowercase for case-insensitive login/registration.
         """
+        validated_data['username'] = validated_data['username'].lower()
         user = User.objects.create_user(**validated_data)
         return user
 
