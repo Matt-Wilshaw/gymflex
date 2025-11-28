@@ -192,7 +192,13 @@ const Home = () => {
 
     // Only show upcoming bookings (hide past ones)
     const upcomingBookings = bookedSessions.filter((s) => !s.has_started);
-    const groupedBookings = groupBookings(upcomingBookings, bookingsGroupBy);
+    // Sort upcoming bookings by date and time
+    const sortedUpcomingBookings = [...upcomingBookings].sort((a, b) => {
+        const aDate = moment(`${a.date}T${a.time}`);
+        const bDate = moment(`${b.date}T${b.time}`);
+        return aDate.diff(bDate);
+    });
+    const groupedBookings = groupBookings(sortedUpcomingBookings, bookingsGroupBy);
 
     return (
         <div className="container mt-4">
@@ -242,6 +248,7 @@ const Home = () => {
                 currentUser={currentUser}
                 selectedAdminDate={selectedAdminDate}
                 setSelectedAdminDate={setSelectedAdminDate}
+                bookedSessions={sortedUpcomingBookings} // Pass booked sessions for tick display
             />
 
             {/* Legend / Info */}
@@ -257,60 +264,45 @@ const Home = () => {
             <div className="mb-4">
                 <div className="d-flex justify-content-between align-items-center mb-2">
                     <h5>{currentUser?.is_staff ? "All Sessions (Admin)" : "My Bookings"}</h5>
-                    {!currentUser?.is_staff && upcomingBookings.length > 0 && (
+                    {!currentUser?.is_staff && groupedBookings.length > 1 && (
                         <div className="d-flex align-items-center gap-2">
-                            <div className="btn-group btn-group-sm" role="group">
-                                <button
-                                    type="button"
-                                    className={`btn ${bookingsGroupBy === "day" ? "btn-primary" : "btn-outline-primary"}`}
-                                    onClick={() => {
-                                        setBookingsGroupBy("day");
-                                        setCurrentDayIndex(0);
-                                    }}
-                                >
-                                    By Day
-                                </button>
-                                <button
-                                    type="button"
-                                    className={`btn ${bookingsGroupBy === "week" ? "btn-primary" : "btn-outline-primary"}`}
-                                    onClick={() => setBookingsGroupBy("week")}
-                                >
-                                    By Week
-                                </button>
-                            </div>
-
-                            {/* Day navigation (only visible in "by day" mode) */}
-                            {bookingsGroupBy === "day" && groupedBookings.length > 1 && (
-                                <div className="d-flex align-items-center gap-2">
-                                    <button
-                                        className="btn btn-sm btn-outline-secondary"
-                                        onClick={() => setCurrentDayIndex(Math.max(0, currentDayIndex - 1))}
-                                        disabled={currentDayIndex === 0}
-                                        title="Previous day"
-                                    >
-                                        ←
-                                    </button>
-                                    <div className="text-center">
-                                        <div style={{ fontWeight: 600, fontSize: "14px", color: "#333" }}>
-                                            {groupedBookings[currentDayIndex]?.label}
-                                        </div>
-                                        <div style={{ fontSize: "12px", color: "#666" }}>
-                                            Day {currentDayIndex + 1} of {groupedBookings.length}
-                                        </div>
-                                    </div>
-                                    <button
-                                        className="btn btn-sm btn-outline-secondary"
-                                        onClick={() => setCurrentDayIndex(Math.min(groupedBookings.length - 1, currentDayIndex + 1))}
-                                        disabled={currentDayIndex === groupedBookings.length - 1}
-                                        title="Next day"
-                                    >
-                                        →
-                                    </button>
+                            <button
+                                className="btn btn-sm btn-outline-secondary"
+                                onClick={() => setCurrentDayIndex(Math.max(0, currentDayIndex - 1))}
+                                disabled={currentDayIndex === 0}
+                                title="Previous day"
+                            >
+                                ←
+                            </button>
+                            <button
+                                className="btn btn-sm btn-outline-secondary"
+                                onClick={() => setCurrentDayIndex(0)}
+                                title="Today"
+                            >
+                                Today
+                            </button>
+                            <button
+                                className="btn btn-sm btn-outline-secondary"
+                                onClick={() => setCurrentDayIndex(Math.min(groupedBookings.length - 1, currentDayIndex + 1))}
+                                disabled={currentDayIndex === groupedBookings.length - 1}
+                                title="Next day"
+                            >
+                                →
+                            </button>
+                            <div className="text-center ms-2">
+                                <div style={{ fontWeight: 600, fontSize: "14px", color: "#333" }}>
+                                    {groupedBookings[currentDayIndex]?.label}
                                 </div>
-                            )}
+                            </div>
                         </div>
                     )}
                 </div>
+                {/* Disclaimer for clients about cancellation restriction */}
+                {!currentUser?.is_staff && upcomingBookings.length > 0 && (
+                    <div className="alert alert-info" style={{ fontSize: 14, marginBottom: 12 }}>
+                        <strong>Note:</strong> You cannot cancel a booking within 30 minutes of the session start time. If you need to cancel late, please contact a trainer or admin.
+                    </div>
+                )}
                 {currentUser?.is_staff ? (
                     <>
                         <div style={{ fontWeight: 600, marginBottom: 4, textAlign: 'left' }}>
@@ -331,124 +323,60 @@ const Home = () => {
                         <p style={{ color: "#666" }}>You have no upcoming bookings.</p>
                     ) : (
                         <div>
-                            {bookingsGroupBy === "day" ? (
-                                // Show single day when in "by day" mode
-                                groupedBookings[currentDayIndex] && (
-                                    <div style={{ marginBottom: 24 }}>
-                                        <h6 style={{ color: "#333", marginBottom: 8 }}>
-                                            {groupedBookings[currentDayIndex].label}
-                                        </h6>
-                                        <ul style={{ listStyle: "none", paddingLeft: 0 }}>
-                                            {groupedBookings[currentDayIndex].sessions.map((s) => (
-                                                <li
-                                                    key={s.id}
-                                                    style={{
-                                                        marginBottom: 8,
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "space-between",
-                                                        padding: "8px 12px",
-                                                        background: "#f8f9fa",
-                                                        borderRadius: 6,
-                                                        border: "1px solid #dee2e6",
-                                                    }}
-                                                >
-                                                    <div>
-                                                        <strong>{s.activity_type.toUpperCase()}</strong>
-                                                        <span style={{ marginLeft: 8 }}>@ {s.time.slice(0, 5)}</span>
-                                                        {s.available_slots !== undefined && (
-                                                            <span style={{ marginLeft: 8, color: "#666" }}>
-                                                                ({s.available_slots} slots)
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                    <div>
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleBook(s);
-                                                            }}
-                                                            style={{
-                                                                marginLeft: 12,
-                                                                padding: "6px 10px",
-                                                                fontSize: 12,
-                                                                borderRadius: 6,
-                                                                border: "1px solid rgba(0,0,0,0.1)",
-                                                                background: "#dc3545",
-                                                                color: "white",
-                                                                cursor: "pointer",
-                                                            }}
-                                                            title="Cancel booking"
-                                                        >
-                                                            Cancel
-                                                        </button>
-                                                    </div>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                )
-                            ) : (
-                                // Show all groups when in "by week" mode
-                                groupedBookings.map((group, idx) => (
-                                    <div key={idx} style={{ marginBottom: 24 }}>
-                                        <h6 style={{ color: "#333", marginBottom: 8 }}>{group.label}</h6>
-                                        <ul style={{ listStyle: "none", paddingLeft: 0 }}>
-                                            {group.sessions.map((s) => (
-                                                <li
-                                                    key={s.id}
-                                                    style={{
-                                                        marginBottom: 8,
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "space-between",
-                                                        padding: "8px 12px",
-                                                        background: "#f8f9fa",
-                                                        borderRadius: 6,
-                                                        border: "1px solid #dee2e6",
-                                                    }}
-                                                >
-                                                    <div>
-                                                        <strong>{s.activity_type.toUpperCase()}</strong>
-                                                        {bookingsGroupBy === "week" && (
-                                                            <span style={{ marginLeft: 8, color: "#666" }}>
-                                                                {moment(s.date).format("ddd MMM D")}
-                                                            </span>
-                                                        )}
-                                                        <span style={{ marginLeft: 8 }}>@ {s.time.slice(0, 5)}</span>
-                                                        {s.available_slots !== undefined && (
-                                                            <span style={{ marginLeft: 8, color: "#666" }}>
-                                                                ({s.available_slots} slots)
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                    <div>
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleBook(s);
-                                                            }}
-                                                            style={{
-                                                                marginLeft: 12,
-                                                                padding: "6px 10px",
-                                                                fontSize: 12,
-                                                                borderRadius: 6,
-                                                                border: "1px solid rgba(0,0,0,0.1)",
-                                                                background: "#dc3545",
-                                                                color: "white",
-                                                                cursor: "pointer",
-                                                            }}
-                                                            title="Cancel booking"
-                                                        >
-                                                            Cancel
-                                                        </button>
-                                                    </div>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                ))
-                            )}
+                            {/* Only show 'by day' view for clients */}
+                            <div style={{ marginBottom: 24 }}>
+                                <ul style={{ listStyle: "none", paddingLeft: 0 }}>
+                                    {groupedBookings[currentDayIndex]?.sessions.map((s) => (
+                                        <li
+                                            key={s.id}
+                                            style={{
+                                                marginBottom: 8,
+                                                padding: "12px 16px",
+                                                background: "#f8f9fa",
+                                                borderRadius: 6,
+                                                border: "1px solid #dee2e6",
+                                            }}
+                                        >
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <div>
+                                                    <strong>{s.activity_type.toUpperCase()}</strong> @ {s.time.slice(0, 5)}
+                                                    {/* Removed: slots and attendee info for clients */}
+                                                </div>
+                                                <div>
+                                                    {/* Cancel button is disabled within 30 minutes of session start */}
+                                                    {(() => {
+                                                        const sessionDateTime = moment(`${s.date}T${s.time}`);
+                                                        const now = moment();
+                                                        const canCancel = sessionDateTime.diff(now, 'minutes') > 30;
+                                                        return (
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    if (canCancel) handleBook(s);
+                                                                }}
+                                                                style={{
+                                                                    marginLeft: 12,
+                                                                    padding: "6px 10px",
+                                                                    fontSize: 12,
+                                                                    borderRadius: 6,
+                                                                    border: "1px solid rgba(0,0,0,0.1)",
+                                                                    background: canCancel ? "#dc3545" : "#adb5bd",
+                                                                    color: "white",
+                                                                    cursor: canCancel ? "pointer" : "not-allowed",
+                                                                }}
+                                                                title={canCancel ? "Cancel booking" : "Cannot cancel within 30 minutes of session start"}
+                                                                disabled={!canCancel}
+                                                            >
+                                                                Cancel
+                                                            </button>
+                                                        );
+                                                    })()}
+                                                </div>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
                     )
                 )}

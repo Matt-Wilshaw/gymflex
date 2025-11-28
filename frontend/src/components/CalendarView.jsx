@@ -9,7 +9,7 @@ const localiser = momentLocalizer(moment);
 // The cell wrapper shows a compact emoji summary and a small session-count
 // button. For staff users the whole cell is clickable to select a date for
 // admin viewing; for regular users the button opens a modal drill-down.
-const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, selectedAdminDate, setSelectedAdminDate }) => {
+const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, selectedAdminDate, setSelectedAdminDate, bookedSessions }) => {
     // DateCellWrapper: computes the events for the given day and renders
     // a small emoji bar plus a session-count button anchored to the cell.
     // Note the UK spelling of 'behaviour' in comments below to match
@@ -17,27 +17,31 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
     const DateCellWrapper = ({ children, value }) => {
         const dateStr = moment(value).format("YYYY-MM-DD");
         const isPastDate = moment(value).isBefore(moment(), 'day');
+        const isOtherMonth = moment(value).month() !== moment(selectedAdminDate || new Date()).month();
 
         // Apply current activity filter to decide which emojis to show
         const displayedSessions = activityFilter
             ? sessions.filter((s) => s.activity_type === activityFilter)
             : sessions;
-
         const dayEvents = displayedSessions.filter(
+            (s) => moment(s.date).format("YYYY-MM-DD") === dateStr
+        );
+        // For tick: check if user has a booking on this day
+        const hasBooking = bookedSessions && bookedSessions.some(
             (s) => moment(s.date).format("YYYY-MM-DD") === dateStr
         );
 
         // containerStyle ensures the emoji bar and button are positioned
         // relative to the calendar cell. If there are no events for the
         // day we just render the default cell contents.
-        // Grey out past dates with reduced opacity
+        // Grey out past dates and lighten other months
         const containerStyle = {
             position: "relative",
             width: "100%",
             height: "100%",
             boxSizing: "border-box",
-            backgroundColor: isPastDate ? "#f5f5f5" : "transparent",
-            opacity: isPastDate ? 0.5 : 1,
+            backgroundColor: isOtherMonth ? "#f0f0f0" : isPastDate ? "#f5f5f5" : "transparent",
+            opacity: isPastDate ? 0.5 : isOtherMonth ? 0.7 : 1,
             cursor: isPastDate ? "not-allowed" : "default"
         };
         if (dayEvents.length === 0) return <div style={containerStyle}>{children}</div>;
@@ -116,9 +120,24 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
                 }}
             >
                 <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>{children}</div>
-                <div style={emojiBarStyle} title={uniqueActivities.join(", ")}>
-                    {emojis}
-                </div>
+                <div style={emojiBarStyle} title={uniqueActivities.join(", ")}>{emojis}</div>
+                {/* Star for client bookings, positioned lower and brighter */}
+                {hasBooking && (
+                    <span
+                        style={{
+                            position: "absolute",
+                            bottom: 32,
+                            right: 8,
+                            fontSize: 20,
+                            color: "#ffd700",
+                            textShadow: "0 0 6px #fff200, 0 0 2px #ffd700",
+                            pointerEvents: "none",
+                        }}
+                        title="You have a booking on this day"
+                    >
+                        ★
+                    </span>
+                )}
                 <button
                     onClick={(e) => {
                         if (isPastDate) {
