@@ -238,7 +238,7 @@ class SessionViewSet(viewsets.ModelViewSet):
         Returns:
             Response: JSON with status message and HTTP status code
         """
-        from datetime import datetime
+        from datetime import datetime, timedelta
         
         session = self.get_object()  # Retrieves Session with pk={pk}
         user = request.user
@@ -259,6 +259,14 @@ class SessionViewSet(viewsets.ModelViewSet):
                     {"status": "past", "message": "Cannot cancel after session start"},
                     status=400
                 )
+            # Prevent cancelling booking within 30 minutes of session start (for non-staff)
+            if not user.is_staff:
+                now = datetime.now()
+                if session_datetime - now <= timedelta(minutes=30):
+                    return Response(
+                        {"status": "too_late", "message": "Cannot cancel booking within 30 minutes of session start."},
+                        status=400
+                    )
             session.attendees.remove(user)
             return Response({"status": "unbooked"})
         else:

@@ -94,7 +94,7 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
                                                         <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: 520 }}>
                                                             <div>
                                                                 <span style={isNoShow ? { textDecoration: 'line-through', color: '#888' } : {}}>
-                                                                    {typeof a === 'object' ? a.username : `User ${a}`}
+                                                                    {typeof a === 'object' ? (a.username.charAt(0).toUpperCase() + a.username.slice(1)) : `User ${a}`}
                                                                 </span>
                                                                 {isPast && typeof a === 'object' && a.attended !== undefined && (
                                                                     <span style={{ marginLeft: 12, color: a.attended ? 'green' : 'red', fontWeight: 600 }}>
