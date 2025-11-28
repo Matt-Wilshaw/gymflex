@@ -172,6 +172,26 @@ As a user, I want to cancel a previously booked session so that I can free up my
 ---
 
 ## 6. Trainer Session Management
+## 7. Admin Attendance Management
+
+**Story:**  
+As an admin, I want to mark clients as attended or no-show for past sessions so that attendance records are accurate and no-shows are tracked.
+
+**Acceptance Criteria:**  
+- Given I am an admin viewing a past session  
+- When I click the "Mark No Show" or "Mark Attended" button next to a client  
+- Then the client's attendance status updates immediately  
+- And the UI reflects the change (strikethrough for no-show, color for attended)
+
+**Tasks:**  
+- [x] Implement attendance toggle button in admin bookings list  
+- [x] Update backend to support attendance status changes  
+- [x] Test UI feedback (strikethrough, color)  
+- [x] Verify API updates attendance status  
+- [ ] Add automated test for attendance toggle (future)
+
+**Bug Tracking / Notes:**  
+Manual testing confirms admins can mark clients as attended or no-show for any past session. UI updates instantly and backend persists changes. No automated test yet; recommend adding one for regression coverage.
 
 **Story:**  
 As a trainer, I want to create, edit, and delete sessions so that I can manage my classes and client bookings effectively.
