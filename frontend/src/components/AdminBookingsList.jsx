@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import moment from "moment";
 
 // AdminBookingsList: displays the unfiltered sessions for staff users. The
@@ -6,6 +6,16 @@ import moment from "moment";
 // sessions) and renders attendee names with a Remove button. For past sessions,
 // it also shows attendance status and allows toggling attended/no-show.
 const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setSelectedAdminDate, adminLoading, removeAttendee, markAttendance, showBookingsPanel, setShowBookingsPanel }) => {
+    // Track which sessions are expanded (by session id)
+    const [expandedSessions, setExpandedSessions] = useState({});
+
+    // Toggle a session's expanded state
+    const toggleSession = (sessionId) => {
+        setExpandedSessions(prev => ({
+            ...prev,
+            [sessionId]: !prev[sessionId]
+        }));
+    };
     // Only render for staff users; the serializer masks attendee details for
     // non-staff so this component would not be useful otherwise.
     if (!currentUser?.is_staff) return null;
@@ -88,84 +98,111 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
                             opacity: showBookingsPanel ? 1 : 0,
                         }}
                     >
-                    {displayed.length === 0 ? (
-                        <div style={{ color: '#666' }}>No sessions for this date.</div>
-                    ) : (
-                        <ul>
-                            {displayed.map((s) => (
-                                <li key={s.id} style={{ marginBottom: 12 }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <div>
-                                            <strong>{s.activity_type.toUpperCase()}</strong> @ {s.time.slice(0, 5)}
-                                            {s.available_slots !== undefined && (
-                                                <span style={{ marginLeft: 8, color: "#666" }}>({s.available_slots} slots)</span>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div style={{ marginTop: 6, paddingLeft: 6 }}>
-                                        {s.attendees && s.attendees.length > 0 ? (
-                                            <div style={{ fontSize: 13, color: '#333' }}>
-                                                {s.attendees.map((a, i) => {
-                                                    const isPast = moment(s.date).add(s.time.slice(0, 5), 'hours').isBefore(moment());
-                                                    const isNoShow = isPast && typeof a === 'object' && a.attended === false;
-                                                    return (
-                                                        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: 520 }}>
-                                                            <div>
-                                                                <span style={isNoShow ? { textDecoration: 'line-through', color: '#888' } : {}}>
-                                                                    {typeof a === 'object' ? (a.username.charAt(0).toUpperCase() + a.username.slice(1)) : `User ${a}`}
-                                                                </span>
-                                                                {isPast && typeof a === 'object' && a.attended !== undefined && (
-                                                                    <span style={{ marginLeft: 12, color: a.attended ? 'green' : 'red', fontWeight: 600 }}>
-                                                                        {a.attended ? 'Attended' : 'No Show'}
-                                                                    </span>
-                                                                )}
-                                                            </div>
-                                                            <div style={{ display: 'flex', gap: 8 }}>
-                                                                <button
-                                                                    onClick={() => removeAttendee(s.id, typeof a === 'object' ? a.id : a)}
-                                                                    style={{
-                                                                        padding: '4px 8px',
-                                                                        fontSize: 12,
-                                                                        borderRadius: 6,
-                                                                        border: '1px solid rgba(0,0,0,0.1)',
-                                                                        background: '#dc3545',
-                                                                        color: 'white',
-                                                                        cursor: 'pointer',
-                                                                    }}
-                                                                    title="Remove attendee"
-                                                                >
-                                                                    Remove
-                                                                </button>
-                                                                {isPast && typeof a === 'object' && a.attendance_id && (
-                                                                    <button
-                                                                        onClick={() => markAttendance(s.id, a.attendance_id, !a.attended)}
-                                                                        style={{
-                                                                            padding: '4px 8px',
-                                                                            fontSize: 12,
-                                                                            borderRadius: 6,
-                                                                            border: '1px solid rgba(0,0,0,0.1)',
-                                                                            background: a.attended ? '#ffc107' : '#198754',
-                                                                            color: 'white',
-                                                                            cursor: 'pointer',
-                                                                        }}
-                                                                        title={a.attended ? 'Mark as No Show' : 'Mark as Attended'}
-                                                                    >
-                                                                        {a.attended ? 'Mark No Show' : 'Mark Attended'}
-                                                                    </button>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })}
+                        {displayed.length === 0 ? (
+                            <div style={{ color: '#666' }}>No sessions for this date.</div>
+                        ) : (
+                            <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
+                                {displayed.map((s) => {
+                                    const isExpanded = expandedSessions[s.id];
+                                    const bookedCount = s.attendees ? s.attendees.length : 0;
+
+                                    return (
+                                        <li key={s.id} style={{
+                                            marginBottom: 8,
+                                            border: '1px solid #ddd',
+                                            borderRadius: 6,
+                                            padding: 10,
+                                            background: '#f8f9fa'
+                                        }}>
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'center',
+                                                    cursor: 'pointer',
+                                                    userSelect: 'none'
+                                                }}
+                                                onClick={() => toggleSession(s.id)}
+                                            >
+                                                <div>
+                                                    <strong>{s.activity_type.toUpperCase()}</strong> @ {s.time.slice(0, 5)}
+                                                    <span style={{ marginLeft: 8, color: "#666" }}>
+                                                        ({bookedCount}/{s.capacity} booked)
+                                                    </span>
+                                                </div>
+                                                <span style={{ color: '#666', fontSize: 18 }}>
+                                                    {isExpanded ? '▼' : '▶'}
+                                                </span>
                                             </div>
-                                        ) : (
-                                            <div style={{ fontSize: 13, color: '#666' }}>No bookings</div>
-                                        )}
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
+
+                                            {isExpanded && (
+                                                <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid #ddd' }}>
+                                                    {s.attendees && s.attendees.length > 0 ? (
+                                                        <div style={{ fontSize: 13, color: '#333' }}>
+                                                            {s.attendees.map((a, i) => {
+                                                                const isPast = moment(s.date).add(s.time.slice(0, 5), 'hours').isBefore(moment());
+                                                                const isNoShow = isPast && typeof a === 'object' && a.attended === false;
+                                                                return (
+                                                                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, padding: 6, background: 'white', borderRadius: 4 }}>
+                                                                        <div>
+                                                                            <span style={isNoShow ? { textDecoration: 'line-through', color: '#888' } : {}}>
+                                                                                {typeof a === 'object' ? (a.username.charAt(0).toUpperCase() + a.username.slice(1)) : `User ${a}`}
+                                                                            </span>
+                                                                            {isPast && typeof a === 'object' && a.attended !== undefined && (
+                                                                                <span style={{ marginLeft: 12, color: a.attended ? 'green' : 'red', fontWeight: 600 }}>
+                                                                                    {a.attended ? 'Attended' : 'No Show'}
+                                                                                </span>
+                                                                            )}
+                                                                        </div>
+                                                                        <div style={{ display: 'flex', gap: 8 }}>
+                                                                            <button
+                                                                                onClick={() => removeAttendee(s.id, typeof a === 'object' ? a.id : a)}
+                                                                                style={{
+                                                                                    padding: '4px 8px',
+                                                                                    fontSize: 12,
+                                                                                    borderRadius: 6,
+                                                                                    border: '1px solid rgba(0,0,0,0.1)',
+                                                                                    background: '#dc3545',
+                                                                                    color: 'white',
+                                                                                    cursor: 'pointer',
+                                                                                }}
+                                                                                title="Remove attendee"
+                                                                            >
+                                                                                Remove
+                                                                            </button>
+                                                                            {isPast && typeof a === 'object' && a.attendance_id && (
+                                                                                <button
+                                                                                    onClick={() => markAttendance(s.id, a.attendance_id, !a.attended)}
+                                                                                    style={{
+                                                                                        padding: '4px 8px',
+                                                                                        fontSize: 12,
+                                                                                        borderRadius: 6,
+                                                                                        border: '1px solid rgba(0,0,0,0.1)',
+                                                                                        background: a.attended ? '#ffc107' : '#198754',
+                                                                                        color: 'white',
+                                                                                        cursor: 'pointer',
+                                                                                    }}
+                                                                                    title={a.attended ? 'Mark as No Show' : 'Mark as Attended'}
+                                                                                >
+                                                                                    {a.attended ? 'Mark No Show' : 'Mark Attended'}
+                                                                                </button>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    ) : (
+                                                        <div style={{ fontSize: 13, color: '#666', fontStyle: 'italic' }}>No bookings</div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        )}
+                    </div>
                 </div>
             )}
         </>
