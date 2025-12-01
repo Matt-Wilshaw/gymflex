@@ -60,6 +60,7 @@ def run():
                 activity_type=activity_type,
                 date=session_date,
                 time=session_time,
+                duration_minutes=DURATION_MINUTES,
                 capacity=CAPACITY,
             )
             created += 1

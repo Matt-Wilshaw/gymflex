@@ -106,6 +106,10 @@ class Session(models.Model):
     # Session scheduling fields
     date = models.DateField(help_text="Date when this session takes place")
     time = models.TimeField(help_text="Start time for this session")
+    duration_minutes = models.IntegerField(
+        default=60,
+        help_text="Duration of the session in minutes"
+    )
     
     # Capacity management
     capacity = models.IntegerField(
