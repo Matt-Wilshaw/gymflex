@@ -11,6 +11,7 @@ export default function useSessions() {
     const [bookedSessions, setBookedSessions] = useState([]);
     const [adminSessions, setAdminSessions] = useState([]);
     const [adminLoading, setAdminLoading] = useState(false);
+    const [bookingsLoading, setBookingsLoading] = useState(true);
     const [currentUser, setCurrentUser] = useState(() => {
         const saved = localStorage.getItem("currentUser");
         return saved ? JSON.parse(saved) : null;
@@ -37,6 +38,7 @@ export default function useSessions() {
     // fetchBookedSessions: returns sessions where the API indicates the
     // current user has already booked (field `booked` === true).
     const fetchBookedSessions = async () => {
+        setBookingsLoading(true);
         try {
             const res = await api.get(`/sessions/`);
             const userBooked = res.data.filter((s) => s.booked === true);
@@ -45,6 +47,8 @@ export default function useSessions() {
         } catch (err) {
             console.error("Error fetching booked sessions:", err);
             return [];
+        } finally {
+            setBookingsLoading(false);
         }
     };
 
@@ -139,6 +143,7 @@ export default function useSessions() {
         bookedSessions,
         adminSessions,
         adminLoading,
+        bookingsLoading,
         currentUser,
         selectedAdminDate,
         setSelectedAdminDate,

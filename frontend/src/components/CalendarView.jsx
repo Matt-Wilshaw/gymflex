@@ -32,6 +32,11 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
             (s) => moment(s.date).format("YYYY-MM-DD") === dateStr
         );
 
+        // For admin: check if any session on this day has bookings
+        const hasAnyBooking = currentUser?.is_staff && dayEvents.some(
+            (s) => s.attendees && s.attendees.length > 0
+        );
+
         // containerStyle ensures the emoji bar and button are positioned
         // relative to the calendar cell. If there are no events for the
         // day we just render the default cell contents.
@@ -125,8 +130,8 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
             >
                 <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>{children}</div>
                 <div style={emojiBarStyle} title={uniqueActivities.join(", ")}>{emojis}</div>
-                {/* Star for client bookings, positioned lower and brighter */}
-                {hasBooking && (
+                {/* Star for client bookings or admin days with bookings */}
+                {(hasBooking || hasAnyBooking) && (
                     <span
                         style={{
                             position: "absolute",
@@ -137,7 +142,7 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
                             textShadow: "0 0 6px #fff200, 0 0 2px #ffd700",
                             pointerEvents: "none",
                         }}
-                        title="You have a booking on this day"
+                        title={hasBooking ? "You have a booking on this day" : "Has bookings"}
                     >
                         ★
                     </span>

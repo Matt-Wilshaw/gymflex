@@ -97,7 +97,9 @@ const BookingsModal = ({ showModal, modalEvents, modalDate, setShowModal, handle
                                         <div style={{ fontWeight: "600", fontSize: "16px" }}>
                                             {event.activity_type.toUpperCase()}
                                         </div>
-                                        <div style={{ color: "#666" }}>🕐 {event.time.slice(0, 5)}</div>
+                                        <div style={{ color: "#666" }}>
+                                            🕐 {moment(event.time, 'HH:mm:ss').format('HH:mm')} - {moment(event.time, 'HH:mm:ss').add(event.duration_minutes, 'minutes').format('HH:mm')}
+                                        </div>
                                     </div>
                                     <div style={{ textAlign: "right" }}>
                                         <div

@@ -135,6 +135,7 @@ class SessionSerializer(serializers.ModelSerializer):
             "trainer_username",
             "date",
             "time",
+            "duration_minutes",
             "capacity",
             "attendees_count",
             "available_slots",

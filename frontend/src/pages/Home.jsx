@@ -24,6 +24,7 @@ const Home = () => {
         bookedSessions,
         adminSessions,
         adminLoading,
+        bookingsLoading,
         currentUser,
         selectedAdminDate,
         setSelectedAdminDate,
@@ -259,7 +260,7 @@ const Home = () => {
                 <strong>Click a day to view sessions in the modal.</strong>
                 <br />
                 <small>
-                    Activity icons: 🏃 Cardio | 🏋️ Weights | 🧘 Yoga | ⚡ HIIT | 🤸 Pilates
+                    Activity icons: 🏃 Cardio | 🏋️ Weights | 🧘 Yoga | ⚡ HIIT | 🤸 Pilates | ★ {currentUser?.is_staff ? "Has bookings" : "Your bookings"}
                 </small>
             </p>
 
@@ -280,9 +281,9 @@ const Home = () => {
                             <button
                                 className="btn btn-sm btn-outline-secondary"
                                 onClick={() => setCurrentDayIndex(0)}
-                                title="Today"
+                                title="Go to next upcoming session"
                             >
-                                Today
+                                Next Session
                             </button>
                             <button
                                 className="btn btn-sm btn-outline-secondary"
@@ -324,7 +325,9 @@ const Home = () => {
                         />
                     </>
                 ) : (
-                    upcomingBookings.length === 0 ? (
+                    bookingsLoading ? (
+                        <p style={{ color: "#666" }}>Loading your bookings...</p>
+                    ) : upcomingBookings.length === 0 ? (
                         <p style={{ color: "#666" }}>You have no upcoming bookings.</p>
                     ) : (
                         <div>
@@ -344,7 +347,10 @@ const Home = () => {
                                         >
                                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                 <div>
-                                                    <strong>{s.activity_type.toUpperCase()}</strong> @ {s.time.slice(0, 5)}
+                                                    <strong>{s.activity_type.toUpperCase()}</strong>
+                                                    <span style={{ marginLeft: 8, color: '#666' }}>
+                                                        {moment(s.time, 'HH:mm:ss').format('HH:mm')} - {moment(s.time, 'HH:mm:ss').add(s.duration_minutes, 'minutes').format('HH:mm')}
+                                                    </span>
                                                     {/* Removed: slots and attendee info for clients */}
                                                 </div>
                                                 <div>
