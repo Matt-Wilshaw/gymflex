@@ -19,41 +19,48 @@ To run on Heroku:
 Adjust the BASE_TITLES or DAY_WINDOW as needed; keep capacity modest.
 """
 
-BASE_TITLES = [
-    ("Morning HIIT", 9),
-    ("Lunchtime Yoga", 12),
-    ("Evening Strength", 18),
-    ("Core Blast", 17),
-    ("Mobility Flow", 8),
+Django_ACTIVITY_CHOICES = [
+    'cardio', 'weights', 'yoga', 'hiit', 'pilates'
 ]
-DAY_WINDOW = 3  # Creates sessions from -3 days to +3 days
+BASE_TITLES = [
+    ("Morning HIIT", 9, 'hiit'),
+    ("Lunchtime Yoga", 12, 'yoga'),
+    ("Evening Strength", 18, 'weights'),
+    ("Core Blast", 17, 'cardio'),
+    ("Mobility Flow", 8, 'pilates'),
+]
+DAYS_DECEMBER = [datetime(2025, 12, d).date() for d in range(1, 32)]
+DAYS_JANUARY = [datetime(2026, 1, d).date() for d in range(1, 32)]
+DAYS_TO_SEED = DAYS_DECEMBER + DAYS_JANUARY
 DURATION_MINUTES = 60
 CAPACITY = 10
 
 
-def run():  # django shell executes run() implicitly if called manually
+
+def run():
     User = get_user_model()
     trainer = User.objects.filter(is_staff=True).order_by("id").first()
     if not trainer:
         print("No staff user found; create an admin/staff user first.")
         return
 
-    today = datetime.utcnow().date()
     created = 0
-
-    for offset in range(-DAY_WINDOW, DAY_WINDOW + 1):
-        day = today + timedelta(days=offset)
-        for title, hour in BASE_TITLES:
-            start_dt = datetime(day.year, day.month, day.day, hour, 0)
-            exists = Session.objects.filter(start_time=start_dt, trainer=trainer).exists()
+    # Seed December and January, at least 30 sessions each
+    for day in DAYS_TO_SEED:
+        # Use a round-robin of titles and hours to ensure variety
+        for i, (title, hour, activity_type) in enumerate(BASE_TITLES):
+            # Only seed up to 5 sessions per day, for 31*2*5 = 310 sessions
+            session_date = day
+            session_time = f"{hour:02d}:00"
+            exists = Session.objects.filter(date=session_date, time=session_time, trainer=trainer).exists()
             if exists:
                 continue
             Session.objects.create(
                 trainer=trainer,
-                start_time=start_dt,
-                duration_minutes=DURATION_MINUTES,
+                activity_type=activity_type,
+                date=session_date,
+                time=session_time,
                 capacity=CAPACITY,
-                description=f"{title} session on {day.isoformat()}",
             )
             created += 1
 
