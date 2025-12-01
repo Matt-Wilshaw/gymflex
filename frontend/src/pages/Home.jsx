@@ -52,6 +52,9 @@ const Home = () => {
     // Day pagination state (for "by day" view only)
     const [currentDayIndex, setCurrentDayIndex] = useState(0);
 
+    // Toggle visibility of bookings panel (admin only)
+    const [showBookingsPanel, setShowBookingsPanel] = useState(false);
+
     // Current logged-in user information is provided by the `useSessions` hook
 
     // (bookedSessions, adminSessions, adminLoading, currentUser, selectedAdminDate are provided by the hook)
@@ -262,40 +265,40 @@ const Home = () => {
 
             {/* My Bookings / Admin View */}
             <div className="mb-4">
-                <div className="d-flex justify-content-between align-items-center mb-2">
-                    <h5>{currentUser?.is_staff ? "All Sessions (Admin)" : "My Bookings"}</h5>
+                <h5 className="mb-2">{currentUser?.is_staff ? "All Sessions (Admin)" : "My Bookings"}</h5>
+                <div className="d-flex align-items-center gap-2 mb-2">
                     {!currentUser?.is_staff && groupedBookings.length > 1 && (
-                        <div className="d-flex align-items-center gap-2">
-                            <button
-                                className="btn btn-sm btn-outline-secondary"
-                                onClick={() => setCurrentDayIndex(Math.max(0, currentDayIndex - 1))}
-                                disabled={currentDayIndex === 0}
-                                title="Previous day"
-                            >
-                                ←
-                            </button>
-                            <button
-                                className="btn btn-sm btn-outline-secondary"
-                                onClick={() => setCurrentDayIndex(0)}
-                                title="Today"
-                            >
-                                Today
-                            </button>
-                            <button
-                                className="btn btn-sm btn-outline-secondary"
-                                onClick={() => setCurrentDayIndex(Math.min(groupedBookings.length - 1, currentDayIndex + 1))}
-                                disabled={currentDayIndex === groupedBookings.length - 1}
-                                title="Next day"
-                            >
-                                →
-                            </button>
-                            <div className="text-center ms-2">
-                                <div style={{ fontWeight: 600, fontSize: "14px", color: "#333" }}>
-                                    {groupedBookings[currentDayIndex]?.label}
+                            <>
+                                <button
+                                    className="btn btn-sm btn-outline-secondary"
+                                    onClick={() => setCurrentDayIndex(Math.max(0, currentDayIndex - 1))}
+                                    disabled={currentDayIndex === 0}
+                                    title="Previous day"
+                                >
+                                    ←
+                                </button>
+                                <button
+                                    className="btn btn-sm btn-outline-secondary"
+                                    onClick={() => setCurrentDayIndex(0)}
+                                    title="Today"
+                                >
+                                    Today
+                                </button>
+                                <button
+                                    className="btn btn-sm btn-outline-secondary"
+                                    onClick={() => setCurrentDayIndex(Math.min(groupedBookings.length - 1, currentDayIndex + 1))}
+                                    disabled={currentDayIndex === groupedBookings.length - 1}
+                                    title="Next day"
+                                >
+                                    →
+                                </button>
+                                <div className="text-center ms-2">
+                                    <div style={{ fontWeight: 600, fontSize: "14px", color: "#333" }}>
+                                        {groupedBookings[currentDayIndex]?.label}
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    )}
+                            </>
+                        )}
                 </div>
                 {/* Disclaimer for clients about cancellation restriction */}
                 {!currentUser?.is_staff && upcomingBookings.length > 0 && (
@@ -305,7 +308,7 @@ const Home = () => {
                 )}
                 {currentUser?.is_staff ? (
                     <>
-                        <div style={{ fontWeight: 600, marginBottom: 4, textAlign: 'left' }}>
+                        <div style={{ fontWeight: 600, marginBottom: 8, textAlign: 'left' }}>
                             Showing: {selectedAdminDate ? moment(selectedAdminDate).format('MMMM D, YYYY') : moment().format('MMMM D, YYYY')}
                         </div>
                         <AdminBookingsList
@@ -316,6 +319,8 @@ const Home = () => {
                             adminLoading={adminLoading}
                             removeAttendee={removeAttendee}
                             markAttendance={markAttendance}
+                            showBookingsPanel={showBookingsPanel}
+                            setShowBookingsPanel={setShowBookingsPanel}
                         />
                     </>
                 ) : (

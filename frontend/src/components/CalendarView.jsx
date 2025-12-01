@@ -18,6 +18,7 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
         const dateStr = moment(value).format("YYYY-MM-DD");
         const isPastDate = moment(value).isBefore(moment(), 'day');
         const isOtherMonth = moment(value).month() !== moment(selectedAdminDate || new Date()).month();
+        const isSelected = selectedAdminDate && moment(selectedAdminDate).format("YYYY-MM-DD") === dateStr;
 
         // Apply current activity filter to decide which emojis to show
         const displayedSessions = activityFilter
@@ -40,9 +41,11 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
             width: "100%",
             height: "100%",
             boxSizing: "border-box",
-            backgroundColor: isOtherMonth ? "#f0f0f0" : isPastDate ? "#f5f5f5" : "transparent",
+            backgroundColor: isSelected ? "#d4e9ff" : isOtherMonth ? "#f0f0f0" : isPastDate ? "#f5f5f5" : "transparent",
             opacity: isPastDate ? 0.5 : isOtherMonth ? 0.7 : 1,
-            cursor: isPastDate ? "not-allowed" : "default"
+            cursor: isPastDate ? "not-allowed" : "pointer",
+            border: isSelected ? "2px solid #0d6efd" : "none",
+            transition: "all 0.2s ease"
         };
         if (dayEvents.length === 0) return <div style={containerStyle}>{children}</div>;
 
@@ -109,13 +112,14 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
             <div
                 style={containerStyle}
                 onClick={(e) => {
+                    if (isPastDate) {
+                        e.stopPropagation();
+                        return;
+                    }
                     if (currentUser?.is_staff) {
                         e.stopPropagation();
                         const dateStr = moment(value).format("YYYY-MM-DD");
                         setSelectedAdminDate(dateStr);
-                    } else if (isPastDate) {
-                        e.stopPropagation();
-                        return;
                     }
                 }}
             >

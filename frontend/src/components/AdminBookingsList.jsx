@@ -5,7 +5,7 @@ import moment from "moment";
 // component shows sessions for the currently-selected admin date (or all
 // sessions) and renders attendee names with a Remove button. For past sessions,
 // it also shows attendance status and allows toggling attended/no-show.
-const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setSelectedAdminDate, adminLoading, removeAttendee, markAttendance }) => {
+const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setSelectedAdminDate, adminLoading, removeAttendee, markAttendance, showBookingsPanel, setShowBookingsPanel }) => {
     // Only render for staff users; the serializer masks attendee details for
     // non-staff so this component would not be useful otherwise.
     if (!currentUser?.is_staff) return null;
@@ -38,7 +38,7 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
                 <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                         <div className="d-flex align-items-center gap-2">
-                            {/* Day navigation for admin (moved left) */}
+                            {/* Day navigation for admin */}
                             <button
                                 className="btn btn-sm btn-outline-secondary"
                                 onClick={() => {
@@ -70,6 +70,24 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
                             </button>
                         </div>
                     </div>
+                    {/* Toggle bookings button */}
+                    <div style={{ marginBottom: 12 }}>
+                        <button
+                            className="btn btn-sm btn-outline-primary"
+                            onClick={() => setShowBookingsPanel(!showBookingsPanel)}
+                            title={showBookingsPanel ? "Hide bookings panel" : "Show bookings panel"}
+                        >
+                            {showBookingsPanel ? "Hide Bookings" : "Show Bookings"}
+                        </button>
+                    </div>
+                    <div
+                        style={{
+                            maxHeight: showBookingsPanel ? '2000px' : '0',
+                            overflow: 'hidden',
+                            transition: 'max-height 0.3s ease-in-out',
+                            opacity: showBookingsPanel ? 1 : 0,
+                        }}
+                    >
                     {displayed.length === 0 ? (
                         <div style={{ color: '#666' }}>No sessions for this date.</div>
                     ) : (
