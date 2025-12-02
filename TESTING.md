@@ -248,8 +248,10 @@ As a visually impaired or mobility-challenged user, I want to navigate GymFlex u
 - [ ] Test keyboard-only navigation  
 - [ ] Verify screen reader compatibility  
 - [ ] Ensure responsive layout under zoom/high-contrast  
+- [x] Add mobile-responsive CSS for calendar display
 
-**Bug Tracking / Notes:**
+**Bug Tracking / Notes:**  
+*Enhancement (December 2, 2025):* Added mobile-responsive CSS with media queries for tablet (≤768px) and mobile (≤480px) devices. Calendar now adjusts toolbar button sizes, reduces calendar height, scales down font sizes for emojis and session counts, and optimizes cell padding to ensure proper display on smaller screens. Mobile users can now properly view calendar cells with emojis and session information without overflow issues. Implemented in `frontend/src/mobile.css` and imported in `App.jsx`.
 
 ---
 
