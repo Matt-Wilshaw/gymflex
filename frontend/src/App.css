@@ -78,6 +78,80 @@
   background-color: #f0f0f0 !important;
 }
 
+/* Make all calendar borders more visible */
+.rbc-month-row {
+  border-top: 2px solid #666 !important;
+}
+
+.rbc-day-bg+.rbc-day-bg {
+  border-left: 3px solid #666 !important;
+}
+
+.rbc-header+.rbc-header {
+  border-left: 3px solid #666 !important;
+}
+
+/* Increase specificity to ensure vertical borders render across all layouts */
+.rbc-month-view .rbc-day-bg+.rbc-day-bg {
+  border-left: 3px solid #666 !important;
+}
+
+.rbc-month-row .rbc-day-bg+.rbc-day-bg {
+  border-left: 3px solid #666 !important;
+}
+
+.rbc-row-content .rbc-date-cell+.rbc-date-cell {
+  border-left: 3px solid #666 !important;
+}
+
+/* Explicitly target month grid date cells for vertical lines */
+.rbc-month-row .rbc-row-content>.rbc-date-cell {
+  box-sizing: border-box;
+  border-left: 3px solid #666 !important;
+  border-right: 0;
+}
+
+/* Ensure the very first cell also has a left border for consistency */
+.rbc-month-row .rbc-row-content>.rbc-date-cell:first-child {
+  border-left: 3px solid #666 !important;
+}
+
+/* Also enforce vertical separators via right borders to increase visibility */
+.rbc-month-row .rbc-row-content>.rbc-date-cell+.rbc-date-cell {
+  border-right: 3px solid #666 !important;
+}
+
+/* Header cells: strengthen vertical lines across the week names */
+.rbc-month-header .rbc-header+.rbc-header {
+  border-left: 3px solid #666 !important;
+}
+
+/* Strengthen header separators across all breakpoints */
+.rbc-month-header .rbc-header {
+  box-sizing: border-box;
+  border-right: 2px solid #666 !important;
+}
+
+.rbc-month-header .rbc-header:last-child {
+  border-right: 0 !important;
+  /* avoid double border at row end */
+}
+
+/* Target row background container as some themes draw lines there */
+.rbc-row-bg .rbc-day-bg+.rbc-day-bg {
+  border-left: 2px solid #666 !important;
+}
+
+/* Add a subtle right border for completeness (left may be hidden by layout) */
+.rbc-day-bg {
+  border-right: 2px solid #666 !important;
+}
+
+/* Ensure off-range days also keep vertical lines */
+.rbc-off-range-bg {
+  border-right: 2px solid #666 !important;
+}
+
 /* Remove white space under calendar */
 .rbc-calendar {
   margin: 0 !important;
@@ -141,9 +215,20 @@
 }
 
 /* Remove spacing from calendar container */
-.calendar-container {
+.calendar-container>div {
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
+}
+
+/* Center emoji bar when filtering by activity (all screen sizes) */
+.emoji-bar-filtered {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  grid-template-columns: unset !important;
+  grid-template-rows: unset !important;
+  grid-auto-flow: unset !important;
+  gap: 4px !important;
 }
 
 .calendar-container>div {

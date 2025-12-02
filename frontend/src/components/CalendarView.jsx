@@ -85,6 +85,13 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
         );
     };
 
+    // Tip positioned directly below the toolbar (month selector)
+    const ToolbarTip = () => (
+        <div style={{ color: '#555', marginBottom: '6px', marginTop: '-4px' }}>
+            <small>Click a day to view sessions.</small>
+        </div>
+        );
+
     // DateCellWrapper: computes the events for the given day and renders
     // a small emoji bar plus a session-count button anchored to the cell.
     // Note the UK spelling of 'behaviour' in comments below to match
@@ -135,11 +142,33 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
             boxSizing: "border-box",
             backgroundColor: isSelected ? "#d4e9ff" : isOtherMonth ? "#f0f0f0" : isPastDate ? "#f5f5f5" : "transparent",
             opacity: isPastDate ? 0.5 : isOtherMonth ? 0.7 : 1,
-            cursor: isPastDate ? "not-allowed" : currentUser?.is_staff ? "pointer" : "default",
+            cursor: isPastDate ? "not-allowed" : "pointer",
             border: isSelected ? "2px solid #0d6efd" : "none",
             transition: "all 0.2s ease"
         };
-        if (dayEvents.length === 0) return <div style={containerStyle}>{children}</div>;
+        if (dayEvents.length === 0) {
+            return (
+                <div
+                    style={containerStyle}
+                    onClick={(e) => {
+                        if (isPastDate) {
+                            e.stopPropagation();
+                            return;
+                        }
+                        if (currentUser?.is_staff) {
+                            e.stopPropagation();
+                            const dateStr = moment(value).format("YYYY-MM-DD");
+                            setSelectedAdminDate(dateStr);
+                        } else {
+                            e.stopPropagation();
+                            handleDrillDown(value);
+                        }
+                    }}
+                >
+                    <div style={{ display: "flex", flexDirection: "column", height: "100%", pointerEvents: "none" }}>{children}</div>
+                </div>
+            );
+        }
 
         const uniqueActivities = [...new Set(dayEvents.map((e) => e.activity_type))];
         const emojiElements = uniqueActivities.map((activityType, index) => {
@@ -162,34 +191,44 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
         const buttonStyleWithFlex = {
             position: "absolute",
             bottom: 6,
-            left: "50%",
-            transform: "translateX(-50%)",
-            fontSize: 11,
+            left: 8,
+            fontSize: 10,
             fontWeight: "600",
-            pointerEvents: "auto",
-            cursor: "pointer",
-            maxWidth: "90%",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
+            pointerEvents: "none",
+            width: "22px",
+            height: "22px",
+            minWidth: "22px",
+            minHeight: "22px",
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: 6,
-            borderRadius: 12,
-            padding: "4px 10px",
+            borderRadius: "50%",
+            padding: "0",
             border: "2px solid #0d6efd",
             background: "#0d6efd",
             color: "white",
             boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
         };
 
-        const emojiBarStyle = {
+        const emojiBarStyle = activityFilter ? {
             position: "absolute",
-            top: "50%",
+            bottom: 56,
+            left: "50%",
+            transform: "translateX(-50%)",
+            fontSize: 16,
+            pointerEvents: "none",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            background: "transparent",
+        } : {
+            position: "absolute",
+            top: "40%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             fontSize: 13,
-            pointerEvents: "auto",
+            pointerEvents: "none",
             width: "90%",
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
@@ -221,29 +260,25 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
                         e.stopPropagation();
                         const dateStr = moment(value).format("YYYY-MM-DD");
                         setSelectedAdminDate(dateStr);
+                    } else {
+                        // For non-staff users, make the entire cell clickable
+                        e.stopPropagation();
+                        handleDrillDown(value);
                     }
                 }}
             >
-                <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>{children}</div>
+                <div style={{ display: "flex", flexDirection: "column", height: "100%", pointerEvents: "none" }}>{children}</div>
                 <div className={activityFilter ? "emoji-bar emoji-bar-filtered" : "emoji-bar"} style={emojiBarStyle} title={uniqueActivities.join(", ")}>
                     {emojiElements}
                 </div>
-                <button
-                    onClick={(e) => {
-                        if (isPastDate) {
-                            e.stopPropagation();
-                            return;
-                        }
-                        e.stopPropagation();
-                        handleDrillDown(value);
-                    }}
+                <div
+                    className="session-count-circle"
                     style={buttonStyleWithFlex}
                     title={uniqueActivities.join(", ")}
-                    disabled={isPastDate}
                 >
                     <span>{countText}</span>
-                </button>
-                {/* Checkmark to the right of button on desktop, centered on mobile */}
+                </div>
+                {/* Checkmark to the right of the session count circle */}
                 {(hasAnyBooking || hasBooking) && (
                     <span
                         className="booking-checkmark"
@@ -251,7 +286,7 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
                             position: "absolute",
                             bottom: 6,
                             right: 8,
-                            fontSize: 18,
+                            fontSize: 16,
                             color: "#28a745",
                             fontWeight: "bold",
                             pointerEvents: "none",
@@ -291,7 +326,12 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
                 components={{
                     event: () => null,
                     dateCellWrapper: DateCellWrapper,
-                    toolbar: CustomToolbar
+                    toolbar: (t) => (
+                        <div>
+                            {CustomToolbar(t)}
+                            {ToolbarTip()}
+                        </div>
+                    )
                 }}
             />
         </div>

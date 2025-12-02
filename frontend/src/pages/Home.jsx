@@ -1,6 +1,6 @@
 // src/pages/Home.jsx
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { momentLocalizer } from "react-big-calendar";
 import moment from "moment";
@@ -56,11 +56,16 @@ const Home = () => {
     // Day pagination state (for "by day" view only)
     const [currentDayIndex, setCurrentDayIndex] = useState(0);
 
-    // Toggle visibility of bookings panel (admin only)
+    // Toggle visibility of bookings panel (admin and client)
     const [showBookingsPanel, setShowBookingsPanel] = useState(false);
 
     // Track selected date for client calendar view - initialize with today's date like admin does
     const [selectedClientDate, setSelectedClientDate] = useState(moment().format("YYYY-MM-DD"));
+
+    // Ref for client bookings panel scroll behavior
+    const clientPanelRef = useRef(null);
+
+    // No mobile-specific legend logic; show consistent info across sizes
 
     // Current logged-in user information is provided by the `useSessions` hook
 
@@ -228,6 +233,38 @@ const Home = () => {
         }
     }, [currentDayIndex, groupedBookings, currentUser]);
 
+    // When client bookings panel opens, scroll into view AFTER the expand transition completes
+    useEffect(() => {
+        if (!showBookingsPanel || !clientPanelRef.current || currentUser?.is_staff) return;
+
+        const el = clientPanelRef.current;
+        const scrollNow = () => {
+            try {
+                el.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+            } catch (_) {
+                // Fallback for older browsers
+                const top = el.getBoundingClientRect().top + window.scrollY - 8;
+                window.scrollTo(0, top);
+            }
+        };
+
+        const onTransitionEnd = (e) => {
+            if (e && e.propertyName && e.propertyName !== 'max-height') return;
+            scrollNow();
+            el.removeEventListener('transitionend', onTransitionEnd);
+        };
+
+        // Listen for the max-height transition to finish, then scroll
+        el.addEventListener('transitionend', onTransitionEnd);
+        // Fallback timer slightly longer than CSS transition (300ms)
+        const t = setTimeout(scrollNow, 350);
+
+        return () => {
+            el.removeEventListener('transitionend', onTransitionEnd);
+            clearTimeout(t);
+        };
+    }, [showBookingsPanel, currentUser]);
+
     return (
         <div className="container mt-4">
             {/* Show loading screen until initial data is loaded */}
@@ -294,60 +331,20 @@ const Home = () => {
                     </div>
 
                     {/* Legend / Info */}
-                    <p className="legend-info" style={{ marginTop: '0', marginBottom: '0.5rem', paddingTop: '0', lineHeight: '1.2', marginBlockStart: '0', marginBlockEnd: '0' }}>
-                        <strong>Click a day to view sessions.</strong>
-                        <br />
+                    <p className="legend-info" style={{ marginTop: '0', marginBottom: '0.5rem', paddingTop: '0', lineHeight: '1.3', marginBlockStart: '0', marginBlockEnd: '0' }}>
                         <small className="activity-legend">
-                            Activity icons: 🏃 Cardio | 🏋️ Weights | 🧘 Yoga | ⚡ HIIT | 🤸 Pilates | <span style={{ color: '#28a745', fontWeight: 'bold' }}>✓</span> Booked slot/s
+                            Activity icons — 🏃 Cardio | 🏋️ Weights | 🧘 Yoga | ⚡ HIIT | 🤸 Pilates
                         </small>
-                        <small className="mobile-legend" style={{ display: 'block' }}>
+                        <br />
+                        <small>
+                            Info: <span style={{ display: 'inline-block', padding: '2px 6px', background: '#0d6efd', color: 'white', borderRadius: '12px', fontSize: '11px', fontWeight: '600' }}>3</span> Session count
+                            {' '}|{' '}
                             <span style={{ color: '#28a745', fontWeight: 'bold' }}>✓</span> Booked slot/s
                         </small>
                     </p>
 
                     {/* My Bookings / Admin View */}
-                    <div className="mb-4">
-                        <div className="d-flex align-items-center gap-2 mb-2">
-                            {!currentUser?.is_staff && groupedBookings.length > 1 && (
-                                <React.Fragment>
-                                    <button
-                                        className="btn btn-sm btn-outline-secondary"
-                                        onClick={() => setCurrentDayIndex(Math.max(0, currentDayIndex - 1))}
-                                        disabled={currentDayIndex === 0}
-                                        title="Previous day"
-                                    >
-                                        ←
-                                    </button>
-                                    <button
-                                        className="btn btn-sm btn-outline-secondary"
-                                        onClick={() => setCurrentDayIndex(0)}
-                                        title="Go to next upcoming session"
-                                    >
-                                        Next Session
-                                    </button>
-                                    <button
-                                        className="btn btn-sm btn-outline-secondary"
-                                        onClick={() => setCurrentDayIndex(Math.min(groupedBookings.length - 1, currentDayIndex + 1))}
-                                        disabled={currentDayIndex === groupedBookings.length - 1}
-                                        title="Next day"
-                                    >
-                                        →
-                                    </button>
-                                    <div className="text-center ms-2">
-                                        <div style={{ fontWeight: 600, fontSize: "14px", color: "#333" }}>
-                                            {groupedBookings[currentDayIndex]?.label}
-                                        </div>
-                                    </div>
-                                </React.Fragment>
-                            )}
-                        </div>
-                        {/* Disclaimer for clients about cancellation restriction */}
-                        {!currentUser?.is_staff && sortedUpcomingBookings.length > 0 && (
-                            <div className="alert alert-info" style={{ fontSize: 14, marginBottom: 12 }}>
-                                <strong>Note:</strong> You cannot cancel a booking within 30 minutes of the session start time. If you need to contact a trainer or admin.
-                            </div>
-                        )}
-                        {!currentUser?.is_staff && <h5 className="mb-2">My Bookings</h5>}
+                    <div className="mb-4" style={{ marginTop: currentUser?.is_staff ? undefined : '0' }}>
                         {currentUser?.is_staff ? (
                             <React.Fragment>
                                 <AdminBookingsList
@@ -363,71 +360,130 @@ const Home = () => {
                                 />
                             </React.Fragment>
                         ) : (
-                            bookingsLoading ? (
-                                <p style={{ color: "#666" }}>Loading your bookings...</p>
-                            ) : sortedUpcomingBookings.length === 0 ? (
-                                <p style={{ color: "#666" }}>You have no upcoming bookings.</p>
-                            ) : (
-                                <div>
-                                    {/* Only show 'by day' view for clients */}
-                                    <div style={{ marginBottom: 24 }}>
-                                        <ul style={{ listStyle: "none", paddingLeft: 0 }}>
-                                            {groupedBookings[currentDayIndex]?.sessions.map((s) => (
-                                                <li
-                                                    key={s.id}
-                                                    style={{
-                                                        marginBottom: 8,
-                                                        padding: "12px 16px",
-                                                        background: "#f8f9fa",
-                                                        borderRadius: 6,
-                                                        border: "1px solid #dee2e6",
-                                                    }}
-                                                >
-                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                        <div>
-                                                            <strong>{s.activity_type.toUpperCase()}</strong>
-                                                            <span style={{ marginLeft: 8, color: '#666' }}>
-                                                                {moment(s.time, 'HH:mm:ss').format('HH:mm')} - {moment(s.time, 'HH:mm:ss').add(s.duration_minutes, 'minutes').format('HH:mm')}
-                                                            </span>
-                                                            {/* Removed: slots and attendee info for clients */}
-                                                        </div>
-                                                        <div>
-                                                            {/* Cancel button is disabled within 30 minutes of session start */}
-                                                            {(() => {
-                                                                const sessionDateTime = moment(`${s.date}T${s.time}`);
-                                                                const now = moment();
-                                                                const canCancel = sessionDateTime.diff(now, 'minutes') > 30;
-                                                                return (
-                                                                    <button
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation();
-                                                                            if (canCancel) handleBook(s);
-                                                                        }}
-                                                                        style={{
-                                                                            marginLeft: 12,
-                                                                            padding: "6px 10px",
-                                                                            fontSize: 12,
-                                                                            borderRadius: 6,
-                                                                            border: "1px solid rgba(0,0,0,0.1)",
-                                                                            background: canCancel ? "#dc3545" : "#adb5bd",
-                                                                            color: "white",
-                                                                            cursor: canCancel ? "pointer" : "not-allowed",
-                                                                        }}
-                                                                        title={canCancel ? "Cancel booking" : "Cannot cancel within 30 minutes of session start"}
-                                                                        disabled={!canCancel}
-                                                                    >
-                                                                        Cancel
-                                                                    </button>
-                                                                );
-                                                            })()}
+                            <React.Fragment>
+                                {/* Client Bookings Toggle Button */}
+                                <button
+                                    className="btn btn-primary mb-2"
+                                    onClick={() => setShowBookingsPanel(!showBookingsPanel)}
+                                    style={{ width: "100%" }}
+                                >
+                                    {showBookingsPanel ? "Hide" : "Show"} My Bookings
+                                </button>
+
+                                {/* Collapsible Client Bookings Panel */}
+                                <div
+                                    ref={clientPanelRef}
+                                    style={{
+                                        maxHeight: showBookingsPanel ? "1000px" : "0",
+                                        overflow: "hidden",
+                                        transition: "max-height 0.3s ease-in-out",
+                                    }}
+                                >
+                                    {bookingsLoading ? (
+                                        <p style={{ color: "#666", padding: "12px" }}>Loading your bookings...</p>
+                                    ) : sortedUpcomingBookings.length === 0 ? (
+                                        <p style={{ color: "#666", padding: "12px" }}>You have no upcoming bookings.</p>
+                                    ) : (
+                                        <div style={{ padding: "12px 0" }}>
+                                            {/* Navigation Controls */}
+                                            {groupedBookings.length > 1 && (
+                                                <div className="d-flex align-items-center gap-2 mb-3">
+                                                    <button
+                                                        className="btn btn-sm btn-outline-secondary"
+                                                        onClick={() => setCurrentDayIndex(Math.max(0, currentDayIndex - 1))}
+                                                        disabled={currentDayIndex === 0}
+                                                        title="Previous day"
+                                                    >
+                                                        ←
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-sm btn-outline-secondary"
+                                                        onClick={() => setCurrentDayIndex(0)}
+                                                        title="Go to next upcoming session"
+                                                    >
+                                                        Next Session
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-sm btn-outline-secondary"
+                                                        onClick={() => setCurrentDayIndex(Math.min(groupedBookings.length - 1, currentDayIndex + 1))}
+                                                        disabled={currentDayIndex === groupedBookings.length - 1}
+                                                        title="Next day"
+                                                    >
+                                                        →
+                                                    </button>
+                                                    <div className="text-center ms-2">
+                                                        <div style={{ fontWeight: 600, fontSize: "14px", color: "#333" }}>
+                                                            Showing: {groupedBookings[currentDayIndex]?.label}
                                                         </div>
                                                     </div>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Disclaimer for clients about cancellation restriction */}
+                                            <div className="alert alert-info" style={{ fontSize: 14, marginBottom: 12 }}>
+                                                <strong>Note:</strong> You cannot cancel a booking within 30 minutes of the session start time. If you need to contact a trainer or admin.
+                                            </div>
+
+                                            {/* Bookings List */}
+                                            <div style={{ marginBottom: 24 }}>
+                                                <ul style={{ listStyle: "none", paddingLeft: 0 }}>
+                                                    {groupedBookings[currentDayIndex]?.sessions.map((s) => (
+                                                        <li
+                                                            key={s.id}
+                                                            style={{
+                                                                marginBottom: 8,
+                                                                padding: "12px 16px",
+                                                                background: "#f8f9fa",
+                                                                borderRadius: 6,
+                                                                border: "1px solid #dee2e6",
+                                                            }}
+                                                        >
+                                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                                <div>
+                                                                    <strong>{s.activity_type.toUpperCase()}</strong>
+                                                                    <span style={{ marginLeft: 8, color: '#666' }}>
+                                                                        {moment(s.time, 'HH:mm:ss').format('HH:mm')} - {moment(s.time, 'HH:mm:ss').add(s.duration_minutes, 'minutes').format('HH:mm')}
+                                                                    </span>
+                                                                </div>
+                                                                <div>
+                                                                    {/* Cancel button is disabled within 30 minutes of session start */}
+                                                                    {(() => {
+                                                                        const sessionDateTime = moment(`${s.date}T${s.time}`);
+                                                                        const now = moment();
+                                                                        const canCancel = sessionDateTime.diff(now, 'minutes') > 30;
+                                                                        return (
+                                                                            <button
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    if (canCancel) handleBook(s);
+                                                                                }}
+                                                                                style={{
+                                                                                    marginLeft: 12,
+                                                                                    padding: "6px 10px",
+                                                                                    fontSize: 12,
+                                                                                    borderRadius: 6,
+                                                                                    border: "1px solid rgba(0,0,0,0.1)",
+                                                                                    background: canCancel ? "#dc3545" : "#adb5bd",
+                                                                                    color: "white",
+                                                                                    cursor: canCancel ? "pointer" : "not-allowed",
+                                                                                }}
+                                                                                title={canCancel ? "Cancel booking" : "Cannot cancel within 30 minutes of session start"}
+                                                                                disabled={!canCancel}
+                                                                            >
+                                                                                Cancel
+                                                                            </button>
+                                                                        );
+                                                                    })()}
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
-                            )
+                            </React.Fragment>
                         )}
                     </div>
 

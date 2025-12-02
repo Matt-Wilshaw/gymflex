@@ -4,6 +4,78 @@
     display: none;
 }
 
+/* Desktop and larger tablets (above 768px) */
+@media (min-width: 769px) {
+
+    /* Reduce perceived height without adding scrollbars */
+    .rbc-calendar {
+        height: auto;
+    }
+
+    /* Keep the month header row slim on desktop (match mobile rules) */
+    .rbc-header {
+        padding: 4px !important;
+        line-height: 1 !important;
+        margin: 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
+        max-height: 30px !important;
+        font-size: 13px !important;
+    }
+
+    .rbc-header span {
+        line-height: 1 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Remove spacing from header wrapper like mobile */
+    .rbc-month-header {
+        margin: 0 !important;
+        padding: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    .rbc-row.rbc-month-header {
+        margin: 0 !important;
+        padding: 0 !important;
+        margin-bottom: 0 !important;
+        min-height: 0 !important;
+    }
+
+    /* Make month rows shorter to prevent scrolling */
+    .rbc-month-row,
+    .rbc-row,
+    .rbc-row-bg {
+        min-height: 70px;
+    }
+
+    /* Slightly tighten toolbar spacing */
+    .rbc-toolbar {
+        padding: 6px 8px;
+    }
+
+    /* Trim extra bottom spacing */
+    .rbc-calendar,
+    .rbc-month-view {
+        margin-bottom: 6px;
+    }
+
+    /* Make column borders more visible on desktop */
+    .rbc-header+.rbc-header {
+        border-left: 3px solid #666 !important;
+    }
+
+    .rbc-day-bg+.rbc-day-bg {
+        border-left: 3px solid #666 !important;
+    }
+
+    /* Make row borders more visible */
+    .rbc-month-row {
+        border-top: 3px solid #666 !important;
+    }
+}
+
 /* Tablets and smaller devices (below 768px) */
 @media (max-width: 768px) and (min-width: 577px) {
 
@@ -28,17 +100,42 @@
         font-size: 13px !important;
     }
 
+    /* Make column borders more visible */
     .rbc-header+.rbc-header {
-        border-left: 1px solid #ddd !important;
+        border-left: 3px solid #666 !important;
+    }
+
+    .rbc-day-bg+.rbc-day-bg {
+        border-left: 3px solid #666 !important;
+    }
+
+    /* Make row borders more visible */
+    .rbc-month-row {
+        border-top: 3px solid #666 !important;
     }
 }
 
 /* Mobile only (below 577px) */
 @media (max-width: 576px) {
 
-    /* Hide emoji bar on small mobile */
-    .emoji-bar {
+    /* Hide emoji bar on small mobile UNLESS filtering is active */
+    .emoji-bar:not(.emoji-bar-filtered) {
         display: none !important;
+    }
+
+    /* Show emoji bar when filtering by activity - position above checkmark */
+    .emoji-bar-filtered {
+        display: flex !important;
+        position: absolute !important;
+        bottom: 56px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 100% !important;
+        justify-content: center !important;
+        align-items: center !important;
+        pointer-events: none !important;
+        z-index: 5 !important;
+        font-size: 16px !important;
     }
 
     /* Hide activity legend with emojis on small mobile */
@@ -51,13 +148,34 @@
         display: block !important;
     }
 
-    /* Move checkmark to center on small mobile */
+    /* Center the blue session count circle on mobile (≤576px) */
+    .session-count-circle {
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+    }
+
+    /* Position checkmark above the centered circle on mobile */
     .booking-checkmark {
         left: 50% !important;
         right: auto !important;
         transform: translateX(-50%) !important;
-        bottom: 36px !important;
+        bottom: 30px !important;
         z-index: 10 !important;
+    }
+
+    /* Make vertical borders more visible on mobile */
+    .rbc-header+.rbc-header {
+        border-left: 3px solid #666 !important;
+    }
+
+    .rbc-day-bg+.rbc-day-bg {
+        border-left: 3px solid #666 !important;
+    }
+
+    /* Make horizontal borders more visible on mobile */
+    .rbc-month-row {
+        border-top: 3px solid #666 !important;
     }
 }
 
@@ -67,6 +185,38 @@
     /* Header row - thin like desktop */
     .rbc-header {
         padding: 4px !important;
+
+        /* Keep the month header row slim on desktop (match mobile rules) */
+        .rbc-header {
+            padding: 4px !important;
+            line-height: 1 !important;
+            margin: 0 !important;
+            min-height: 0 !important;
+            height: auto !important;
+            max-height: 30px !important;
+            font-size: 13px !important;
+        }
+
+        .rbc-header span {
+            line-height: 1 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        /* Remove spacing from header wrapper like mobile */
+        .rbc-month-header {
+            margin: 0 !important;
+            padding: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        .rbc-row.rbc-month-header {
+            margin: 0 !important;
+            padding: 0 !important;
+            margin-bottom: 0 !important;
+            min-height: 0 !important;
+        }
+
         line-height: 1 !important;
         margin: 0 !important;
         min-height: 0 !important;
@@ -92,6 +242,20 @@
         padding: 0 !important;
         margin-bottom: 0 !important;
         min-height: 0 !important;
+    }
+
+    /* Make vertical borders more visible */
+    .rbc-header+.rbc-header {
+        border-left: 3px solid #666 !important;
+    }
+
+    .rbc-day-bg+.rbc-day-bg {
+        border-left: 3px solid #666 !important;
+    }
+
+    /* Make horizontal borders more visible */
+    .rbc-month-row {
+        border-top: 3px solid #666 !important;
     }
 
     /* Calendar container mobile adjustments */
@@ -261,12 +425,13 @@
 /* Smaller mobile devices (below 576px) */
 @media (max-width: 576px) {
     .rbc-calendar {
-        max-height: 500px !important;
+        max-height: none !important;
+        height: auto !important;
         margin-bottom: 15px !important;
     }
 
     .rbc-month-view {
-        min-height: 400px !important;
+        min-height: 520px !important;
         margin-bottom: 15px !important;
     }
 
@@ -315,12 +480,22 @@
         padding: 2px 4px !important;
     }
 
+    min-height: 84px;
+
+    /* a little more shorter on desktop */
     .rbc-toolbar-label {
         font-size: 11px !important;
     }
 
-    .rbc-time-header,
+    padding: 6px 8px;
     .rbc-label,
+
+    /* Trim extra bottom spacing */
+    .rbc-calendar,
+    .rbc-month-view {
+        margin-bottom: 6px;
+    }
+
     .rbc-event,
     .rbc-event-content {
         font-size: 8px !important;

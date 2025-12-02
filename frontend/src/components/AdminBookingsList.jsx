@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import moment from "moment";
 
 // AdminBookingsList: displays the unfiltered sessions for staff users. The
@@ -8,6 +8,7 @@ import moment from "moment";
 const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setSelectedAdminDate, adminLoading, removeAttendee, markAttendance, showBookingsPanel, setShowBookingsPanel }) => {
     // Track which sessions are expanded (by session id)
     const [expandedSessions, setExpandedSessions] = useState({});
+    const panelRef = useRef(null);
 
     // Toggle a session's expanded state
     const toggleSession = (sessionId) => {
@@ -49,6 +50,38 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
     const currentDate = selectedAdminDate || (allDates.includes(moment().format('YYYY-MM-DD')) ? moment().format('YYYY-MM-DD') : allDates[0]);
     const displayed = adminSessions.filter((s) => moment(s.date).format('YYYY-MM-DD') === currentDate);
 
+    // When panel opens, scroll into view AFTER the expand transition completes
+    useEffect(() => {
+        if (!showBookingsPanel || !panelRef.current) return;
+
+        const el = panelRef.current;
+        const scrollNow = () => {
+            try {
+                el.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+            } catch (_) {
+                // Fallback for older browsers
+                const top = el.getBoundingClientRect().top + window.scrollY - 8;
+                window.scrollTo(0, top);
+            }
+        };
+
+        const onTransitionEnd = (e) => {
+            if (e && e.propertyName && e.propertyName !== 'max-height') return;
+            scrollNow();
+            el.removeEventListener('transitionend', onTransitionEnd);
+        };
+
+        // Listen for the max-height transition to finish, then scroll
+        el.addEventListener('transitionend', onTransitionEnd);
+        // Fallback timer slightly longer than CSS transition (300ms)
+        const t = setTimeout(scrollNow, 350);
+
+        return () => {
+            el.removeEventListener('transitionend', onTransitionEnd);
+            clearTimeout(t);
+        };
+    }, [showBookingsPanel]);
+
     return (
         <>
             <div>
@@ -63,6 +96,7 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
                     </button>
                 </div>
                 <div
+                    ref={panelRef}
                     style={{
                         maxHeight: showBookingsPanel ? '2000px' : '0',
                         overflow: 'hidden',
