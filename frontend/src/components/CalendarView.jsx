@@ -9,7 +9,7 @@ const localiser = momentLocalizer(moment);
 // The cell wrapper shows a compact emoji summary and a small session-count
 // button. For staff users the whole cell is clickable to select a date for
 // admin viewing; for regular users the button opens a modal drill-down.
-const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, selectedAdminDate, setSelectedAdminDate, selectedClientDate, bookedSessions }) => {
+const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, selectedAdminDate, setSelectedAdminDate, selectedClientDate, setSelectedClientDate, bookedSessions }) => {
 
     // Custom toolbar with Today button between arrows
     const CustomToolbar = (toolbar) => {
@@ -269,8 +269,7 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
                         if (currentUser?.is_staff) {
                             setSelectedAdminDate(dateStr);
                         } else {
-                            // For clients, allow manual month navigation
-                            // Note: This will be overridden when they use booking arrows
+                            setSelectedClientDate(dateStr);
                         }
                     }}
                     components={{

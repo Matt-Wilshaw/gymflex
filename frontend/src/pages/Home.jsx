@@ -273,6 +273,7 @@ const Home = () => {
                 selectedAdminDate={selectedAdminDate}
                 setSelectedAdminDate={setSelectedAdminDate}
                 selectedClientDate={selectedClientDate}
+                setSelectedClientDate={setSelectedClientDate}
                 bookedSessions={sortedUpcomingBookings} // Pass booked sessions for tick display
             />
 
