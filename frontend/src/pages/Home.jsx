@@ -350,9 +350,6 @@ const Home = () => {
                         {!currentUser?.is_staff && <h5 className="mb-2">My Bookings</h5>}
                         {currentUser?.is_staff ? (
                             <React.Fragment>
-                                <div style={{ fontWeight: 600, marginBottom: 8, textAlign: 'left' }}>
-                                    Showing: {selectedAdminDate ? moment(selectedAdminDate).format('MMMM D, YYYY') : moment().format('MMMM D, YYYY')}
-                                </div>
                                 <AdminBookingsList
                                     currentUser={currentUser}
                                     adminSessions={adminSessions}
