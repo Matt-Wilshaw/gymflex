@@ -195,7 +195,13 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
                             ? moment(selectedClientDate).toDate()
                             : new Date()}
                     onNavigate={(newDate) => {
-                        console.log('Calendar navigated to:', moment(newDate).format('YYYY-MM-DD'));
+                        const dateStr = moment(newDate).format('YYYY-MM-DD');
+                        if (currentUser?.is_staff) {
+                            setSelectedAdminDate(dateStr);
+                        } else {
+                            // For clients, allow manual month navigation
+                            // Note: This will be overridden when they use booking arrows
+                        }
                     }}
                     components={{ event: () => null, dateCellWrapper: DateCellWrapper }}
                 />
