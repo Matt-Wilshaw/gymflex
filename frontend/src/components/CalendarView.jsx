@@ -10,6 +10,80 @@ const localiser = momentLocalizer(moment);
 // button. For staff users the whole cell is clickable to select a date for
 // admin viewing; for regular users the button opens a modal drill-down.
 const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, selectedAdminDate, setSelectedAdminDate, selectedClientDate, bookedSessions }) => {
+
+    // Custom toolbar with Today button between arrows
+    const CustomToolbar = (toolbar) => {
+        const goToBack = () => {
+            toolbar.onNavigate('PREV');
+        };
+
+        const goToNext = () => {
+            toolbar.onNavigate('NEXT');
+        };
+
+        const goToToday = () => {
+            toolbar.onNavigate('TODAY');
+        };
+
+        return (
+            <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '10px',
+                padding: '10px 0'
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <button
+                        onClick={goToBack}
+                        style={{
+                            padding: '8px 16px',
+                            cursor: 'pointer',
+                            border: '1px solid #ddd',
+                            borderRadius: '4px',
+                            background: 'white',
+                            fontSize: '16px'
+                        }}
+                    >
+                        ←
+                    </button>
+                    <button
+                        onClick={goToToday}
+                        style={{
+                            padding: '8px 20px',
+                            cursor: 'pointer',
+                            border: '1px solid #0d6efd',
+                            borderRadius: '4px',
+                            background: '#0d6efd',
+                            color: 'white',
+                            fontWeight: '500',
+                            fontSize: '14px'
+                        }}
+                    >
+                        Today
+                    </button>
+                    <button
+                        onClick={goToNext}
+                        style={{
+                            padding: '8px 16px',
+                            cursor: 'pointer',
+                            border: '1px solid #ddd',
+                            borderRadius: '4px',
+                            background: 'white',
+                            fontSize: '16px'
+                        }}
+                    >
+                        →
+                    </button>
+                </div>
+                <span style={{ fontSize: '18px', fontWeight: '600' }}>
+                    {toolbar.label}
+                </span>
+                <div style={{ width: '200px' }}></div>
+            </div>
+        );
+    };
+
     // DateCellWrapper: computes the events for the given day and renders
     // a small emoji bar plus a session-count button anchored to the cell.
     // Note the UK spelling of 'behaviour' in comments below to match
@@ -176,10 +250,6 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
 
     return (
         <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 8 }}>
-                {/* Navigation buttons (if any) can go here */}
-                {/* Example: <button>Prev</button> <button>Next</button> */}
-            </div>
             <div style={{ height: 600 }}>
                 <Calendar
                     localizer={localiser}
@@ -203,7 +273,11 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
                             // Note: This will be overridden when they use booking arrows
                         }
                     }}
-                    components={{ event: () => null, dateCellWrapper: DateCellWrapper }}
+                    components={{
+                        event: () => null,
+                        dateCellWrapper: DateCellWrapper,
+                        toolbar: CustomToolbar
+                    }}
                 />
             </div>
         </div>

@@ -1,0 +1,59 @@
+/* Mobile responsive adjustments for calendar */
+@media (max-width: 768px) {
+    #root {
+        padding: 0.5rem;
+    }
+
+    /* Make calendar toolbar buttons smaller on mobile */
+    .rbc-toolbar button {
+        padding: 4px 8px !important;
+        font-size: 12px !important;
+    }
+
+    /* Reduce calendar height on mobile */
+    .rbc-calendar {
+        height: 400px !important;
+    }
+
+    /* Hide emoji bar and make session count smaller on mobile */
+    .rbc-month-view .rbc-date-cell {
+        font-size: 10px;
+    }
+
+    /* Smaller date numbers on mobile */
+    .rbc-date-cell .rbc-button-link {
+        font-size: 11px !important;
+    }
+
+    /* Reduce padding in calendar cells */
+    .rbc-day-bg {
+        padding: 2px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    /* Extra small screens - even more compact */
+    .rbc-toolbar button {
+        padding: 2px 6px !important;
+        font-size: 10px !important;
+    }
+
+    .rbc-calendar {
+        height: 350px !important;
+    }
+
+    .rbc-month-view .rbc-date-cell {
+        font-size: 9px;
+    }
+
+    .rbc-date-cell .rbc-button-link {
+        font-size: 10px !important;
+    }
+
+    /* Hide day names on very small screens to save space */
+    .rbc-header {
+        font-size: 10px;
+        padding: 2px;
+    }
+}
