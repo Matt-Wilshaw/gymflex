@@ -40,3 +40,37 @@
 .read-the-docs {
   color: #888;
 }
+
+/* COMPLETELY remove ALL React Big Calendar's "today" cell styling */
+.rbc-day-bg.rbc-today,
+.rbc-date-cell.rbc-now,
+.rbc-today,
+.rbc-now,
+.rbc-current {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Also target specific nested elements */
+.rbc-month-view .rbc-day-bg.rbc-today,
+.rbc-month-view .rbc-date-cell.rbc-now,
+.rbc-month-row .rbc-day-bg.rbc-today {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Target button links inside today cells */
+.rbc-date-cell.rbc-now .rbc-button-link,
+.rbc-date-cell.rbc-now > a {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Ensure off-range (other month) cells stay grey */
+.rbc-off-range-bg.rbc-today {
+  background-color: #f0f0f0 !important;
+}

@@ -9,7 +9,7 @@ const localiser = momentLocalizer(moment);
 // The cell wrapper shows a compact emoji summary and a small session-count
 // button. For staff users the whole cell is clickable to select a date for
 // admin viewing; for regular users the button opens a modal drill-down.
-const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, selectedAdminDate, setSelectedAdminDate, bookedSessions }) => {
+const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, selectedAdminDate, setSelectedAdminDate, selectedClientDate, bookedSessions }) => {
     // DateCellWrapper: computes the events for the given day and renders
     // a small emoji bar plus a session-count button anchored to the cell.
     // Note the UK spelling of 'behaviour' in comments below to match
@@ -17,8 +17,16 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
     const DateCellWrapper = ({ children, value }) => {
         const dateStr = moment(value).format("YYYY-MM-DD");
         const isPastDate = moment(value).isBefore(moment(), 'day');
-        const isOtherMonth = moment(value).month() !== moment(selectedAdminDate || new Date()).month();
-        const isSelected = selectedAdminDate && moment(selectedAdminDate).format("YYYY-MM-DD") === dateStr;
+        const isOtherMonth = moment(value).month() !== moment(selectedAdminDate || selectedClientDate || new Date()).month();
+        
+        // Debug logging
+        const isToday = moment().format("YYYY-MM-DD") === dateStr;
+        if (isToday && !currentUser?.is_staff) {
+            console.log('selectedAdminDate:', selectedAdminDate, 'currentUser.is_staff:', currentUser?.is_staff);
+        }
+        
+        const isSelected = (currentUser?.is_staff && selectedAdminDate && moment(selectedAdminDate).format("YYYY-MM-DD") === dateStr) || 
+                          (!currentUser?.is_staff && selectedClientDate && moment(selectedClientDate).format("YYYY-MM-DD") === dateStr);
 
         // Apply current activity filter to decide which emojis to show
         const displayedSessions = activityFilter
@@ -48,7 +56,7 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
             boxSizing: "border-box",
             backgroundColor: isSelected ? "#d4e9ff" : isOtherMonth ? "#f0f0f0" : isPastDate ? "#f5f5f5" : "transparent",
             opacity: isPastDate ? 0.5 : isOtherMonth ? 0.7 : 1,
-            cursor: isPastDate ? "not-allowed" : "pointer",
+            cursor: isPastDate ? "not-allowed" : currentUser?.is_staff ? "pointer" : "default",
             border: isSelected ? "2px solid #0d6efd" : "none",
             transition: "all 0.2s ease"
         };
@@ -181,6 +189,14 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
                     style={{ height: "100%" }}
                     onDrillDown={handleDrillDown}
                     views={["month"]}
+                    date={currentUser?.is_staff 
+                        ? moment(selectedAdminDate).toDate() 
+                        : selectedClientDate 
+                            ? moment(selectedClientDate).toDate() 
+                            : new Date()}
+                    onNavigate={(newDate) => {
+                        console.log('Calendar navigated to:', moment(newDate).format('YYYY-MM-DD'));
+                    }}
                     components={{ event: () => null, dateCellWrapper: DateCellWrapper }}
                 />
             </div>

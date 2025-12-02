@@ -1,6 +1,6 @@
 // src/pages/Home.jsx
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { momentLocalizer } from "react-big-calendar";
 import moment from "moment";
@@ -55,6 +55,9 @@ const Home = () => {
 
     // Toggle visibility of bookings panel (admin only)
     const [showBookingsPanel, setShowBookingsPanel] = useState(false);
+    
+    // Track selected date for client calendar view - initialize with today's date like admin does
+    const [selectedClientDate, setSelectedClientDate] = useState(moment().format("YYYY-MM-DD"));
 
     // Current logged-in user information is provided by the `useSessions` hook
 
@@ -194,15 +197,32 @@ const Home = () => {
 
     // ------------------ JSX ------------------
 
-    // Only show upcoming bookings (hide past ones)
-    const upcomingBookings = bookedSessions.filter((s) => !s.has_started);
-    // Sort upcoming bookings by date and time
-    const sortedUpcomingBookings = [...upcomingBookings].sort((a, b) => {
-        const aDate = moment(`${a.date}T${a.time}`);
-        const bDate = moment(`${b.date}T${b.time}`);
-        return aDate.diff(bDate);
-    });
-    const groupedBookings = groupBookings(sortedUpcomingBookings, bookingsGroupBy);
+    // Only show upcoming bookings (hide past ones), sorted by date/time
+    const sortedUpcomingBookings = useMemo(() => {
+        const upcoming = bookedSessions.filter((s) => !s.has_started);
+        return upcoming.sort((a, b) => {
+            const aDate = moment(`${a.date}T${a.time}`);
+            const bDate = moment(`${b.date}T${b.time}`);
+            return aDate.diff(bDate);
+        });
+    }, [bookedSessions]);
+    
+    const groupedBookings = useMemo(() => {
+        return groupBookings(sortedUpcomingBookings, bookingsGroupBy);
+    }, [sortedUpcomingBookings, bookingsGroupBy]);
+    
+    // Update selected client date when navigating bookings
+    useEffect(() => {
+        if (!currentUser?.is_staff && groupedBookings.length > 0) {
+            if (groupedBookings[currentDayIndex]) {
+                const firstSession = groupedBookings[currentDayIndex].sessions[0];
+                if (firstSession) {
+                    console.log('Setting selectedClientDate to:', firstSession.date);
+                    setSelectedClientDate(firstSession.date);
+                }
+            }
+        }
+    }, [currentDayIndex, groupedBookings, currentUser]);
 
     return (
         <div className="container mt-4">
@@ -252,6 +272,7 @@ const Home = () => {
                 currentUser={currentUser}
                 selectedAdminDate={selectedAdminDate}
                 setSelectedAdminDate={setSelectedAdminDate}
+                selectedClientDate={selectedClientDate}
                 bookedSessions={sortedUpcomingBookings} // Pass booked sessions for tick display
             />
 
@@ -302,9 +323,9 @@ const Home = () => {
                     )}
                 </div>
                 {/* Disclaimer for clients about cancellation restriction */}
-                {!currentUser?.is_staff && upcomingBookings.length > 0 && (
+                {!currentUser?.is_staff && sortedUpcomingBookings.length > 0 && (
                     <div className="alert alert-info" style={{ fontSize: 14, marginBottom: 12 }}>
-                        <strong>Note:</strong> You cannot cancel a booking within 30 minutes of the session start time. If you need to cancel late, please contact a trainer or admin.
+                        <strong>Note:</strong> You cannot cancel a booking within 30 minutes of the session start time. If you need to contact a trainer or admin.
                     </div>
                 )}
                 {currentUser?.is_staff ? (
@@ -327,7 +348,7 @@ const Home = () => {
                 ) : (
                     bookingsLoading ? (
                         <p style={{ color: "#666" }}>Loading your bookings...</p>
-                    ) : upcomingBookings.length === 0 ? (
+                    ) : sortedUpcomingBookings.length === 0 ? (
                         <p style={{ color: "#666" }}>You have no upcoming bookings.</p>
                     ) : (
                         <div>
