@@ -52,40 +52,6 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
     return (
         <>
             <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                    <div className="d-flex align-items-center gap-2">
-                        {/* Day navigation for admin */}
-                        <button
-                            className="btn btn-sm btn-outline-secondary"
-                            onClick={() => {
-                                const idx = allDates.indexOf(currentDate);
-                                if (idx > 0) setSelectedAdminDate(allDates[idx - 1]);
-                            }}
-                            disabled={allDates.indexOf(currentDate) === 0}
-                            title="Previous day"
-                        >
-                            ←
-                        </button>
-                        <button
-                            className="btn btn-sm btn-outline-secondary"
-                            onClick={() => setSelectedAdminDate(moment().format('YYYY-MM-DD'))}
-                            title="Today"
-                        >
-                            Today
-                        </button>
-                        <button
-                            className="btn btn-sm btn-outline-secondary"
-                            onClick={() => {
-                                const idx = allDates.indexOf(currentDate);
-                                if (idx < allDates.length - 1) setSelectedAdminDate(allDates[idx + 1]);
-                            }}
-                            disabled={allDates.indexOf(currentDate) === allDates.length - 1}
-                            title="Next day"
-                        >
-                            →
-                        </button>
-                    </div>
-                </div>
                 {/* Toggle bookings button */}
                 <div style={{ marginBottom: 12 }}>
                     <button
@@ -104,6 +70,53 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
                         opacity: showBookingsPanel ? 1 : 0,
                     }}
                 >
+                    {/* In-panel date context and navigation */}
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: 12,
+                        marginBottom: 8,
+                        padding: '6px 8px',
+                        background: '#f8f9fa',
+                        border: '1px solid #e9ecef',
+                        borderRadius: 6
+                    }}>
+                        <div style={{ fontWeight: 600 }}>
+                            Showing: {moment(currentDate).format('MMMM D, YYYY')}
+                        </div>
+                        <div className="d-flex align-items-center gap-2">
+                            <button
+                                className="btn btn-sm btn-outline-secondary"
+                                onClick={() => {
+                                    const idx = allDates.indexOf(currentDate);
+                                    if (idx > 0) setSelectedAdminDate(allDates[idx - 1]);
+                                }}
+                                disabled={allDates.indexOf(currentDate) === 0}
+                                title="Previous day"
+                            >
+                                ←
+                            </button>
+                            <button
+                                className="btn btn-sm btn-outline-secondary"
+                                onClick={() => setSelectedAdminDate(moment().format('YYYY-MM-DD'))}
+                                title="Today"
+                            >
+                                Today
+                            </button>
+                            <button
+                                className="btn btn-sm btn-outline-secondary"
+                                onClick={() => {
+                                    const idx = allDates.indexOf(currentDate);
+                                    if (idx < allDates.length - 1) setSelectedAdminDate(allDates[idx + 1]);
+                                }}
+                                disabled={allDates.indexOf(currentDate) === allDates.length - 1}
+                                title="Next day"
+                            >
+                                →
+                            </button>
+                        </div>
+                    </div>
                     {adminLoading && adminSessions.length === 0 ? (
                         <div style={{ color: '#666' }}>Loading sessions...</div>
                     ) : displayed.length === 0 ? (
