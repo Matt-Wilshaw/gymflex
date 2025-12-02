@@ -18,15 +18,15 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
         const dateStr = moment(value).format("YYYY-MM-DD");
         const isPastDate = moment(value).isBefore(moment(), 'day');
         const isOtherMonth = moment(value).month() !== moment(selectedAdminDate || selectedClientDate || new Date()).month();
-        
+
         // Debug logging
         const isToday = moment().format("YYYY-MM-DD") === dateStr;
         if (isToday && !currentUser?.is_staff) {
             console.log('selectedAdminDate:', selectedAdminDate, 'currentUser.is_staff:', currentUser?.is_staff);
         }
-        
-        const isSelected = (currentUser?.is_staff && selectedAdminDate && moment(selectedAdminDate).format("YYYY-MM-DD") === dateStr) || 
-                          (!currentUser?.is_staff && selectedClientDate && moment(selectedClientDate).format("YYYY-MM-DD") === dateStr);
+
+        const isSelected = (currentUser?.is_staff && selectedAdminDate && moment(selectedAdminDate).format("YYYY-MM-DD") === dateStr) ||
+            (!currentUser?.is_staff && selectedClientDate && moment(selectedClientDate).format("YYYY-MM-DD") === dateStr);
 
         // Apply current activity filter to decide which emojis to show
         const displayedSessions = activityFilter
@@ -189,10 +189,10 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
                     style={{ height: "100%" }}
                     onDrillDown={handleDrillDown}
                     views={["month"]}
-                    date={currentUser?.is_staff 
-                        ? moment(selectedAdminDate).toDate() 
-                        : selectedClientDate 
-                            ? moment(selectedClientDate).toDate() 
+                    date={currentUser?.is_staff
+                        ? moment(selectedAdminDate).toDate()
+                        : selectedClientDate
+                            ? moment(selectedClientDate).toDate()
                             : new Date()}
                     onNavigate={(newDate) => {
                         console.log('Calendar navigated to:', moment(newDate).format('YYYY-MM-DD'));

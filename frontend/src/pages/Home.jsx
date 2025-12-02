@@ -55,7 +55,7 @@ const Home = () => {
 
     // Toggle visibility of bookings panel (admin only)
     const [showBookingsPanel, setShowBookingsPanel] = useState(false);
-    
+
     // Track selected date for client calendar view - initialize with today's date like admin does
     const [selectedClientDate, setSelectedClientDate] = useState(moment().format("YYYY-MM-DD"));
 
@@ -206,11 +206,11 @@ const Home = () => {
             return aDate.diff(bDate);
         });
     }, [bookedSessions]);
-    
+
     const groupedBookings = useMemo(() => {
         return groupBookings(sortedUpcomingBookings, bookingsGroupBy);
     }, [sortedUpcomingBookings, bookingsGroupBy]);
-    
+
     // Update selected client date when navigating bookings
     useEffect(() => {
         if (!currentUser?.is_staff && groupedBookings.length > 0) {
