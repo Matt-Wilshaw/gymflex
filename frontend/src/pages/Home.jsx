@@ -42,6 +42,9 @@ const Home = () => {
     // Currently selected activity filter from dropdown
     const [activityFilter, setActivityFilter] = useState("");
 
+    // Track initial loading state
+    const [initialLoading, setInitialLoading] = useState(true);
+
     // Modal visibility and content
     const [showModal, setShowModal] = useState(false);
     const [modalEvents, setModalEvents] = useState([]);
@@ -78,6 +81,7 @@ const Home = () => {
             await fetchSessions(activityFilter);
             await fetchBookedSessions();
             if (user?.is_staff) await fetchAllSessions();
+            setInitialLoading(false);
         })();
     }, [token, navigate]);
 
@@ -226,205 +230,222 @@ const Home = () => {
 
     return (
         <div className="container mt-4">
-            {/* Header */}
-            <div className="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                    <h2>GymFlex Calendar</h2>
-                    {currentUser && <h4 className="mt-1">Welcome, {currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}</h4>}
-                </div>
-                <div>
-                    {currentUser?.is_superuser && (
-                        <button
-                            className="btn btn-primary me-2"
-                            onClick={() => window.open(import.meta.env.VITE_API_URL.replace('/api', '/admin/'), "_blank")}
-                        >
-                            Admin Panel
-                        </button>
-                    )}
-                    <button className="btn btn-warning" onClick={handleLogout}>
-                        Logout
-                    </button>
-                </div>
-            </div>
-
-            {/* Activity Filter */}
-            <div className="mb-3">
-                <label>Filter by Activity: </label>
-                <select
-                    value={activityFilter}
-                    onChange={(e) => setActivityFilter(e.target.value)}
-                    className="form-select w-25 d-inline-block ms-2"
-                >
-                    <option value="">All</option>
-                    <option value="cardio">Cardio</option>
-                    <option value="weights">Weightlifting</option>
-                    <option value="yoga">Yoga</option>
-                    <option value="hiit">HIIT</option>
-                    <option value="pilates">Pilates</option>
-                </select>
-            </div>
-
-            {/* Calendar */}
-            <CalendarView
-                sessions={sessions}
-                activityFilter={activityFilter}
-                handleDrillDown={handleDrillDown}
-                currentUser={currentUser}
-                selectedAdminDate={selectedAdminDate}
-                setSelectedAdminDate={setSelectedAdminDate}
-                selectedClientDate={selectedClientDate}
-                setSelectedClientDate={setSelectedClientDate}
-                bookedSessions={sortedUpcomingBookings} // Pass booked sessions for tick display
-            />
-
-            {/* Legend / Info */}
-            <p className="mt-3">
-                <strong>Click a day to view sessions in the modal.</strong>
-                <br />
-                <small>
-                    Activity icons: 🏃 Cardio | 🏋️ Weights | 🧘 Yoga | ⚡ HIIT | 🤸 Pilates | ★ {currentUser?.is_staff ? "Has bookings" : "Your bookings"}
-                </small>
-            </p>
-
-            {/* My Bookings / Admin View */}
-            <div className="mb-4">
-                <h5 className="mb-2">{currentUser?.is_staff ? "All Sessions (Admin)" : "My Bookings"}</h5>
-                <div className="d-flex align-items-center gap-2 mb-2">
-                    {!currentUser?.is_staff && groupedBookings.length > 1 && (
-                        <>
-                            <button
-                                className="btn btn-sm btn-outline-secondary"
-                                onClick={() => setCurrentDayIndex(Math.max(0, currentDayIndex - 1))}
-                                disabled={currentDayIndex === 0}
-                                title="Previous day"
-                            >
-                                ←
-                            </button>
-                            <button
-                                className="btn btn-sm btn-outline-secondary"
-                                onClick={() => setCurrentDayIndex(0)}
-                                title="Go to next upcoming session"
-                            >
-                                Next Session
-                            </button>
-                            <button
-                                className="btn btn-sm btn-outline-secondary"
-                                onClick={() => setCurrentDayIndex(Math.min(groupedBookings.length - 1, currentDayIndex + 1))}
-                                disabled={currentDayIndex === groupedBookings.length - 1}
-                                title="Next day"
-                            >
-                                →
-                            </button>
-                            <div className="text-center ms-2">
-                                <div style={{ fontWeight: 600, fontSize: "14px", color: "#333" }}>
-                                    {groupedBookings[currentDayIndex]?.label}
-                                </div>
-                            </div>
-                        </>
-                    )}
-                </div>
-                {/* Disclaimer for clients about cancellation restriction */}
-                {!currentUser?.is_staff && sortedUpcomingBookings.length > 0 && (
-                    <div className="alert alert-info" style={{ fontSize: 14, marginBottom: 12 }}>
-                        <strong>Note:</strong> You cannot cancel a booking within 30 minutes of the session start time. If you need to contact a trainer or admin.
+            {/* Show loading screen until initial data is loaded */}
+            {initialLoading ? (
+                <div style={{ textAlign: 'center', padding: '3rem', color: '#666' }}>
+                    <div style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>GymFlex</div>
+                    <div className="spinner-border" role="status">
+                        <span className="visually-hidden">Loading...</span>
                     </div>
-                )}
-                {currentUser?.is_staff ? (
-                    <>
-                        <div style={{ fontWeight: 600, marginBottom: 8, textAlign: 'left' }}>
-                            Showing: {selectedAdminDate ? moment(selectedAdminDate).format('MMMM D, YYYY') : moment().format('MMMM D, YYYY')}
+                </div>
+            ) : (
+                <React.Fragment>
+                    {/* Header */}
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h2>GymFlex Calendar</h2>
+                            {currentUser && <h4 className="mt-1">Welcome, {currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}</h4>}
                         </div>
-                        <AdminBookingsList
+                        <div>
+                            {currentUser?.is_superuser && (
+                                <button
+                                    className="btn btn-primary me-2"
+                                    onClick={() => window.open(import.meta.env.VITE_API_URL.replace('/api', '/admin/'), "_blank")}
+                                >
+                                    Admin Panel
+                                </button>
+                            )}
+                            <button className="btn btn-warning" onClick={handleLogout}>
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Activity Filter */}
+                    <div className="mb-3">
+                        <label>Filter by Activity: </label>
+                        <select
+                            value={activityFilter}
+                            onChange={(e) => setActivityFilter(e.target.value)}
+                            className="form-select w-25 d-inline-block ms-2"
+                        >
+                            <option value="">All</option>
+                            <option value="cardio">Cardio</option>
+                            <option value="weights">Weightlifting</option>
+                            <option value="yoga">Yoga</option>
+                            <option value="hiit">HIIT</option>
+                            <option value="pilates">Pilates</option>
+                        </select>
+                    </div>
+
+                    {/* Calendar */}
+                    <div className="calendar-container" style={{ marginBottom: 0, paddingBottom: 0 }}>
+                        <CalendarView
+                            sessions={sessions}
+                            activityFilter={activityFilter}
+                            handleDrillDown={handleDrillDown}
                             currentUser={currentUser}
-                            adminSessions={adminSessions}
                             selectedAdminDate={selectedAdminDate}
                             setSelectedAdminDate={setSelectedAdminDate}
-                            adminLoading={adminLoading}
-                            removeAttendee={removeAttendee}
-                            markAttendance={markAttendance}
-                            showBookingsPanel={showBookingsPanel}
-                            setShowBookingsPanel={setShowBookingsPanel}
+                            selectedClientDate={selectedClientDate}
+                            setSelectedClientDate={setSelectedClientDate}
+                            bookedSessions={sortedUpcomingBookings} // Pass booked sessions for tick display
                         />
-                    </>
-                ) : (
-                    bookingsLoading ? (
-                        <p style={{ color: "#666" }}>Loading your bookings...</p>
-                    ) : sortedUpcomingBookings.length === 0 ? (
-                        <p style={{ color: "#666" }}>You have no upcoming bookings.</p>
-                    ) : (
-                        <div>
-                            {/* Only show 'by day' view for clients */}
-                            <div style={{ marginBottom: 24 }}>
-                                <ul style={{ listStyle: "none", paddingLeft: 0 }}>
-                                    {groupedBookings[currentDayIndex]?.sessions.map((s) => (
-                                        <li
-                                            key={s.id}
-                                            style={{
-                                                marginBottom: 8,
-                                                padding: "12px 16px",
-                                                background: "#f8f9fa",
-                                                borderRadius: 6,
-                                                border: "1px solid #dee2e6",
-                                            }}
-                                        >
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                <div>
-                                                    <strong>{s.activity_type.toUpperCase()}</strong>
-                                                    <span style={{ marginLeft: 8, color: '#666' }}>
-                                                        {moment(s.time, 'HH:mm:ss').format('HH:mm')} - {moment(s.time, 'HH:mm:ss').add(s.duration_minutes, 'minutes').format('HH:mm')}
-                                                    </span>
-                                                    {/* Removed: slots and attendee info for clients */}
-                                                </div>
-                                                <div>
-                                                    {/* Cancel button is disabled within 30 minutes of session start */}
-                                                    {(() => {
-                                                        const sessionDateTime = moment(`${s.date}T${s.time}`);
-                                                        const now = moment();
-                                                        const canCancel = sessionDateTime.diff(now, 'minutes') > 30;
-                                                        return (
-                                                            <button
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    if (canCancel) handleBook(s);
-                                                                }}
-                                                                style={{
-                                                                    marginLeft: 12,
-                                                                    padding: "6px 10px",
-                                                                    fontSize: 12,
-                                                                    borderRadius: 6,
-                                                                    border: "1px solid rgba(0,0,0,0.1)",
-                                                                    background: canCancel ? "#dc3545" : "#adb5bd",
-                                                                    color: "white",
-                                                                    cursor: canCancel ? "pointer" : "not-allowed",
-                                                                }}
-                                                                title={canCancel ? "Cancel booking" : "Cannot cancel within 30 minutes of session start"}
-                                                                disabled={!canCancel}
-                                                            >
-                                                                Cancel
-                                                            </button>
-                                                        );
-                                                    })()}
-                                                </div>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </div>
-                    )
-                )}
-            </div>
+                    </div>
 
-            {/* Modal */}
-            <BookingsModal
-                showModal={showModal}
-                modalEvents={modalEvents}
-                modalDate={modalDate}
-                setShowModal={setShowModal}
-                handleBook={handleBook}
-            />
+                    {/* Legend / Info */}
+                    <p className="legend-info" style={{ marginTop: '0', marginBottom: '0.5rem', paddingTop: '0', lineHeight: '1.2', marginBlockStart: '0', marginBlockEnd: '0' }}>
+                        <strong>Click a day to view sessions.</strong>
+                        <br />
+                        <small className="activity-legend">
+                            Activity icons: 🏃 Cardio | 🏋️ Weights | 🧘 Yoga | ⚡ HIIT | 🤸 Pilates | <span style={{ color: '#28a745', fontWeight: 'bold' }}>✓</span> Booked slot/s
+                        </small>
+                        <small className="mobile-legend" style={{ display: 'block' }}>
+                            <span style={{ color: '#28a745', fontWeight: 'bold' }}>✓</span> Booked slot/s
+                        </small>
+                    </p>
+
+                    {/* My Bookings / Admin View */}
+                    <div className="mb-4">
+                        <div className="d-flex align-items-center gap-2 mb-2">
+                            {!currentUser?.is_staff && groupedBookings.length > 1 && (
+                                <React.Fragment>
+                                    <button
+                                        className="btn btn-sm btn-outline-secondary"
+                                        onClick={() => setCurrentDayIndex(Math.max(0, currentDayIndex - 1))}
+                                        disabled={currentDayIndex === 0}
+                                        title="Previous day"
+                                    >
+                                        ←
+                                    </button>
+                                    <button
+                                        className="btn btn-sm btn-outline-secondary"
+                                        onClick={() => setCurrentDayIndex(0)}
+                                        title="Go to next upcoming session"
+                                    >
+                                        Next Session
+                                    </button>
+                                    <button
+                                        className="btn btn-sm btn-outline-secondary"
+                                        onClick={() => setCurrentDayIndex(Math.min(groupedBookings.length - 1, currentDayIndex + 1))}
+                                        disabled={currentDayIndex === groupedBookings.length - 1}
+                                        title="Next day"
+                                    >
+                                        →
+                                    </button>
+                                    <div className="text-center ms-2">
+                                        <div style={{ fontWeight: 600, fontSize: "14px", color: "#333" }}>
+                                            {groupedBookings[currentDayIndex]?.label}
+                                        </div>
+                                    </div>
+                                </React.Fragment>
+                            )}
+                        </div>
+                        {/* Disclaimer for clients about cancellation restriction */}
+                        {!currentUser?.is_staff && sortedUpcomingBookings.length > 0 && (
+                            <div className="alert alert-info" style={{ fontSize: 14, marginBottom: 12 }}>
+                                <strong>Note:</strong> You cannot cancel a booking within 30 minutes of the session start time. If you need to contact a trainer or admin.
+                            </div>
+                        )}
+                        {!currentUser?.is_staff && <h5 className="mb-2">My Bookings</h5>}
+                        {currentUser?.is_staff ? (
+                            <React.Fragment>
+                                <div style={{ fontWeight: 600, marginBottom: 8, textAlign: 'left' }}>
+                                    Showing: {selectedAdminDate ? moment(selectedAdminDate).format('MMMM D, YYYY') : moment().format('MMMM D, YYYY')}
+                                </div>
+                                <AdminBookingsList
+                                    currentUser={currentUser}
+                                    adminSessions={adminSessions}
+                                    selectedAdminDate={selectedAdminDate}
+                                    setSelectedAdminDate={setSelectedAdminDate}
+                                    adminLoading={adminLoading}
+                                    removeAttendee={removeAttendee}
+                                    markAttendance={markAttendance}
+                                    showBookingsPanel={showBookingsPanel}
+                                    setShowBookingsPanel={setShowBookingsPanel}
+                                />
+                            </React.Fragment>
+                        ) : (
+                            bookingsLoading ? (
+                                <p style={{ color: "#666" }}>Loading your bookings...</p>
+                            ) : sortedUpcomingBookings.length === 0 ? (
+                                <p style={{ color: "#666" }}>You have no upcoming bookings.</p>
+                            ) : (
+                                <div>
+                                    {/* Only show 'by day' view for clients */}
+                                    <div style={{ marginBottom: 24 }}>
+                                        <ul style={{ listStyle: "none", paddingLeft: 0 }}>
+                                            {groupedBookings[currentDayIndex]?.sessions.map((s) => (
+                                                <li
+                                                    key={s.id}
+                                                    style={{
+                                                        marginBottom: 8,
+                                                        padding: "12px 16px",
+                                                        background: "#f8f9fa",
+                                                        borderRadius: 6,
+                                                        border: "1px solid #dee2e6",
+                                                    }}
+                                                >
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                        <div>
+                                                            <strong>{s.activity_type.toUpperCase()}</strong>
+                                                            <span style={{ marginLeft: 8, color: '#666' }}>
+                                                                {moment(s.time, 'HH:mm:ss').format('HH:mm')} - {moment(s.time, 'HH:mm:ss').add(s.duration_minutes, 'minutes').format('HH:mm')}
+                                                            </span>
+                                                            {/* Removed: slots and attendee info for clients */}
+                                                        </div>
+                                                        <div>
+                                                            {/* Cancel button is disabled within 30 minutes of session start */}
+                                                            {(() => {
+                                                                const sessionDateTime = moment(`${s.date}T${s.time}`);
+                                                                const now = moment();
+                                                                const canCancel = sessionDateTime.diff(now, 'minutes') > 30;
+                                                                return (
+                                                                    <button
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            if (canCancel) handleBook(s);
+                                                                        }}
+                                                                        style={{
+                                                                            marginLeft: 12,
+                                                                            padding: "6px 10px",
+                                                                            fontSize: 12,
+                                                                            borderRadius: 6,
+                                                                            border: "1px solid rgba(0,0,0,0.1)",
+                                                                            background: canCancel ? "#dc3545" : "#adb5bd",
+                                                                            color: "white",
+                                                                            cursor: canCancel ? "pointer" : "not-allowed",
+                                                                        }}
+                                                                        title={canCancel ? "Cancel booking" : "Cannot cancel within 30 minutes of session start"}
+                                                                        disabled={!canCancel}
+                                                                    >
+                                                                        Cancel
+                                                                    </button>
+                                                                );
+                                                            })()}
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            )
+                        )}
+                    </div>
+
+                    {/* Modal */}
+                    <BookingsModal
+                        showModal={showModal}
+                        modalEvents={modalEvents}
+                        modalDate={modalDate}
+                        setShowModal={setShowModal}
+                        handleBook={handleBook}
+                    />
+                </React.Fragment>
+            )}
         </div>
     );
-};
+}
 
 export default Home;

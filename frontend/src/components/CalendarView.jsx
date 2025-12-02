@@ -26,12 +26,13 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
         };
 
         return (
-            <div style={{
+            <div className="custom-calendar-toolbar" style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 marginBottom: '10px',
-                padding: '10px 0'
+                padding: '10px 0',
+                flexWrap: 'wrap'
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <button
@@ -76,7 +77,7 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
                         →
                     </button>
                 </div>
-                <span style={{ fontSize: '18px', fontWeight: '600' }}>
+                <span className="calendar-month-label" style={{ fontSize: '18px', fontWeight: '600' }}>
                     {toolbar.label}
                 </span>
                 <div style={{ width: '200px' }}></div>
@@ -109,12 +110,16 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
         const dayEvents = displayedSessions.filter(
             (s) => moment(s.date).format("YYYY-MM-DD") === dateStr
         );
+
         // For tick: check if user has a booking on this day
+        // When filtering, only show tick if booking matches the filtered activity
         const hasBooking = bookedSessions && bookedSessions.some(
-            (s) => moment(s.date).format("YYYY-MM-DD") === dateStr
+            (s) => moment(s.date).format("YYYY-MM-DD") === dateStr &&
+                (!activityFilter || s.activity_type === activityFilter)
         );
 
         // For admin: check if any session on this day has bookings
+        // When filtering, only check sessions that match the filtered activity
         const hasAnyBooking = currentUser?.is_staff && dayEvents.some(
             (s) => s.attendees && s.attendees.length > 0
         );
@@ -137,27 +142,30 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
         if (dayEvents.length === 0) return <div style={containerStyle}>{children}</div>;
 
         const uniqueActivities = [...new Set(dayEvents.map((e) => e.activity_type))];
-        const emojis = uniqueActivities
-            .map((activityType) => {
-                const map = {
-                    cardio: "🏃",
-                    weights: "🏋️",
-                    yoga: "🧘",
-                    hiit: "⚡",
-                    pilates: "🤸",
-                };
-                return map[activityType] || "💪";
-            })
-            .join(" ");
+        const emojiElements = uniqueActivities.map((activityType, index) => {
+            const map = {
+                cardio: "🏃",
+                weights: "🏋️",
+                yoga: "🧘",
+                hiit: "⚡",
+                pilates: "🤸",
+            };
+            return (
+                <span key={index} style={{ display: "inline-block" }}>
+                    {map[activityType] || "💪"}
+                </span>
+            );
+        });
 
-        const countText = `${dayEvents.length} ${dayEvents.length === 1 ? "session" : "sessions"}`;
+        const countText = `${dayEvents.length}`;
 
         const buttonStyleWithFlex = {
             position: "absolute",
             bottom: 6,
             left: "50%",
             transform: "translateX(-50%)",
-            fontSize: 12,
+            fontSize: 11,
+            fontWeight: "600",
             pointerEvents: "auto",
             cursor: "pointer",
             maxWidth: "90%",
@@ -167,27 +175,33 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
             alignItems: "center",
             justifyContent: "center",
             gap: 6,
-            borderRadius: 8,
-            padding: "4px 8px",
-            border: "1px solid rgba(0,0,0,0.1)",
+            borderRadius: 12,
+            padding: "4px 10px",
+            border: "2px solid #0d6efd",
             background: "#0d6efd",
             color: "white",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
         };
 
         const emojiBarStyle = {
             position: "absolute",
-            bottom: 36,
+            top: "50%",
             left: "50%",
-            transform: "translateX(-50%)",
-            fontSize: 14,
+            transform: "translate(-50%, -50%)",
+            fontSize: 13,
             pointerEvents: "auto",
-            whiteSpace: "nowrap",
-            maxWidth: "90%",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            display: "inline-block",
+            width: "90%",
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gridTemplateRows: "repeat(2, auto)",
+            gridAutoFlow: "row",
+            gap: "2px",
+            justifyItems: "center",
+            alignItems: "center",
             textAlign: "center",
             background: "transparent",
+            maxHeight: "34px",
+            overflow: "hidden",
         };
 
         // For staff users a click anywhere in the cell selects the date
@@ -211,24 +225,9 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
                 }}
             >
                 <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>{children}</div>
-                <div style={emojiBarStyle} title={uniqueActivities.join(", ")}>{emojis}</div>
-                {/* Star for client bookings or admin days with bookings */}
-                {(hasBooking || hasAnyBooking) && (
-                    <span
-                        style={{
-                            position: "absolute",
-                            bottom: 32,
-                            right: 8,
-                            fontSize: 20,
-                            color: "#ffd700",
-                            textShadow: "0 0 6px #fff200, 0 0 2px #ffd700",
-                            pointerEvents: "none",
-                        }}
-                        title={hasBooking ? "You have a booking on this day" : "Has bookings"}
-                    >
-                        ★
-                    </span>
-                )}
+                <div className={activityFilter ? "emoji-bar emoji-bar-filtered" : "emoji-bar"} style={emojiBarStyle} title={uniqueActivities.join(", ")}>
+                    {emojiElements}
+                </div>
                 <button
                     onClick={(e) => {
                         if (isPastDate) {
@@ -244,43 +243,57 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
                 >
                     <span>{countText}</span>
                 </button>
+                {/* Checkmark to the right of button on desktop, centered on mobile */}
+                {(hasAnyBooking || hasBooking) && (
+                    <span
+                        className="booking-checkmark"
+                        style={{
+                            position: "absolute",
+                            bottom: 6,
+                            right: 8,
+                            fontSize: 18,
+                            color: "#28a745",
+                            fontWeight: "bold",
+                            pointerEvents: "none",
+                        }}
+                        title={hasBooking ? "You have a booking on this day" : "Has bookings"}
+                    >
+                        ✓
+                    </span>
+                )}
             </div>
         );
     };
 
     return (
-        <div>
-            <div style={{ height: 600 }}>
-                <Calendar
-                    localizer={localiser}
-                    events={[]}
-                    startAccessor="start"
-                    endAccessor="end"
-                    style={{ height: "100%" }}
-                    onDrillDown={handleDrillDown}
-                    views={["month"]}
-                    date={currentUser?.is_staff
-                        ? moment(selectedAdminDate).toDate()
-                        : selectedClientDate
-                            ? moment(selectedClientDate).toDate()
-                            : new Date()}
-                    onNavigate={(newDate) => {
-                        const dateStr = moment(newDate).format('YYYY-MM-DD');
-                        if (currentUser?.is_staff) {
-                            setSelectedAdminDate(dateStr);
-                        } else {
-                            setSelectedClientDate(dateStr);
-                        }
-                    }}
-                    components={{
-                        event: () => null,
-                        dateCellWrapper: DateCellWrapper,
-                        toolbar: CustomToolbar
-                    }}
-                />
-            </div>
+        <div style={{ minHeight: 800, maxHeight: 1000, display: 'flex', flexDirection: 'column', marginBottom: 0, paddingBottom: 0, gap: 0, height: '100%' }}>
+            <Calendar
+                localizer={localiser}
+                events={[]}
+                startAccessor="start"
+                endAccessor="end"
+                style={{ height: "700px", marginBottom: 0, paddingBottom: 0, display: 'block' }}
+                onDrillDown={handleDrillDown}
+                views={["month"]}
+                date={currentUser?.is_staff
+                    ? moment(selectedAdminDate).toDate()
+                    : selectedClientDate
+                        ? moment(selectedClientDate).toDate()
+                        : new Date()}
+                onNavigate={(newDate) => {
+                    const dateStr = moment(newDate).format('YYYY-MM-DD');
+                    if (currentUser?.is_staff) {
+                        setSelectedAdminDate(dateStr);
+                    } else {
+                        setSelectedClientDate(dateStr);
+                    }
+                }}
+                components={{
+                    event: () => null,
+                    dateCellWrapper: DateCellWrapper,
+                    toolbar: CustomToolbar
+                }}
+            />
         </div>
     );
-};
-
-export default CalendarView;
+}; export default CalendarView;
