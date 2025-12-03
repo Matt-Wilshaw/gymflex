@@ -90,7 +90,7 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
         <div style={{ color: '#555', marginBottom: '6px', marginTop: '-4px' }}>
             <small>Click a day to view sessions.</small>
         </div>
-        );
+    );
 
     // DateCellWrapper: computes the events for the given day and renders
     // a small emoji bar plus a session-count button anchored to the cell.
