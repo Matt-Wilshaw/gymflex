@@ -365,7 +365,7 @@ const Home = () => {
                                     showBookingsPanel={showBookingsPanel}
                                     setShowBookingsPanel={setShowBookingsPanel}
                                 />
-                            </React.Fragment>
+                            {/* ...existing code... */}
                         ) : (
                             <React.Fragment>
                                 {/* Client Bookings Toggle Button */}
