@@ -266,7 +266,7 @@ const Home = () => {
     }, [showBookingsPanel, currentUser]);
 
     return (
-        <div className="container mt-4">
+        <div className="container mt-4" style={{ background: "linear-gradient(120deg, #f8fafc 0%, #e3eafc 100%)", minHeight: "100dvh" }}>
             {/* Show loading screen until initial data is loaded */}
             {initialLoading ? (
                 <div style={{
@@ -333,7 +333,7 @@ const Home = () => {
                             setSelectedAdminDate={setSelectedAdminDate}
                             selectedClientDate={selectedClientDate}
                             setSelectedClientDate={setSelectedClientDate}
-                            bookedSessions={sortedUpcomingBookings} // Pass booked sessions for tick display
+                            bookedSessions={sortedUpcomingBookings}
                         />
                     </div>
 
@@ -353,19 +353,17 @@ const Home = () => {
                     {/* My Bookings / Admin View */}
                     <div className="mb-4" style={{ marginTop: currentUser?.is_staff ? undefined : '0' }}>
                         {currentUser?.is_staff ? (
-                            <React.Fragment>
-                                <AdminBookingsList
-                                    currentUser={currentUser}
-                                    adminSessions={adminSessions}
-                                    selectedAdminDate={selectedAdminDate}
-                                    setSelectedAdminDate={setSelectedAdminDate}
-                                    adminLoading={adminLoading}
-                                    removeAttendee={removeAttendee}
-                                    markAttendance={markAttendance}
-                                    showBookingsPanel={showBookingsPanel}
-                                    setShowBookingsPanel={setShowBookingsPanel}
-                                />
-                            {/* ...existing code... */}
+                            <AdminBookingsList
+                                currentUser={currentUser}
+                                adminSessions={adminSessions}
+                                selectedAdminDate={selectedAdminDate}
+                                setSelectedAdminDate={setSelectedAdminDate}
+                                adminLoading={adminLoading}
+                                removeAttendee={removeAttendee}
+                                markAttendance={markAttendance}
+                                showBookingsPanel={showBookingsPanel}
+                                setShowBookingsPanel={setShowBookingsPanel}
+                            />
                         ) : (
                             <React.Fragment>
                                 {/* Client Bookings Toggle Button */}
