@@ -9,16 +9,37 @@ const Register = () => {
     // State variables for the form fields
     const [username, setUsername] = useState(""); // Username input
     const [password, setPassword] = useState(""); // Password input
+    const [confirmPassword, setConfirmPassword] = useState(""); // Confirm Password input
     const [error, setError] = useState(""); // Error message state
     const [loading, setLoading] = useState(false); // Loading state to indicate form submission
 
     const navigate = useNavigate(); // Hook to programmatically navigate between routes
+
+    // Remove body scroll for register page
+    React.useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        document.body.style.margin = '0';
+        document.body.style.padding = '0';
+        document.documentElement.style.overflow = 'hidden';
+
+        return () => {
+            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
+        };
+    }, []);
 
     // Function called when the form is submitted
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent default form submission behaviour
         setLoading(true); // Set loading state to true during API call
         setError(""); // Reset error message
+
+        // Validate that password and confirm password fields match
+        if (password !== confirmPassword) {
+            setError("Passwords do not match.");
+            setLoading(false);
+            return;
+        }
 
         try {
             // Make POST request to Django backend register endpoint
@@ -40,11 +61,12 @@ const Register = () => {
     return (
         // Container div for centring the form and setting max width
         <div style={{
-            minHeight: "100vh",
+            height: "100vh",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "linear-gradient(135deg, #f3e6fa 0%, #e9d7f7 100%)"
+            background: "linear-gradient(135deg, #f3e6fa 0%, #e9d7f7 100%)",
+            overflow: "hidden"
         }}>
             {/* Card-like container for the registration form */}
             <div style={{
@@ -55,8 +77,7 @@ const Register = () => {
                 minWidth: 320,
                 maxWidth: 370,
                 width: "100%",
-                textAlign: "center",
-                overflow: "visible"
+                textAlign: "center"
             }}>
                 <img src="/favicons/favicon.svg" alt="GymFlex logo" style={{ height: 48, marginBottom: 12 }} />
                 <h2 style={{ marginBottom: 18, fontWeight: 700, color: "#6c3fa7" }}>Register</h2>
@@ -77,6 +98,15 @@ const Register = () => {
                         placeholder="Password"
                         value={password}
                         onChange={e => setPassword(e.target.value)}
+                        required
+                        style={{ padding: "0.75rem", borderRadius: 8, border: "1px solid #e0e0e0", fontSize: 16 }}
+                    />
+                    {/* Confirm Password input */}
+                    <input
+                        type="password"
+                        placeholder="Confirm Password"
+                        value={confirmPassword}
+                        onChange={e => setConfirmPassword(e.target.value)}
                         required
                         style={{ padding: "0.75rem", borderRadius: 8, border: "1px solid #e0e0e0", fontSize: 16 }}
                     />
