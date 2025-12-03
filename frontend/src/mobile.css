@@ -63,16 +63,16 @@
 
     /* Make column borders more visible on desktop */
     .rbc-header+.rbc-header {
-        border-left: 3px solid #666 !important;
+        border-left: 1px solid #666 !important;
     }
 
     .rbc-day-bg+.rbc-day-bg {
-        border-left: 3px solid #666 !important;
+        border-left: 1px solid #666 !important;
     }
 
     /* Make row borders more visible */
     .rbc-month-row {
-        border-top: 3px solid #666 !important;
+        border-top: 1px solid #666 !important;
     }
 }
 
@@ -102,16 +102,16 @@
 
     /* Make column borders more visible */
     .rbc-header+.rbc-header {
-        border-left: 3px solid #666 !important;
+        border-left: 1px solid #666 !important;
     }
 
     .rbc-day-bg+.rbc-day-bg {
-        border-left: 3px solid #666 !important;
+        border-left: 1px solid #666 !important;
     }
 
     /* Make row borders more visible */
     .rbc-month-row {
-        border-top: 3px solid #666 !important;
+        border-top: 1px solid #666 !important;
     }
 }
 
@@ -166,16 +166,16 @@
 
     /* Make vertical borders more visible on mobile */
     .rbc-header+.rbc-header {
-        border-left: 3px solid #666 !important;
+        border-left: 1px solid #666 !important;
     }
 
     .rbc-day-bg+.rbc-day-bg {
-        border-left: 3px solid #666 !important;
+        border-left: 1px solid #666 !important;
     }
 
     /* Make horizontal borders more visible on mobile */
     .rbc-month-row {
-        border-top: 3px solid #666 !important;
+        border-top: 1px solid #666 !important;
     }
 }
 
@@ -246,16 +246,16 @@
 
     /* Make vertical borders more visible */
     .rbc-header+.rbc-header {
-        border-left: 3px solid #666 !important;
+        border-left: 1px solid #666 !important;
     }
 
     .rbc-day-bg+.rbc-day-bg {
-        border-left: 3px solid #666 !important;
+        border-left: 1px solid #666 !important;
     }
 
     /* Make horizontal borders more visible */
     .rbc-month-row {
-        border-top: 3px solid #666 !important;
+        border-top: 1px solid #666 !important;
     }
 
     /* Calendar container mobile adjustments */
@@ -287,8 +287,13 @@
     .legend-info {
         margin-top: 0 !important;
         padding-top: 0 !important;
-        margin-bottom: 0.5rem !important;
+        margin-bottom: 0 !important;
         line-height: 1.2 !important;
+    }
+
+    /* Reduce spacing for bookings section on tablets */
+    .mb-4 {
+        margin-bottom: 0 !important;
     }
 
     /* Calendar toolbar adjustments for mobile */
@@ -321,13 +326,13 @@
         height: auto !important;
         overflow: visible !important;
         line-height: normal !important;
-        margin-bottom: 10px !important;
+        margin-bottom: 0 !important;
     }
 
     .rbc-month-view {
         height: auto !important;
         min-height: 500px !important;
-        margin-bottom: 10px !important;
+        margin-bottom: 0 !important;
     }
 
     .rbc-month-row {
@@ -356,11 +361,12 @@
 
     /* Ensure legend doesn't overlap calendar */
     .calendar-container {
-        margin-bottom: 10px !important;
+        margin-bottom: 0 !important;
     }
 
     .legend-info {
-        margin-top: 10px !important;
+        margin-top: 8px !important;
+        margin-bottom: 0.35rem !important;
         clear: both !important;
     }
 
@@ -427,16 +433,22 @@
     .rbc-calendar {
         max-height: none !important;
         height: auto !important;
-        margin-bottom: 15px !important;
+        margin-bottom: 0 !important;
     }
 
     .rbc-month-view {
         min-height: 520px !important;
-        margin-bottom: 15px !important;
+        margin-bottom: 0 !important;
     }
 
     .legend-info {
-        margin-top: 15px !important;
+        margin-top: -8px !important;
+        margin-bottom: 4px !important;
+    }
+
+    /* Reduce spacing for bookings section */
+    .mb-4 {
+        margin-bottom: 0 !important;
     }
 
     .rbc-time-view {

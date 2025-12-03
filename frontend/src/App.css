@@ -1,3 +1,46 @@
+/* --- UNIVERSAL: FORCE IDENTICAL WIDTHS FOR HEADER AND DATE CELLS AT ALL SCREEN SIZES --- */
+.rbc-header,
+.rbc-date-cell {
+  flex: 0 0 14.2857% !important;
+  min-width: 0 !important;
+  max-width: 14.2857% !important;
+  width: 14.2857% !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: relative;
+  border: none !important;
+  overflow: hidden !important;
+}
+
+/* Remove any flex-basis or width overrides from media queries */
+@media (min-width: 577px) {
+  .rbc-header,
+  .rbc-date-cell {
+    flex: 0 0 14.2857% !important;
+    min-width: 0 !important;
+    max-width: 14.2857% !important;
+    width: 14.2857% !important;
+  }
+}
+@media (min-width: 769px) {
+  .rbc-header,
+  .rbc-date-cell {
+    flex: 0 0 14.2857% !important;
+    min-width: 0 !important;
+    max-width: 14.2857% !important;
+    width: 14.2857% !important;
+  }
+}
+@media (min-width: 1025px) {
+  .rbc-header,
+  .rbc-date-cell {
+    flex: 0 0 14.2857% !important;
+    min-width: 0 !important;
+    max-width: 14.2857% !important;
+    width: 14.2857% !important;
+  }
+}
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -78,78 +121,65 @@
   background-color: #f0f0f0 !important;
 }
 
-/* Make all calendar borders more visible */
+/* Make all calendar borders more visible - HORIZONTAL LINES */
 .rbc-month-row {
-  border-top: 2px solid #666 !important;
+  border-top: 1px solid #666 !important;
 }
 
-.rbc-day-bg+.rbc-day-bg {
-  border-left: 3px solid #666 !important;
-}
-
-.rbc-header+.rbc-header {
-  border-left: 3px solid #666 !important;
-}
-
-/* Increase specificity to ensure vertical borders render across all layouts */
-.rbc-month-view .rbc-day-bg+.rbc-day-bg {
-  border-left: 3px solid #666 !important;
-}
-
-.rbc-month-row .rbc-day-bg+.rbc-day-bg {
-  border-left: 3px solid #666 !important;
-}
-
-.rbc-row-content .rbc-date-cell+.rbc-date-cell {
-  border-left: 3px solid #666 !important;
-}
-
-/* Explicitly target month grid date cells for vertical lines */
-.rbc-month-row .rbc-row-content>.rbc-date-cell {
-  box-sizing: border-box;
-  border-left: 3px solid #666 !important;
-  border-right: 0;
-}
-
-/* Ensure the very first cell also has a left border for consistency */
-.rbc-month-row .rbc-row-content>.rbc-date-cell:first-child {
-  border-left: 3px solid #666 !important;
-}
-
-/* Also enforce vertical separators via right borders to increase visibility */
-.rbc-month-row .rbc-row-content>.rbc-date-cell+.rbc-date-cell {
-  border-right: 3px solid #666 !important;
-}
-
-/* Header cells: strengthen vertical lines across the week names */
-.rbc-month-header .rbc-header+.rbc-header {
-  border-left: 3px solid #666 !important;
-}
-
-/* Strengthen header separators across all breakpoints */
-.rbc-month-header .rbc-header {
-  box-sizing: border-box;
-  border-right: 2px solid #666 !important;
-}
-
-.rbc-month-header .rbc-header:last-child {
-  border-right: 0 !important;
-  /* avoid double border at row end */
-}
-
-/* Target row background container as some themes draw lines there */
-.rbc-row-bg .rbc-day-bg+.rbc-day-bg {
-  border-left: 2px solid #666 !important;
-}
-
-/* Add a subtle right border for completeness (left may be hidden by layout) */
+/* VERTICAL LINES - Apply to date cells and headers only for perfect alignment */
+/* Remove borders from background layer to prevent misalignment */
 .rbc-day-bg {
-  border-right: 2px solid #666 !important;
+  border-left: 0 !important;
+}
+
+/* Apply borders to date cells (the actual content layer) */
+.rbc-date-cell {
+  border-left: 0 !important;
+  border-right: 1px solid #666 !important;
+  box-sizing: border-box !important;
+}
+.rbc-date-cell:last-child {
+  border-right: 0 !important;
+}
+
+.rbc-date-cell:first-child {
+  border-left: 0 !important;
+}
+
+/* Remove borders from row content container */
+.rbc-row-content {
+  border-left: 0 !important;
+}
+
+/* Header vertical lines - ensure they match date cell borders exactly */
+.rbc-header {
+  border-left: 0 !important;
+  border-right: 1px solid #666 !important;
+  box-sizing: border-box !important;
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+}
+.rbc-header:last-child {
+  border-right: 0 !important;
+}
+
+.rbc-header:first-child {
+  border-left: 0 !important;
+}
+
+/* Additional specificity for date cells only */
+.rbc-month-view .rbc-date-cell {
+  border-left: 1px solid #666 !important;
+}
+
+.rbc-month-view .rbc-date-cell:first-child {
+  border-left: 0 !important;
 }
 
 /* Ensure off-range days also keep vertical lines */
 .rbc-off-range-bg {
-  border-right: 2px solid #666 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
 }
 
 /* Remove white space under calendar */
@@ -212,6 +242,12 @@
   padding-top: 0 !important;
   margin-block-start: 0 !important;
   margin-block-end: 0 !important;
+  margin-bottom: 0.35rem !important;
+}
+
+/* Reduce spacing for bookings section on desktop */
+.mb-4 {
+  margin-bottom: 0.35rem !important;
 }
 
 /* Remove spacing from calendar container */
@@ -234,4 +270,88 @@
 .calendar-container>div {
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
+}
+
+/* --- PIXEL-PERFECT VERTICAL GRID LINES USING PSEUDO-ELEMENTS --- */
+.rbc-header,
+.rbc-date-cell {
+  position: relative;
+  border: none !important;
+  box-sizing: border-box !important;
+}
+.rbc-header:not(:last-child)::after,
+.rbc-date-cell:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 100%;
+  background: #666;
+  z-index: 2;
+  pointer-events: none;
+}
+
+
+/* --- FORCE IDENTICAL WIDTHS FOR HEADER AND DATE CELLS AT ALL BREAKPOINTS --- */
+.rbc-header,
+.rbc-date-cell {
+  flex: 0 0 14.2857% !important;
+  min-width: 0 !important;
+  max-width: 14.2857% !important;
+  width: 14.2857% !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: relative;
+  border: none !important;
+  overflow: hidden !important;
+}
+.rbc-header:not(:last-child)::after,
+.rbc-date-cell:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 100%;
+  background: #666;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Remove any left/right borders from background/content layers */
+.rbc-day-bg,
+.rbc-row-content,
+.rbc-off-range-bg {
+  border: none !important;
+}
+
+/* --- FORCE FLEX LAYOUT FOR HEADER AND DATE ROWS --- */
+.rbc-month-header,
+.rbc-month-row {
+  display: flex !important;
+  flex-direction: row;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+/* --- ENSURE ALIGNMENT BETWEEN 769px AND 1024px --- */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .rbc-header,
+  .rbc-date-cell {
+    flex: 0 0 14.2857% !important;
+    min-width: 0 !important;
+    max-width: 14.2857% !important;
+    width: 14.2857% !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative;
+    border: none !important;
+    overflow: hidden !important;
+  }
 }

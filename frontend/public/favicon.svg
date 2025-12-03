@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="gymGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a90e2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#357abd;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="48" fill="url(#gymGrad)" stroke="#2c5aa0" stroke-width="2"/>
+  <!-- Dumbbell icon -->
+  <g fill="#ffffff">
+    <!-- Left weight -->
+    <rect x="10" y="35" width="15" height="30" rx="2"/>
+    <!-- Right weight -->
+    <rect x="75" y="35" width="15" height="30" rx="2"/>
+    <!-- Bar -->
+    <rect x="25" y="47" width="50" height="6" rx="1"/>
+    <!-- Left grip -->
+    <rect x="30" y="43" width="8" height="14" rx="1" fill="#e0e0e0"/>
+    <!-- Right grip -->
+    <rect x="62" y="43" width="8" height="14" rx="1" fill="#e0e0e0"/>
+  </g>
+</svg>
