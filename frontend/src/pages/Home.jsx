@@ -266,7 +266,7 @@ const Home = () => {
     }, [showBookingsPanel, currentUser]);
 
     return (
-        <div className="container mt-4" style={{ background: "linear-gradient(120deg, #f8fafc 0%, #e3eafc 100%)", minHeight: "100dvh" }}>
+        <div className="container mt-4" style={{ background: "linear-gradient(120deg, #f8fafc 0%, #e3eafc 100%)", minHeight: "100dvh", paddingLeft: "22px", paddingRight: "22px", paddingTop: "12px" }}>
             {/* Show loading screen until initial data is loaded */}
             {initialLoading ? (
                 <div style={{
@@ -292,18 +292,44 @@ const Home = () => {
                             <h2 style={{ margin: 0, padding: 0 }}>GymFlex</h2>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            {currentUser && <h4 className="mt-1" style={{ margin: 0 }}>Welcome, {currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}</h4>}
                             {currentUser && (
                                 <button
-                                    className="btn btn-warning"
+                                    className="logout-icon-btn"
                                     onClick={handleLogout}
-                                    style={{ padding: '0.5rem 1.2rem' }}
+                                    aria-label="Logout"
+                                    style={{
+                                        padding: '0.4rem',
+                                        borderRadius: '50%',
+                                        background: '#f5f6fa',
+                                        border: 'none',
+                                        boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        transition: 'background 0.2s',
+                                    }}
+                                    onMouseOver={e => e.currentTarget.style.background = '#e1e4ea'}
+                                    onMouseOut={e => e.currentTarget.style.background = '#f5f6fa'}
                                 >
-                                    Logout
+                                    {/* Material Design Logout SVG Icon */}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                        <polyline points="16 17 21 12 16 7" />
+                                        <line x1="21" y1="12" x2="9" y2="12" />
+                                    </svg>
                                 </button>
                             )}
                         </div>
                     </div>
+                    {/* Welcome message and username under logo/title */}
+                    {currentUser && (
+                        <div style={{ textAlign: 'left', marginBottom: '1.2rem', marginLeft: '2px' }}>
+                            <h4 className="mt-1" style={{ margin: 0, fontWeight: 500 }}>
+                                Welcome, {currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}
+                            </h4>
+                        </div>
+                    )}
 
                     {/* Activity Filter */}
                     <div className="mb-3">
