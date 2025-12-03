@@ -269,7 +269,15 @@ const Home = () => {
         <div className="container mt-4">
             {/* Show loading screen until initial data is loaded */}
             {initialLoading ? (
-                <div style={{ textAlign: 'center', padding: '3rem', color: '#666' }}>
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minHeight: '80vh',
+                    color: '#666',
+                    textAlign: 'center',
+                }}>
                     <div style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>GymFlex</div>
                     <div className="spinner-border" role="status">
                         <span className="visually-hidden">Loading...</span>
@@ -278,23 +286,22 @@ const Home = () => {
             ) : (
                 <React.Fragment>
                     {/* Header */}
-                    <div className="d-flex justify-content-between align-items-center mb-3">
-                        <div>
-                            <h2>GymFlex Calendar</h2>
-                            {currentUser && <h4 className="mt-1">Welcome, {currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}</h4>}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1.5rem', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <img src="/favicons/favicon.svg" alt="GymFlex logo" style={{ height: '45px', width: '40px', objectFit: 'contain', margin: 0, padding: 0 }} />
+                            <h2 style={{ margin: 0, padding: 0 }}>GymFlex</h2>
                         </div>
-                        <div>
-                            {currentUser?.is_superuser && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            {currentUser && <h4 className="mt-1" style={{ margin: 0 }}>Welcome, {currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}</h4>}
+                            {currentUser && (
                                 <button
-                                    className="btn btn-primary me-2"
-                                    onClick={() => window.open(import.meta.env.VITE_API_URL.replace('/api', '/admin/'), "_blank")}
+                                    className="btn btn-warning"
+                                    onClick={handleLogout}
+                                    style={{ padding: '0.5rem 1.2rem' }}
                                 >
-                                    Admin Panel
+                                    Logout
                                 </button>
                             )}
-                            <button className="btn btn-warning" onClick={handleLogout}>
-                                Logout
-                            </button>
                         </div>
                     </div>
 
@@ -363,9 +370,8 @@ const Home = () => {
                             <React.Fragment>
                                 {/* Client Bookings Toggle Button */}
                                 <button
-                                    className="btn btn-primary mb-2"
+                                    className="btn btn-primary mb-2 w-100"
                                     onClick={() => setShowBookingsPanel(!showBookingsPanel)}
-                                    style={{ width: "100%" }}
                                 >
                                     {showBookingsPanel ? "Hide" : "Show"} My Bookings
                                 </button>
