@@ -65,12 +65,6 @@ const Home = () => {
     // Ref for client bookings panel scroll behavior
     const clientPanelRef = useRef(null);
 
-    // No mobile-specific legend logic; show consistent info across sizes
-
-    // Current logged-in user information is provided by the `useSessions` hook
-
-    // (bookedSessions, adminSessions, adminLoading, currentUser, selectedAdminDate are provided by the hook)
-
     // JWT token stored in localStorage
     const token = localStorage.getItem(ACCESS_TOKEN) || "";
 
@@ -96,10 +90,27 @@ const Home = () => {
         fetchSessions(activityFilter);
     }, [activityFilter, token]);
 
-    // ------------------ API CALLS ------------------
+    // Control page overflow based on loading state and bookings panel visibility
+    useEffect(() => {
+        if (initialLoading) {
+            // Hide scroll during loading
+            document.body.style.overflow = 'hidden';
+        } else if (!currentUser?.is_staff && !showBookingsPanel) {
+            // Hide scroll when bookings panel is closed for clients
+            document.body.style.overflow = 'hidden';
+        } else if (currentUser?.is_staff && !showBookingsPanel) {
+            // Hide scroll when bookings panel is closed for admins
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Show scroll when bookings panel is open
+            document.body.style.overflow = 'auto';
+        }
 
-    // Fetch sessions from backend; apply client-side activity filter
-    // (fetchSessions, fetchBookedSessions, fetchAllSessions, fetchCurrentUser provided by hook)
+        // Cleanup on unmount
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, [initialLoading, showBookingsPanel, currentUser]);
 
     // ------------------ HANDLERS ------------------
 
@@ -266,20 +277,13 @@ const Home = () => {
     }, [showBookingsPanel, currentUser]);
 
     return (
-        <div className="container mt-4" style={{ background: "linear-gradient(120deg, #f8fafc 0%, #e3eafc 100%)", minHeight: "100dvh", paddingLeft: "22px", paddingRight: "22px", paddingTop: "12px" }}>
+        <div className="container mt-4" style={{ background: "linear-gradient(120deg, #e0f7ff 0%, #ffffff 100%)", minHeight: "100dvh", paddingLeft: "22px", paddingRight: "22px", paddingTop: "12px" }}>
             {/* Show loading screen until initial data is loaded */}
             {initialLoading ? (
-                <div style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    minHeight: '80vh',
-                    color: '#666',
-                    textAlign: 'center',
-                }}>
-                    <div style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>GymFlex</div>
-                    <div className="spinner-border" role="status">
+                <div className="loading-screen">
+                    <img src="/favicons/favicon.svg" alt="GymFlex logo" className="loading-logo" />
+                    <div className="loading-text">GymFlex</div>
+                    <div className="spinner-border text-primary" role="status">
                         <span className="visually-hidden">Loading...</span>
                     </div>
                 </div>
@@ -289,7 +293,7 @@ const Home = () => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1.5rem', justifyContent: 'space-between' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <img src="/favicons/favicon.svg" alt="GymFlex logo" style={{ height: '45px', width: '40px', objectFit: 'contain', margin: 0, padding: 0 }} />
-                            <h2 style={{ margin: 0, padding: 0 }}>GymFlex</h2>
+                            <h2 style={{ margin: 0, padding: 0, color: '#2c3e50' }}>GymFlex</h2>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                             {currentUser && (
@@ -300,20 +304,19 @@ const Home = () => {
                                     style={{
                                         padding: '0.4rem',
                                         borderRadius: '50%',
-                                        background: '#f5f6fa',
+                                        background: '#3498db',
                                         border: 'none',
-                                        boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
+                                        boxShadow: '0 2px 8px rgba(52, 152, 219, 0.3)',
                                         cursor: 'pointer',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        transition: 'background 0.2s',
+                                        transition: 'all 0.2s',
                                     }}
-                                    onMouseOver={e => e.currentTarget.style.background = '#e1e4ea'}
-                                    onMouseOut={e => e.currentTarget.style.background = '#f5f6fa'}
+                                    onMouseOver={e => e.currentTarget.style.background = '#2980b9'}
+                                    onMouseOut={e => e.currentTarget.style.background = '#3498db'}
                                 >
-                                    {/* Material Design Logout SVG Icon */}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                                         <polyline points="16 17 21 12 16 7" />
                                         <line x1="21" y1="12" x2="9" y2="12" />
@@ -325,34 +328,18 @@ const Home = () => {
                     {/* Welcome message and username under logo/title */}
                     {currentUser && (
                         <div style={{ textAlign: 'left', marginBottom: '1.2rem', marginLeft: '2px' }}>
-                            <h4 className="mt-1" style={{ margin: 0, fontWeight: 500 }}>
+                            <h4 className="mt-1" style={{ margin: 0, fontWeight: 500, color: '#2c3e50' }}>
                                 Welcome, {currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}
                             </h4>
                         </div>
                     )}
 
-                    {/* Activity Filter */}
-                    <div className="mb-3">
-                        <label>Filter by Activity: </label>
-                        <select
-                            value={activityFilter}
-                            onChange={(e) => setActivityFilter(e.target.value)}
-                            className="form-select w-25 d-inline-block ms-2"
-                        >
-                            <option value="">All</option>
-                            <option value="cardio">Cardio</option>
-                            <option value="weights">Weightlifting</option>
-                            <option value="yoga">Yoga</option>
-                            <option value="hiit">HIIT</option>
-                            <option value="pilates">Pilates</option>
-                        </select>
-                    </div>
-
-                    {/* Calendar */}
-                    <div className="calendar-container" style={{ marginBottom: 0, paddingBottom: 0 }}>
+                    {/* Calendar with Legend inside */}
+                    <div className="calendar-container" style={{ marginBottom: 0, paddingBottom: 0, position: 'relative' }}>
                         <CalendarView
                             sessions={sessions}
                             activityFilter={activityFilter}
+                            setActivityFilter={setActivityFilter}
                             handleDrillDown={handleDrillDown}
                             currentUser={currentUser}
                             selectedAdminDate={selectedAdminDate}
@@ -361,23 +348,22 @@ const Home = () => {
                             setSelectedClientDate={setSelectedClientDate}
                             bookedSessions={sortedUpcomingBookings}
                         />
+
+                        {/* Legend positioned directly under calendar */}
+                        <div className="legend-info" style={{ marginTop: '4px', paddingTop: '4px', lineHeight: '1.4', color: '#2c3e50' }}>
+                            <small className="activity-legend" style={{ display: 'block', marginBottom: '4px' }}>
+                                <strong>Activities:</strong> 🏃 Cardio | 🏋️ Weights | 🧘 Yoga | ⚡ HIIT | 🤸 Pilates
+                            </small>
+                            <small className="info-legend" style={{ display: 'block' }}>
+                                <strong>Info:</strong> <span style={{ display: 'inline-block', padding: '2px 6px', background: '#3498db', color: 'white', borderRadius: '12px', fontSize: '11px', fontWeight: '600' }}>3</span> Session count
+                                {' '}|{' '}
+                                <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>✓</span> Booked slot/s
+                            </small>
+                        </div>
                     </div>
 
-                    {/* Legend / Info */}
-                    <p className="legend-info" style={{ marginTop: '0', marginBottom: '0.5rem', paddingTop: '0', lineHeight: '1.3', marginBlockStart: '0', marginBlockEnd: '0' }}>
-                        <small className="activity-legend">
-                            Activity icons — 🏃 Cardio | 🏋️ Weights | 🧘 Yoga | ⚡ HIIT | 🤸 Pilates
-                        </small>
-                        <br />
-                        <small>
-                            Info: <span style={{ display: 'inline-block', padding: '2px 6px', background: '#0d6efd', color: 'white', borderRadius: '12px', fontSize: '11px', fontWeight: '600' }}>3</span> Session count
-                            {' '}|{' '}
-                            <span style={{ color: '#28a745', fontWeight: 'bold' }}>✓</span> Booked slot/s
-                        </small>
-                    </p>
-
                     {/* My Bookings / Admin View */}
-                    <div className="mb-4" style={{ marginTop: currentUser?.is_staff ? undefined : '0' }}>
+                    <div className="mb-4" style={{ marginTop: '8px' }}>
                         {currentUser?.is_staff ? (
                             <AdminBookingsList
                                 currentUser={currentUser}
@@ -396,6 +382,13 @@ const Home = () => {
                                 <button
                                     className="btn btn-primary mb-2 w-100"
                                     onClick={() => setShowBookingsPanel(!showBookingsPanel)}
+                                    style={{
+                                        background: '#3498db',
+                                        border: 'none',
+                                        color: 'white',
+                                        fontWeight: '600',
+                                        boxShadow: '0 2px 8px rgba(52, 152, 219, 0.3)',
+                                    }}
                                 >
                                     {showBookingsPanel ? "Hide" : "Show"} My Bookings
                                 </button>
@@ -414,7 +407,7 @@ const Home = () => {
                                     ) : sortedUpcomingBookings.length === 0 ? (
                                         <p style={{ color: "#666", padding: "12px" }}>You have no upcoming bookings.</p>
                                     ) : (
-                                        <div style={{ padding: "12px 0" }}>
+                                        <div className="bookings-panel-inner" style={{ background: 'rgba(255, 255, 255, 0.95)', borderRadius: '8px', padding: '16px' }}>
                                             {/* Navigation Controls */}
                                             {groupedBookings.length > 1 && (
                                                 <div className="d-flex align-items-center gap-2 mb-3">
@@ -476,7 +469,6 @@ const Home = () => {
                                                                     </span>
                                                                 </div>
                                                                 <div>
-                                                                    {/* Cancel button is disabled within 30 minutes of session start */}
                                                                     {(() => {
                                                                         const sessionDateTime = moment(`${s.date}T${s.time}`);
                                                                         const now = moment();

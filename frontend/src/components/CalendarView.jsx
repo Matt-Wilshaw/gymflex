@@ -9,7 +9,9 @@ const localiser = momentLocalizer(moment);
 // The cell wrapper shows a compact emoji summary and a small session-count
 // button. For staff users the whole cell is clickable to select a date for
 // admin viewing; for regular users the button opens a modal drill-down.
-const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, selectedAdminDate, setSelectedAdminDate, selectedClientDate, setSelectedClientDate, bookedSessions }) => {
+const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrillDown, currentUser, selectedAdminDate, setSelectedAdminDate, selectedClientDate, setSelectedClientDate, bookedSessions }) => {
+    // Detect mobile screen
+    const isMobile = typeof window !== 'undefined' ? window.innerWidth <= 576 : false;
 
     // Custom toolbar with Today button between arrows
     const CustomToolbar = (toolbar) => {
@@ -85,9 +87,29 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
         );
     };
 
-    // Tip positioned directly below the toolbar (month selector)
+    // Activity Filter positioned below the toolbar
+    const ActivityFilterSection = () => (
+        <div style={{ marginBottom: '12px', marginTop: '-4px' }}>
+            <label style={{ marginRight: '8px', fontWeight: 500, fontSize: '14px' }}>Filter by Activity:</label>
+            <select
+                value={activityFilter}
+                onChange={(e) => setActivityFilter(e.target.value)}
+                className="form-select d-inline-block"
+                style={{ width: 'auto', minWidth: '150px', fontSize: '14px' }}
+            >
+                <option value="">All</option>
+                <option value="cardio">Cardio</option>
+                <option value="weights">Weightlifting</option>
+                <option value="yoga">Yoga</option>
+                <option value="hiit">HIIT</option>
+                <option value="pilates">Pilates</option>
+            </select>
+        </div>
+    );
+
+    // Tip positioned directly below the filter
     const ToolbarTip = () => (
-        <div style={{ color: '#555', marginBottom: '6px', marginTop: '-4px' }}>
+        <div style={{ color: '#555', marginBottom: '6px', marginTop: '4px' }}>
             <small>Click a day to view sessions.</small>
         </div>
     );
@@ -301,13 +323,23 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
     };
 
     return (
-        <div style={{ minHeight: 800, maxHeight: 1000, display: 'flex', flexDirection: 'column', marginBottom: 0, paddingBottom: 0, gap: 0, height: '100%' }}>
+        <div
+            style={
+                isMobile
+                    ? { minHeight: 'unset', maxHeight: 'unset', height: 'auto', position: 'relative', marginBottom: 0, paddingBottom: 0 }
+                    : { minHeight: 800, maxHeight: 1000, height: '100%', display: 'flex', flexDirection: 'column', marginBottom: 0, paddingBottom: 0, gap: 0 }
+            }
+        >
             <Calendar
                 localizer={localiser}
                 events={[]}
                 startAccessor="start"
                 endAccessor="end"
-                style={{ height: "700px", marginBottom: 0, paddingBottom: 0, display: 'block' }}
+                style={
+                    isMobile
+                        ? { height: 'auto', marginBottom: 0, paddingBottom: 0, display: 'block', minHeight: 'unset', maxHeight: 'unset' }
+                        : { height: '700px', marginBottom: 0, paddingBottom: 0, display: 'block' }
+                }
                 onDrillDown={handleDrillDown}
                 views={["month"]}
                 date={currentUser?.is_staff
@@ -329,6 +361,7 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
                     toolbar: (t) => (
                         <div>
                             {CustomToolbar(t)}
+                            {ActivityFilterSection()}
                             {ToolbarTip()}
                         </div>
                     )

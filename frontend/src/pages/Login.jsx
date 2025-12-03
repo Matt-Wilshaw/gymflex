@@ -45,13 +45,13 @@ const Login = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "linear-gradient(135deg, #f3e6fa 0%, #e9d7f7 100%)",
+            background: "linear-gradient(120deg, #e0f7ff 0%, #ffffff 100%)",
             overflow: "hidden"
         }}>
             <div style={{
                 background: "#fff",
                 borderRadius: 16,
-                boxShadow: "0 4px 24px rgba(80, 50, 120, 0.10)",
+                boxShadow: "0 4px 24px rgba(52, 152, 219, 0.15)",
                 padding: "2.5rem 2.5rem 2rem 2.5rem",
                 minWidth: 320,
                 maxWidth: 370,
@@ -59,7 +59,7 @@ const Login = () => {
                 textAlign: "center"
             }}>
                 <img src="/favicons/favicon.svg" alt="GymFlex logo" style={{ height: 48, marginBottom: 12 }} />
-                <h2 style={{ marginBottom: 18, fontWeight: 700, color: "#6c3fa7" }}>Login</h2>
+                <h2 style={{ marginBottom: 18, fontWeight: 700, color: "#2c3e50" }}>Login</h2>
                 <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                     <input
                         type="text"
@@ -78,7 +78,7 @@ const Login = () => {
                         style={{ padding: "0.75rem", borderRadius: 8, border: "1px solid #e0e0e0", fontSize: 16 }}
                     />
                     <button type="submit" disabled={loading} style={{
-                        background: "linear-gradient(90deg, #a084e8 0%, #6c3fa7 100%)",
+                        background: "linear-gradient(90deg, #3498db 0%, #2980b9 100%)",
                         color: "#fff",
                         border: "none",
                         borderRadius: 8,
@@ -92,7 +92,7 @@ const Login = () => {
                     </button>
                 </form>
                 <div style={{ marginTop: 18, fontSize: 15 }}>
-                    <Link to="/register" style={{ color: "#6c3fa7", textDecoration: "underline" }}>
+                    <Link to="/register" style={{ color: "#3498db", textDecoration: "underline" }}>
                         Don't have an account? Register
                     </Link>
                 </div>
