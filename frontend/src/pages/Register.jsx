@@ -1,45 +1,37 @@
 // src/pages/Register.jsx
 import React, { useState } from "react";
-import api from "../api"; // Axios instance to communicate with Django backend
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import api from "../api";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 
 // Register component handles user registration for GymFlex
-export default function Register() {
+const Register = () => {
     // State variables for the form fields
     const [username, setUsername] = useState(""); // Username input
     const [password, setPassword] = useState(""); // Password input
-    const [password2, setPassword2] = useState(""); // Password confirmation input
+    const [error, setError] = useState(""); // Error message state
     const [loading, setLoading] = useState(false); // Loading state to indicate form submission
 
     const navigate = useNavigate(); // Hook to programmatically navigate between routes
 
     // Function called when the form is submitted
-    const handleRegister = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent default form submission behaviour
-
-        // Check if passwords match
-        if (password !== password2) {
-            alert("Passwords do not match"); // Alert user if mismatch
-            return;
-        }
-
         setLoading(true); // Set loading state to true during API call
+        setError(""); // Reset error message
 
         try {
             // Make POST request to Django backend register endpoint
             const res = await api.post("/register/", { username, password });
 
-            // If registration successful (HTTP 201)
-            if (res.status === 201) {
-                alert("Registration successful! You can now log in.");
-                navigate("/login"); // Redirect user to login page
-            } else {
-                alert("Registration failed"); // Generic failure alert
-            }
+            // Store access and refresh tokens in local storage
+            localStorage.setItem(ACCESS_TOKEN, res.data.access);
+            localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+
+            navigate("/"); // Redirect user to home page on successful registration
         } catch (err) {
-            console.error("Register error:", err); // Log error for debugging
-            // Show detailed message if available, otherwise a generic error
-            alert(err.response?.data?.detail || err.message || "Registration failed");
+            // Set error message if registration fails
+            setError("Registration failed. Username may already exist.");
         } finally {
             setLoading(false); // Reset loading state after request completes
         }
@@ -47,42 +39,73 @@ export default function Register() {
 
     return (
         // Container div for centring the form and setting max width
-        <div style={{ maxWidth: "400px", margin: "50px auto", textAlign: "center" }}>
-            <h1>Register</h1>
-            {/* Registration form */}
-            <form onSubmit={handleRegister}>
-                {/* Username input */}
-                <input
-                    type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                    style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px" }}
-                />
-                {/* Password input */}
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px" }}
-                />
-                {/* Confirm password input */}
-                <input
-                    type="password"
-                    placeholder="Confirm Password"
-                    value={password2}
-                    onChange={(e) => setPassword2(e.target.value)}
-                    required
-                    style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px" }}
-                />
-                {/* Submit button */}
-                <button type="submit" disabled={loading} style={{ padding: "10px 20px" }}>
-                    {loading ? "Registering..." : "Register"}
-                </button>
-            </form>
+        <div style={{
+            minHeight: "100vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "linear-gradient(135deg, #f3e6fa 0%, #e9d7f7 100%)"
+        }}>
+            {/* Card-like container for the registration form */}
+            <div style={{
+                background: "#fff",
+                borderRadius: 16,
+                boxShadow: "0 4px 24px rgba(80, 50, 120, 0.10)",
+                padding: "2.5rem 2.5rem 2rem 2.5rem",
+                minWidth: 320,
+                maxWidth: 370,
+                width: "100%",
+                textAlign: "center",
+                overflow: "visible"
+            }}>
+                <img src="/favicons/favicon.svg" alt="GymFlex logo" style={{ height: 48, marginBottom: 12 }} />
+                <h2 style={{ marginBottom: 18, fontWeight: 700, color: "#6c3fa7" }}>Register</h2>
+                {/* Registration form */}
+                <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                    {/* Username input */}
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                        required
+                        style={{ padding: "0.75rem", borderRadius: 8, border: "1px solid #e0e0e0", fontSize: 16 }}
+                    />
+                    {/* Password input */}
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        required
+                        style={{ padding: "0.75rem", borderRadius: 8, border: "1px solid #e0e0e0", fontSize: 16 }}
+                    />
+                    {/* Submit button */}
+                    <button type="submit" disabled={loading} style={{
+                        background: "linear-gradient(90deg, #a084e8 0%, #6c3fa7 100%)",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: 8,
+                        padding: "0.75rem",
+                        fontWeight: 600,
+                        fontSize: 17,
+                        marginTop: 8,
+                        cursor: loading ? "not-allowed" : "pointer"
+                    }}>
+                        {loading ? "Registering..." : "Register"}
+                    </button>
+                </form>
+                {/* Link to login page for users who already have an account */}
+                <div style={{ marginTop: 18, fontSize: 15 }}>
+                    <Link to="/login" style={{ color: "#6c3fa7", textDecoration: "underline" }}>
+                        Already have an account? Login
+                    </Link>
+                </div>
+                {/* Error message display */}
+                {error && <div style={{ color: "#dc3545", marginTop: 12, fontWeight: 500 }}>{error}</div>}
+            </div>
         </div>
     );
-}
+};
+
+export default Register;

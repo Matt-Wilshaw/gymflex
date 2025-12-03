@@ -1,78 +1,92 @@
 import React, { useState } from "react";
-import api from "../api"; // Axios instance configured for Django backend
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants.js"; // Keys for storing JWT tokens
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import api from "../api";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 
-// Login component allows existing users to authenticate and access the app
-export default function Login() {
-    // State variables for input fields and loading state
-    const [username, setUsername] = useState(""); // Stores username input
-    const [password, setPassword] = useState(""); // Stores password input
-    const [loading, setLoading] = useState(false); // Tracks whether login request is in progress
+const Login = () => {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
-    const navigate = useNavigate(); // Hook to programmatically navigate between routes
-
-    // Function called when the login form is submitted
-    const handleLogin = async (e) => {
-        e.preventDefault(); // Prevent default form submission behaviour
-        setLoading(true); // Set loading state to true while waiting for API response
-
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError("");
         try {
-            // Send POST request to backend token endpoint with username and password
             const res = await api.post("/token/", { username, password });
-
-            // Check if response contains data
-            if (res && res.data) {
-                // Store JWT tokens in localStorage for authenticated requests
-                localStorage.setItem(ACCESS_TOKEN, res.data.access);
-                localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-
-                // Redirect user to Home page
-                navigate("/");
-            } else {
-                alert("Login failed: no response data"); // Alert if response is missing
-            }
+            localStorage.setItem(ACCESS_TOKEN, res.data.access);
+            localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+            navigate("/");
         } catch (err) {
-            console.error("Login error:", err); // Log error for debugging
-            // Show detailed message if available, otherwise a generic error
-            alert(
-                "Login failed: " +
-                (err.response?.data?.detail || err.message || "Unknown error")
-            );
+            setError("Invalid username or password");
         } finally {
-            setLoading(false); // Reset loading state once request is complete
+            setLoading(false);
         }
     };
 
     return (
-        // Container div to centre the form and set max width
-        <div style={{ maxWidth: "400px", margin: "50px auto", textAlign: "center" }}>
-            <h1>Login</h1>
-            {/* Login form */}
-            <form onSubmit={handleLogin}>
-                {/* Username input */}
-                <input
-                    type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                    style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px" }}
-                />
-                {/* Password input */}
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px" }}
-                />
-                {/* Submit button */}
-                <button type="submit" disabled={loading} style={{ padding: "10px 20px" }}>
-                    {loading ? "Logging in..." : "Login"}
-                </button>
-            </form>
+        <div style={{
+            minHeight: "100vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "linear-gradient(135deg, #f3e6fa 0%, #e9d7f7 100%)"
+        }}>
+            <div style={{
+                background: "#fff",
+                borderRadius: 16,
+                boxShadow: "0 4px 24px rgba(80, 50, 120, 0.10)",
+                padding: "2.5rem 2.5rem 2rem 2.5rem",
+                minWidth: 320,
+                maxWidth: 370,
+                width: "100%",
+                textAlign: "center",
+                overflow: "visible"
+            }}>
+                <img src="/favicons/favicon.svg" alt="GymFlex logo" style={{ height: 48, marginBottom: 12 }} />
+                <h2 style={{ marginBottom: 18, fontWeight: 700, color: "#6c3fa7" }}>Login</h2>
+                <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                        required
+                        style={{ padding: "0.75rem", borderRadius: 8, border: "1px solid #e0e0e0", fontSize: 16 }}
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        required
+                        style={{ padding: "0.75rem", borderRadius: 8, border: "1px solid #e0e0e0", fontSize: 16 }}
+                    />
+                    <button type="submit" disabled={loading} style={{
+                        background: "linear-gradient(90deg, #a084e8 0%, #6c3fa7 100%)",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: 8,
+                        padding: "0.75rem",
+                        fontWeight: 600,
+                        fontSize: 17,
+                        marginTop: 8,
+                        cursor: loading ? "not-allowed" : "pointer"
+                    }}>
+                        {loading ? "Logging in..." : "Login"}
+                    </button>
+                </form>
+                <div style={{ marginTop: 18, fontSize: 15 }}>
+                    <Link to="/register" style={{ color: "#6c3fa7", textDecoration: "underline" }}>
+                        Don't have an account? Register
+                    </Link>
+                </div>
+                {error && <div style={{ color: "#dc3545", marginTop: 12, fontWeight: 500 }}>{error}</div>}
+            </div>
         </div>
     );
-}
+};
+
+export default Login;
