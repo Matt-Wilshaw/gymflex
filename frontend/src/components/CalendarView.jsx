@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 
@@ -10,58 +10,6 @@ const localiser = momentLocalizer(moment);
 // button. For staff users the whole cell is clickable to select a date for
 // admin viewing; for regular users the button opens a modal drill-down.
 const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, selectedAdminDate, setSelectedAdminDate, selectedClientDate, setSelectedClientDate, bookedSessions }) => {
-    // --- Robust vertical alignment fix: use MutationObserver to patch after every update ---
-    useEffect(() => {
-        function alignCellsAndPatchRows() {
-            // Only remove padding and margin for alignment; do not set widths
-            const headerRow = document.querySelector('.rbc-month-header');
-            const headers = headerRow ? Array.from(headerRow.querySelectorAll('.rbc-header')) : [];
-            if (headers.length !== 7) return;
-            headers.forEach(cell => {
-                cell.style.padding = "0";
-                cell.style.margin = "0";
-            });
-            // Patch each week row
-            const rows = document.querySelectorAll('.rbc-month-row');
-            rows.forEach(row => {
-                const cells = Array.from(row.querySelectorAll('.rbc-date-cell'));
-                if (cells.length !== 7) return;
-                cells.forEach(cell => {
-                    cell.style.padding = "0";
-                    cell.style.margin = "0";
-                });
-            });
-        }
-
-        alignCellsAndPatchRows();
-        // Listen for window resize
-        window.addEventListener('resize', alignCellsAndPatchRows);
-        // Listen for calendar container resize (for flex/grid responsive layouts)
-        let resizeObserver;
-        const calendarRoot = document.querySelector('.rbc-month-view');
-        if (calendarRoot && window.ResizeObserver) {
-            resizeObserver = new ResizeObserver(() => {
-                alignCellsAndPatchRows();
-            });
-            resizeObserver.observe(calendarRoot);
-        }
-        // MutationObserver to re-apply patch after every DOM change
-        let observer;
-        if (calendarRoot && window.MutationObserver) {
-            observer = new MutationObserver(() => {
-                alignCellsAndPatchRows();
-            });
-            observer.observe(calendarRoot, { childList: true, subtree: true });
-        }
-        // Fallback: delayed patch in case of async layout
-        const timeout = setTimeout(alignCellsAndPatchRows, 200);
-        return () => {
-            window.removeEventListener('resize', alignCellsAndPatchRows);
-            clearTimeout(timeout);
-            if (observer) observer.disconnect();
-            if (resizeObserver) resizeObserver.disconnect();
-        };
-    }, []);
 
     // Custom toolbar with Today button between arrows
     const CustomToolbar = (toolbar) => {
@@ -196,7 +144,6 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
             opacity: isPastDate ? 0.5 : isOtherMonth ? 0.7 : 1,
             cursor: isPastDate ? "not-allowed" : "pointer",
             border: isSelected ? "2px solid #0d6efd" : "none",
-            borderLeft: "1px solid #666",
             transition: "all 0.2s ease"
         };
         if (dayEvents.length === 0) {
@@ -218,7 +165,7 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
                         }
                     }}
                 >
-                    <div style={{ display: "flex", flexDirection: "column", height: "100%", pointerEvents: "none", position: "relative" }}>{children}</div>
+                    <div style={{ display: "flex", flexDirection: "column", height: "100%", pointerEvents: "none" }}>{children}</div>
                 </div>
             );
         }
@@ -304,8 +251,23 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
         return (
             <div
                 style={containerStyle}
+                onClick={(e) => {
+                    if (isPastDate) {
+                        e.stopPropagation();
+                        return;
+                    }
+                    if (currentUser?.is_staff) {
+                        e.stopPropagation();
+                        const dateStr = moment(value).format("YYYY-MM-DD");
+                        setSelectedAdminDate(dateStr);
+                    } else {
+                        // For non-staff users, make the entire cell clickable
+                        e.stopPropagation();
+                        handleDrillDown(value);
+                    }
+                }}
             >
-                <div style={{ display: "flex", flexDirection: "column", height: "100%", pointerEvents: "none", position: "relative" }}>{children}</div>
+                <div style={{ display: "flex", flexDirection: "column", height: "100%", pointerEvents: "none" }}>{children}</div>
                 <div className={activityFilter ? "emoji-bar emoji-bar-filtered" : "emoji-bar"} style={emojiBarStyle} title={uniqueActivities.join(", ")}>
                     {emojiElements}
                 </div>
@@ -334,33 +296,6 @@ const CalendarView = ({ sessions, activityFilter, handleDrillDown, currentUser, 
                         ✓
                     </span>
                 )}
-                {/* Invisible clickable overlay that covers entire cell - must be last to be on top */}
-                <div
-                    style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        zIndex: 10,
-                        cursor: isPastDate ? "not-allowed" : "pointer"
-                    }}
-                    onClick={(e) => {
-                        if (isPastDate) {
-                            e.stopPropagation();
-                            return;
-                        }
-                        if (currentUser?.is_staff) {
-                            e.stopPropagation();
-                            const dateStr = moment(value).format("YYYY-MM-DD");
-                            setSelectedAdminDate(dateStr);
-                        } else {
-                            // For non-staff users, make the entire cell clickable
-                            e.stopPropagation();
-                            handleDrillDown(value);
-                        }
-                    }}
-                />
             </div>
         );
     };

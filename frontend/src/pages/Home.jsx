@@ -277,20 +277,13 @@ const Home = () => {
                 </div>
             ) : (
                 <React.Fragment>
-                    {/* Header with Logout button in top right */}
-                    <div style={{ position: 'relative', marginBottom: '1rem' }}>
-                        <button 
-                            className="btn btn-warning" 
-                            onClick={handleLogout}
-                            style={{ position: 'absolute', top: 0, right: 0, zIndex: 100 }}
-                        >
-                            Logout
-                        </button>
+                    {/* Header */}
+                    <div className="d-flex justify-content-between align-items-center mb-3">
                         <div>
                             <h2>GymFlex Calendar</h2>
                             {currentUser && <h4 className="mt-1">Welcome, {currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}</h4>}
                         </div>
-                        <div style={{ marginTop: '1rem' }}>
+                        <div>
                             {currentUser?.is_superuser && (
                                 <button
                                     className="btn btn-primary me-2"
@@ -299,21 +292,27 @@ const Home = () => {
                                     Admin Panel
                                 </button>
                             )}
-                            {/* Activity Filter */}
-                            <label>Filter by Activity: </label>
-                            <select
-                                value={activityFilter}
-                                onChange={(e) => setActivityFilter(e.target.value)}
-                                className="form-select w-25 d-inline-block ms-2"
-                            >
-                                <option value="">All</option>
-                                <option value="cardio">Cardio</option>
-                                <option value="weights">Weightlifting</option>
-                                <option value="yoga">Yoga</option>
-                                <option value="hiit">HIIT</option>
-                                <option value="pilates">Pilates</option>
-                            </select>
+                            <button className="btn btn-warning" onClick={handleLogout}>
+                                Logout
+                            </button>
                         </div>
+                    </div>
+
+                    {/* Activity Filter */}
+                    <div className="mb-3">
+                        <label>Filter by Activity: </label>
+                        <select
+                            value={activityFilter}
+                            onChange={(e) => setActivityFilter(e.target.value)}
+                            className="form-select w-25 d-inline-block ms-2"
+                        >
+                            <option value="">All</option>
+                            <option value="cardio">Cardio</option>
+                            <option value="weights">Weightlifting</option>
+                            <option value="yoga">Yoga</option>
+                            <option value="hiit">HIIT</option>
+                            <option value="pilates">Pilates</option>
+                        </select>
                     </div>
 
                     {/* Calendar */}
@@ -332,7 +331,7 @@ const Home = () => {
                     </div>
 
                     {/* Legend / Info */}
-                    <p className="legend-info" style={{ marginTop: '-8px', marginBottom: '0.35rem', paddingTop: '0', lineHeight: '1.3', marginBlockStart: '0', marginBlockEnd: '0.35rem' }}>
+                    <p className="legend-info" style={{ marginTop: '0', marginBottom: '0.5rem', paddingTop: '0', lineHeight: '1.3', marginBlockStart: '0', marginBlockEnd: '0' }}>
                         <small className="activity-legend">
                             Activity icons — 🏃 Cardio | 🏋️ Weights | 🧘 Yoga | ⚡ HIIT | 🤸 Pilates
                         </small>
