@@ -10,6 +10,19 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    // Remove body scroll for login page
+    React.useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        document.body.style.margin = '0';
+        document.body.style.padding = '0';
+        document.documentElement.style.overflow = 'hidden';
+
+        return () => {
+            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
+        };
+    }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -28,11 +41,12 @@ const Login = () => {
 
     return (
         <div style={{
-            minHeight: "100vh",
+            height: "100vh",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "linear-gradient(135deg, #f3e6fa 0%, #e9d7f7 100%)"
+            background: "linear-gradient(135deg, #f3e6fa 0%, #e9d7f7 100%)",
+            overflow: "hidden"
         }}>
             <div style={{
                 background: "#fff",
@@ -42,8 +56,7 @@ const Login = () => {
                 minWidth: 320,
                 maxWidth: 370,
                 width: "100%",
-                textAlign: "center",
-                overflow: "visible"
+                textAlign: "center"
             }}>
                 <img src="/favicons/favicon.svg" alt="GymFlex logo" style={{ height: 48, marginBottom: 12 }} />
                 <h2 style={{ marginBottom: 18, fontWeight: 700, color: "#6c3fa7" }}>Login</h2>
