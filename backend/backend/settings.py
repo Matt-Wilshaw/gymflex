@@ -149,6 +149,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"  # Directory where collectstatic gathers 
 STATICFILES_DIRS = [
     # Include React's built assets in static files
     BASE_DIR.parent / "frontend" / "dist" / "assets",
+    BASE_DIR.parent / "frontend" / "public",
 ]
 # Use WhiteNoise's storage backend for efficient static file serving with compression
 # For development, we disable manifest checking to avoid errors with missing files
