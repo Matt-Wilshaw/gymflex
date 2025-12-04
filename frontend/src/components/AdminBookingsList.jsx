@@ -128,6 +128,7 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
                                 className="btn btn-sm btn-outline-secondary"
                                 onClick={() => setSelectedAdminDate(moment().format('YYYY-MM-DD'))}
                                 title="Today"
+                                disabled={currentDate === moment().format('YYYY-MM-DD')}
                             >
                                 Today
                             </button>

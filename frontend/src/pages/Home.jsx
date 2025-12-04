@@ -288,8 +288,17 @@ const Home = () => {
             {/* Show loading screen until initial data is loaded */}
             {initialLoading ? (
                 <div className="loading-screen">
-                    <img src="/favicons/favicon.svg" alt="GymFlex logo" className="loading-logo" />
-                    <div className="loading-text">GymFlex</div>
+                    <div className="loading-text" style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', fontSize: '2rem', fontWeight: 700, color: '#3498db', letterSpacing: '2px', background: 'linear-gradient(135deg, #f8f9fa 0%, #e3e6f3 100%)'
+                    }}>
+                        GymFlex
+                        <div style={{ marginTop: '2rem' }}>
+                            <div className="spinner" style={{
+                                width: '40px', height: '40px', border: '4px solid #3498db', borderTop: '4px solid #e3e6f3', borderRadius: '50%', animation: 'spin 1s linear infinite'
+                            }}></div>
+                        </div>
+                        <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+                    </div>
                 </div>
             ) : (
                 <React.Fragment>
@@ -452,6 +461,7 @@ const Home = () => {
                                                             className="btn btn-sm btn-outline-secondary"
                                                             onClick={() => setCurrentDayIndex(0)}
                                                             title="Go to next upcoming session"
+                                                            disabled={currentDayIndex === 0}
                                                         >
                                                             Next Session
                                                         </button>
@@ -466,7 +476,7 @@ const Home = () => {
                                                     </div>
                                                     <div className="text-center ms-2" style={{ minWidth: '180px' }}>
                                                         <div style={{ fontWeight: 600, fontSize: "14px", color: "#333", marginTop: '10px' }}>
-                                                            Showing: {moment(groupedBookings[currentDayIndex]?.date).format('ddd DD/MM/YY')}
+                                                            Showing: {moment(selectedClientDate).format('ddd DD/MM/YY')}
                                                         </div>
                                                         <div className="alert alert-info" style={{ fontSize: 15, margin: '4px 0 0 0', padding: '8px 12px', borderRadius: '8px' }}>
                                                             <strong>Note:</strong> You cannot cancel a booking within 30 minutes of the session start time. If you need to contact a trainer or admin.
