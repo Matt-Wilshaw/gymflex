@@ -326,7 +326,7 @@ const Home = () => {
                             gap: '12px',
                             marginBottom: '0.5rem',
                             justifyContent: 'space-between',
-                            marginTop: '0',
+                            marginTop: '18px', // Move header slightly down
                         }}
                     >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
