@@ -59,10 +59,13 @@ const Login = () => {
                 width: "100%",
                 textAlign: "center"
             }}>
-                <img src="/static/gymflex-logo.png" alt="GymFlex logo"
-                    style={{ height: 40, marginBottom: 12 }}
-                    onError={e => { e.target.onerror = null; e.target.src = '/static/gymflex-logo.png'; }}
+                <img
+                    src={import.meta.env.MODE === 'development' ? '/gymflex-logo.png' : '/static/gymflex-logo.png'}
+                    alt="GymFlex logo"
+                    style={{ height: 70, width: 70, objectFit: 'cover', marginBottom: 10, marginTop: 10, borderRadius: '50%', background: '#3498db' }}
+                    onError={e => { e.target.onerror = null; e.target.src = import.meta.env.MODE === 'development' ? '/gymflex-logo.png' : '/static/gymflex-logo.png'; }}
                 />
+                <div style={{ textAlign: 'center', fontWeight: 700, fontSize: 28, color: '#2c3e50', marginBottom: 10, letterSpacing: '1px' }}>GymFlex</div>
                 <h2 style={{ marginBottom: 16, fontWeight: 700, color: "#2c3e50", fontSize: "1.5rem" }}>Login</h2>
                 <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                     <input

@@ -324,15 +324,17 @@ const Home = () => {
                             display: 'flex',
                             alignItems: 'center',
                             gap: '12px',
-                            marginBottom: '0.5rem', // reduce bottom margin for tighter header
+                            marginBottom: '0.5rem',
                             justifyContent: 'space-between',
-                            marginTop: '0', // move header up for consistency
+                            marginTop: '0',
                         }}
                     >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <img src="/static/gymflex-logo.png" alt="GymFlex logo"
+                            <img
+                                src={import.meta.env.MODE === 'development' ? '/gymflex-logo.png' : '/static/gymflex-logo.png'}
+                                alt="GymFlex logo"
                                 style={{ height: '45px', width: '45px', objectFit: 'cover', margin: 0, padding: 0, borderRadius: '50%', background: '#3498db' }}
-                                onError={e => { e.target.onerror = null; e.target.src = '/static/gymflex-logo.png'; }}
+                                onError={e => { e.target.onerror = null; e.target.src = import.meta.env.MODE === 'development' ? '/gymflex-logo.png' : '/static/gymflex-logo.png'; }}
                             />
                             <h2 style={{ margin: 0, padding: 0, color: '#2c3e50' }}>GymFlex</h2>
                         </div>
