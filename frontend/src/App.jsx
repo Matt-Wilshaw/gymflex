@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
+import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./mobile.css";
 
@@ -32,8 +33,8 @@ export default function App() {
         {/* Register page route */}
         <Route path="/register" element={<Register />} />
 
-        {/* Catch-all route for any undefined paths. Redirects to home page */}
-        <Route path="*" element={<Navigate to="/" />} />
+        {/* Catch-all route for any undefined paths. Shows NotFound page */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

@@ -296,6 +296,29 @@ Historical audit completed on November 26, 2025. One `.env` file was found in ea
 
 ---
 
+## Manual Test: NotFound (404) Page
+
+**Purpose:** Ensure users see a branded 404 page when navigating to an undefined route.
+
+**Steps:**
+1. Start the frontend dev server (`npm run dev` in the `frontend` folder).
+2. In your browser, visit a URL that does not match any defined route, e.g. `http://localhost:5173/xyz` or `http://localhost:5173/thispagedoesnotexist`.
+3. Observe the result:
+    - You should see the custom GymFlex 404 page, styled with blue branding, a rounded card, and a "Go Home" button.
+    - The message should read: "404 - Page Not Found. The page you are looking for does not exist. Please check the URL or return to the home page."
+    - The "Go Home" button should return you to the main dashboard.
+
+**Expected Outcome:**
+- The NotFound page appears for all undefined routes.
+- The design matches GymFlex branding and is responsive on all devices.
+- No redirect to home occurs unless the user clicks the button.
+
+**Notes:**
+- This test ensures correct routing and user experience for invalid URLs.
+- If you see the home page instead, check that the catch-all route in `App.jsx` uses `<NotFound />` and not `<Navigate to="/" />`.
+
+---
+
 ## Appendix: Adding Test Data
 
 ### Using Django Admin

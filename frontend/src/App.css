@@ -229,7 +229,7 @@
   /* ========== EXISTING STYLES (Keep all your existing CSS below) ========== */
 
   /* Bootstrap Breakpoint: X-Small (xs) - Mobile */
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     .bookings-panel-inner {
       padding: 0 !important;
       margin: 0 !important;
@@ -238,7 +238,7 @@
 
   /* Hide info legend below calendar on mobile, show inside bookings panel */
   /* Bootstrap Breakpoint: X-Small (xs) - Mobile */
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     .legend-info .info-legend {
       display: none !important;
     }
@@ -273,7 +273,7 @@
 
   /* Hide .d-none-mobile on X-Small screens */
   /* Bootstrap Breakpoint: X-Small (xs) - Mobile */
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     .d-none-mobile {
       display: none !important;
     }
@@ -281,7 +281,7 @@
 
   /* FINAL override: Remove all spacing between calendar and legend on mobile */
   /* Bootstrap Breakpoint: X-Small (xs) - Mobile */
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
 
     .calendar-container,
     .legend-info {
@@ -412,7 +412,7 @@
   }
 
   /* Bootstrap Breakpoint: X-Small (xs) - Mobile */
-  @media (max-width: 575px) {
+  @media (max-width: 576px) {
     .legend-container {
       margin-top: 0 !important;
       padding: 0 !important;
