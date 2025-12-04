@@ -55,12 +55,13 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
         const goToToday = () => {
             // Ensure the calendar visible month jumps to today and that
             // the selected date is set to today for clients so the blue
-            // highlight moves accordingly.
+            // highlight moves accordingly. Also collapse the menu for clients.
             const today = new Date();
             try {
                 setCalendarDate(today);
                 if (!currentUser?.is_staff) {
                     setSelectedClientDate(moment(today).format('YYYY-MM-DD'));
+                    setShowBookingsPanel(false);
                 } else {
                     setSelectedAdminDate(moment(today).format('YYYY-MM-DD'));
                 }

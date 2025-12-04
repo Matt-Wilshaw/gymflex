@@ -19,6 +19,8 @@ const localiser = momentLocalizer(moment);
 // bookings lists. Data fetching and mutation logic are provided by the
 // `useSessions` hook so this file focuses on composition and UI state.
 const Home = () => {
+    // Track if panel was auto-collapsed (should persist across renders)
+    const autoCollapsedRef = useRef(false);
     const {
         sessions,
         bookedSessions,
@@ -57,10 +59,22 @@ const Home = () => {
     const [currentDayIndex, setCurrentDayIndex] = useState(0);
 
     // Toggle visibility of bookings panel (admin and client)
-    const [showBookingsPanel, setShowBookingsPanel] = useState(false);
+    const [showBookingsPanel, setShowBookingsPanel] = useState(false); // always collapsed on initial load
 
     // Track selected date for client calendar view - initialize with today's date like admin does
-    const [selectedClientDate, setSelectedClientDate] = useState(moment().format("YYYY-MM-DD"));
+    // Always default to today's date on initial load
+    const [selectedClientDate, setSelectedClientDate] = useState(() => moment().format("YYYY-MM-DD"));
+    // Track last selected session date before collapsing panel
+    const lastSelectedSessionRef = useRef(null);
+
+    // Always keep lastSelectedSessionRef in sync with selectedClientDate when menu is open
+    useEffect(() => {
+        if (showBookingsPanel && selectedClientDate) {
+            lastSelectedSessionRef.current = selectedClientDate;
+        }
+    }, [selectedClientDate, showBookingsPanel]);
+    // Track if user manually closed the bookings panel
+    const [userClosedPanel, setUserClosedPanel] = useState(true); // true on initial load to prevent auto-open
 
     // Ref for client bookings panel scroll behavior
     const clientPanelRef = useRef(null);
@@ -296,29 +310,45 @@ const Home = () => {
     const [visibleMonthHasBookings, setVisibleMonthHasBookings] = useState(false);
 
     // Update visibleMonthHasBookings when sortedUpcomingBookings or visibleMonth changes
+    const isInitialMount = useRef(true);
     useEffect(() => {
         const has = sortedUpcomingBookings.some(s => moment(s.date).format('YYYY-MM') === visibleMonth);
         setVisibleMonthHasBookings(has);
 
-        // If the bookings panel is open but there are no bookings in the
-        // currently visible month, close the panel and prevent opening.
+        // If user navigates to a month with no bookings, collapse the panel but do not change selectedClientDate
         if (showBookingsPanel && !has) {
             setShowBookingsPanel(false);
+            autoCollapsedRef.current = true;
         }
 
-        // If the panel is open and this month has bookings, jump to the
-        // first booking in that month.
-        if (showBookingsPanel && has) {
+        // If panel was auto-collapsed and user navigates to a month with bookings, reopen panel and jump to first session
+        if (!isInitialMount.current && has && autoCollapsedRef.current) {
+            setShowBookingsPanel(true);
+            autoCollapsedRef.current = false;
             const bookingsInMonth = sortedUpcomingBookings.filter(s => moment(s.date).format('YYYY-MM') === visibleMonth);
             if (bookingsInMonth.length > 0) {
                 const firstDate = bookingsInMonth[0].date;
                 setSelectedClientDate(firstDate);
-                // Find the groupedBookings index for that date
+                const idx = groupedBookings.findIndex(g => g.sessions.some(ss => ss.date === firstDate));
+                if (idx >= 0) setCurrentDayIndex(idx);
+            }
+        } else if (!isInitialMount.current && has && showBookingsPanel) {
+            // Always jump to first session when navigating months with menu open
+            const bookingsInMonth = sortedUpcomingBookings.filter(s => moment(s.date).format('YYYY-MM') === visibleMonth);
+            if (bookingsInMonth.length > 0) {
+                const firstDate = bookingsInMonth[0].date;
+                setSelectedClientDate(firstDate);
                 const idx = groupedBookings.findIndex(g => g.sessions.some(ss => ss.date === firstDate));
                 if (idx >= 0) setCurrentDayIndex(idx);
             }
         }
-    }, [visibleMonth, sortedUpcomingBookings, showBookingsPanel, groupedBookings]);
+        // On initial mount, always highlight today's date and keep menu collapsed
+        if (isInitialMount.current) {
+            setSelectedClientDate(moment().format("YYYY-MM-DD"));
+            setShowBookingsPanel(false);
+        }
+        isInitialMount.current = false;
+    }, [visibleMonth, sortedUpcomingBookings, showBookingsPanel, groupedBookings, userClosedPanel]);
 
     return (
         <div className="container mt-4" style={{
@@ -483,9 +513,36 @@ const Home = () => {
                                     className="today-btn"
                                     onClick={(e) => {
                                         if (!visibleMonthHasBookings) return;
-                                        setShowBookingsPanel(!showBookingsPanel);
+                                        if (showBookingsPanel) {
+                                            // Store last selected session before collapsing
+                                            lastSelectedSessionRef.current = selectedClientDate;
+                                            // Collapse panel: if current month, set blue square to today; else, remove blue square
+                                            const todayMonth = moment().format('YYYY-MM');
+                                            if (visibleMonth === todayMonth) {
+                                                setSelectedClientDate(moment().format('YYYY-MM-DD'));
+                                            } else {
+                                                setSelectedClientDate(null);
+                                            }
+                                            setShowBookingsPanel(false);
+                                            setUserClosedPanel(true);
+                                        } else {
+                                            setShowBookingsPanel(true);
+                                            setUserClosedPanel(false);
+                                            // Restore last selected session if it exists in upcoming bookings
+                                            let restoreDate = lastSelectedSessionRef.current;
+                                            if (restoreDate && sortedUpcomingBookings.some(s => s.date === restoreDate)) {
+                                                setSelectedClientDate(restoreDate);
+                                                const idx = groupedBookings.findIndex(g => g.sessions.some(ss => ss.date === restoreDate));
+                                                if (idx >= 0) setCurrentDayIndex(idx);
+                                            } else if (sortedUpcomingBookings.length > 0) {
+                                                const nextDate = sortedUpcomingBookings[0].date;
+                                                setSelectedClientDate(nextDate);
+                                                const idx = groupedBookings.findIndex(g => g.sessions.some(ss => ss.date === nextDate));
+                                                if (idx >= 0) setCurrentDayIndex(idx);
+                                            }
+                                        }
                                     }}
-                                    title={!visibleMonthHasBookings ? "No bookings in this month" : (showBookingsPanel ? "Hide bookings panel" : "Open bookings panel")}
+                                    title={!visibleMonthHasBookings ? "No bookings in this month" : (showBookingsPanel ? "Hide bookings panel" : "Open Bookings panel")}
                                     aria-disabled={!visibleMonthHasBookings}
                                     style={{ minWidth: '120px', whiteSpace: 'nowrap', textAlign: 'center', padding: '4px 6px', fontSize: '12px', marginRight: '8px', ...(!visibleMonthHasBookings ? { opacity: 0.65, cursor: 'not-allowed' } : { cursor: 'pointer' }) }}
                                 >
