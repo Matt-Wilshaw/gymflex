@@ -330,7 +330,10 @@ const Home = () => {
                         }}
                     >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <img src="/favicons/favicon.svg" alt="GymFlex logo" style={{ height: '45px', width: '45px', objectFit: 'cover', margin: 0, padding: 0, borderRadius: '50%', background: '#3498db' }} />
+                            <img src="/favicons/favicon.svg" alt="GymFlex logo"
+                                style={{ height: '45px', width: '45px', objectFit: 'cover', margin: 0, padding: 0, borderRadius: '50%', background: '#3498db' }}
+                                onError={e => { e.target.onerror = null; e.target.src = '/favicons/favicon-128.png'; }}
+                            />
                             <h2 style={{ margin: 0, padding: 0, color: '#2c3e50' }}>GymFlex</h2>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

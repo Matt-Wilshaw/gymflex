@@ -80,7 +80,10 @@ const Register = () => {
                 width: "100%",
                 textAlign: "center"
             }}>
-                <img src="/favicons/favicon.svg" alt="GymFlex logo" style={{ height: 40, marginBottom: 12 }} />
+                <img src="/favicons/favicon.svg" alt="GymFlex logo"
+                    style={{ height: 40, marginBottom: 12 }}
+                    onError={e => { e.target.onerror = null; e.target.src = '/favicons/favicon-128.png'; }}
+                />
                 <h2 style={{ marginBottom: 16, fontWeight: 700, color: "#2c3e50", fontSize: "1.5rem" }}>Register</h2>
                 {/* Registration form */}
                 <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
