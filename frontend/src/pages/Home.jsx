@@ -59,8 +59,12 @@ const Home = () => {
     // Toggle visibility of bookings panel (admin and client)
     const [showBookingsPanel, setShowBookingsPanel] = useState(false);
 
-    // Track selected date for client calendar view - initialize with today's date like admin does
-    const [selectedClientDate, setSelectedClientDate] = useState(moment().format("YYYY-MM-DD"));
+    // Track selected date for client calendar view - default to today unless viewing next session
+    const [selectedClientDate, setSelectedClientDate] = useState(() => {
+        // If there are upcoming bookings, default to today unless the next session is being viewed
+        const today = moment().format("YYYY-MM-DD");
+        return today;
+    });
 
     // Ref for client bookings panel scroll behavior
     const clientPanelRef = useRef(null);
@@ -234,15 +238,19 @@ const Home = () => {
     // Update selected client date when navigating bookings
     useEffect(() => {
         if (!currentUser?.is_staff && groupedBookings.length > 0) {
-            if (groupedBookings[currentDayIndex]) {
-                const firstSession = groupedBookings[currentDayIndex].sessions[0];
-                if (firstSession) {
-                    console.log('Setting selectedClientDate to:', firstSession.date);
-                    setSelectedClientDate(firstSession.date);
+            if (showBookingsPanel) {
+                // When opening bookings or navigating, sync calendar to current session
+                const currentGroup = groupedBookings[currentDayIndex];
+                const currentSession = currentGroup?.sessions[0];
+                if (currentSession) {
+                    setSelectedClientDate(currentSession.date);
                 }
+            } else {
+                // When bookings panel is closed, default to today
+                setSelectedClientDate(moment().format("YYYY-MM-DD"));
             }
         }
-    }, [currentDayIndex, groupedBookings, currentUser]);
+    }, [showBookingsPanel, groupedBookings, currentUser, currentDayIndex]);
 
     // When client bookings panel opens, scroll into view AFTER the expand transition completes
     useEffect(() => {
@@ -316,9 +324,9 @@ const Home = () => {
                             display: 'flex',
                             alignItems: 'center',
                             gap: '12px',
-                            marginBottom: '1.5rem',
+                            marginBottom: '0.5rem', // reduce bottom margin for tighter header
                             justifyContent: 'space-between',
-                            marginTop: '0.8rem',
+                            marginTop: '0', // move header up for consistency
                         }}
                     >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

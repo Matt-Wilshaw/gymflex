@@ -141,7 +141,7 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
             boxSizing: "border-box",
             backgroundColor: isSelected ? "#d4e9ff" : isOtherMonth ? "#f0f0f0" : isPastDate ? "#f5f5f5" : "transparent",
             opacity: isPastDate ? 0.5 : isOtherMonth ? 0.7 : 1,
-            cursor: isPastDate ? "not-allowed" : "pointer",
+            cursor: (isPastDate && !currentUser?.is_staff) ? "not-allowed" : "pointer",
             border: isSelected ? "2px solid #0d6efd" : "none",
             transition: "all 0.2s ease"
         };
@@ -150,7 +150,7 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                 <div
                     style={containerStyle}
                     onClick={(e) => {
-                        if (isPastDate) {
+                        if (isPastDate && !currentUser?.is_staff) {
                             e.stopPropagation();
                             return;
                         }
@@ -252,7 +252,7 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
             <div
                 style={containerStyle}
                 onClick={(e) => {
-                    if (isPastDate) {
+                    if (isPastDate && !currentUser?.is_staff) {
                         e.stopPropagation();
                         return;
                     }
