@@ -88,7 +88,7 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
                 {/* Toggle bookings button */}
                 <div style={{ marginBottom: 12 }}>
                     <button
-                        className="btn btn-sm btn-outline-primary"
+                        className="today-btn"
                         onClick={() => setShowBookingsPanel(!showBookingsPanel)}
                         title={showBookingsPanel ? "Hide bookings panel" : "Open bookings panel"}
                     >

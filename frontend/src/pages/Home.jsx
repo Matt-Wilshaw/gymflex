@@ -294,7 +294,15 @@ const Home = () => {
             ) : (
                 <React.Fragment>
                     {/* Header */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1.5rem', justifyContent: 'space-between' }}>
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            marginBottom: '1.5rem',
+                            justifyContent: 'space-between'
+                        }}
+                    >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <img src="/favicons/favicon.svg" alt="GymFlex logo" style={{ height: '45px', width: '45px', objectFit: 'cover', margin: 0, padding: 0, borderRadius: '50%', background: '#3498db' }} />
                             <h2 style={{ margin: 0, padding: 0, color: '#2c3e50' }}>GymFlex</h2>
