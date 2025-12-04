@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 
@@ -13,6 +13,35 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
     // Detect mobile screen
     const isMobile = typeof window !== 'undefined' ? window.innerWidth <= 576 : false;
 
+    // Visible month/date for the calendar. Keep this separate from the
+    // selectedClientDate so month navigation can move the visible month
+    // without changing the blue highlighted selected date (which should
+    // remain on today for clients unless explicitly changed).
+    const [calendarDate, setCalendarDate] = useState(() => {
+        if (currentUser?.is_staff) {
+            return selectedAdminDate ? moment(selectedAdminDate).toDate() : new Date();
+        }
+        return selectedClientDate ? moment(selectedClientDate).toDate() : new Date();
+    });
+
+    // Keep calendarDate in sync when the selected admin date changes
+    useEffect(() => {
+        if (currentUser?.is_staff && selectedAdminDate) {
+            setCalendarDate(moment(selectedAdminDate).toDate());
+        }
+    }, [selectedAdminDate, currentUser]);
+
+    // When the selected client date changes (for example on initial load
+    // or when the bookings panel explicitly sets it), update the visible
+    // month so the user can see the selected day. We avoid updating
+    // calendarDate on normal month navigation to preserve the blue
+    // highlighted today's date behavior.
+    useEffect(() => {
+        if (!currentUser?.is_staff && selectedClientDate) {
+            setCalendarDate(moment(selectedClientDate).toDate());
+        }
+    }, [selectedClientDate, currentUser]);
+
     // Custom toolbar with Today button between arrows
     const CustomToolbar = (toolbar) => {
         const goToBack = () => {
@@ -24,6 +53,18 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
         };
 
         const goToToday = () => {
+            // Make the visible month today and also set the selected
+            // client date to today so the blue highlight moves to today
+            // when the user explicitly clicks Today.
+            const today = new Date();
+            setCalendarDate(today);
+            if (!currentUser?.is_staff) {
+                setSelectedClientDate(moment(today).format('YYYY-MM-DD'));
+            } else if (currentUser?.is_staff) {
+                setSelectedAdminDate(moment(today).format('YYYY-MM-DD'));
+            }
+            // Also call the default navigate so Calendar internal state
+            // and label update as expected.
             toolbar.onNavigate('TODAY');
         };
 
@@ -353,17 +394,16 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                 style={isMobile ? { height: 'auto' } : { height: '700px' }}
                 onDrillDown={handleDrillDown}
                 views={["month"]}
-                date={currentUser?.is_staff
-                    ? moment(selectedAdminDate).toDate()
-                    : selectedClientDate
-                        ? moment(selectedClientDate).toDate()
-                        : new Date()}
+                date={calendarDate}
                 onNavigate={(newDate) => {
-                    const dateStr = moment(newDate).format('YYYY-MM-DD');
+                    // Update visible month only. For admins we also keep
+                    // the selected admin date in sync; for clients we do
+                    // not change the selected client date so the blue
+                    // highlighted square remains on today's date.
+                    setCalendarDate(moment(newDate).toDate());
                     if (currentUser?.is_staff) {
+                        const dateStr = moment(newDate).format('YYYY-MM-DD');
                         setSelectedAdminDate(dateStr);
-                    } else {
-                        setSelectedClientDate(dateStr);
                     }
                 }}
                 components={{

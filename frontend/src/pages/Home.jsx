@@ -231,18 +231,17 @@ const Home = () => {
         return groupBookings(sortedUpcomingBookings, bookingsGroupBy);
     }, [sortedUpcomingBookings, bookingsGroupBy]);
 
-    // Update selected client date when navigating bookings
+    // Update selected client date when navigating bookings — only when
+    // the bookings panel is open. This prevents the app from overriding
+    // the default (today) on initial load when there are sessions.
     useEffect(() => {
-        if (!currentUser?.is_staff && groupedBookings.length > 0) {
-            if (groupedBookings[currentDayIndex]) {
-                const firstSession = groupedBookings[currentDayIndex].sessions[0];
-                if (firstSession) {
-                    console.log('Setting selectedClientDate to:', firstSession.date);
-                    setSelectedClientDate(firstSession.date);
-                }
+        if (!currentUser?.is_staff && showBookingsPanel && groupedBookings.length > 0) {
+            const group = groupedBookings[currentDayIndex];
+            if (group && group.sessions && group.sessions[0]) {
+                setSelectedClientDate(group.sessions[0].date);
             }
         }
-    }, [currentDayIndex, groupedBookings, currentUser]);
+    }, [currentDayIndex, groupedBookings, currentUser, showBookingsPanel]);
 
     // When client bookings panel opens, scroll into view AFTER the expand transition completes
     useEffect(() => {
