@@ -428,10 +428,9 @@ const Home = () => {
                                         <div className="bookings-panel-inner" style={{ background: 'rgba(255, 255, 255, 0.95)', borderRadius: '8px', padding: '16px' }}>
                                             {/* Navigation Controls */}
                                             {groupedBookings.length > 1 && (
-                                                <div className="d-flex align-items-center gap-2 mb-3">
+                                                <div className="d-flex align-items-center gap-2 mb-3" style={{ marginBottom: '8px', flexWrap: 'wrap' }}>
                                                     <button
-                                                        className="btn btn-sm btn-outline-secondary show-bookings-btn"
-                                                        style={{ borderRadius: '8px' }}
+                                                        className="btn btn-sm btn-outline-secondary"
                                                         onClick={() => setCurrentDayIndex(Math.max(0, currentDayIndex - 1))}
                                                         disabled={currentDayIndex === 0}
                                                         title="Previous day"
@@ -439,34 +438,32 @@ const Home = () => {
                                                         ←
                                                     </button>
                                                     <button
-                                                        className="btn btn-sm btn-outline-secondary show-bookings-btn"
-                                                        style={{ borderRadius: '8px' }}
+                                                        className="btn btn-sm btn-outline-secondary"
                                                         onClick={() => setCurrentDayIndex(0)}
                                                         title="Go to next upcoming session"
                                                     >
                                                         Next Session
                                                     </button>
                                                     <button
-                                                        className="btn btn-sm btn-outline-secondary show-bookings-btn"
-                                                        style={{ borderRadius: '8px' }}
+                                                        className="btn btn-sm btn-outline-secondary"
                                                         onClick={() => setCurrentDayIndex(Math.min(groupedBookings.length - 1, currentDayIndex + 1))}
                                                         disabled={currentDayIndex === groupedBookings.length - 1}
                                                         title="Next day"
                                                     >
                                                         →
                                                     </button>
-                                                    <div className="text-center ms-2">
-                                                        <div style={{ fontWeight: 600, fontSize: "14px", color: "#333" }}>
+                                                    <div className="text-center ms-2" style={{ minWidth: '180px' }}>
+                                                        <div style={{ fontWeight: 600, fontSize: "14px", color: "#333", marginTop: '6px' }}>
                                                             Showing: {groupedBookings[currentDayIndex]?.label}
+                                                        </div>
+                                                        <div className="alert alert-info" style={{ fontSize: 15, margin: '4px 0 0 0', padding: '8px 12px', borderRadius: '8px' }}>
+                                                            <strong>Note:</strong> You cannot cancel a booking within 30 minutes of the session start time. If you need to contact a trainer or admin.
                                                         </div>
                                                     </div>
                                                 </div>
                                             )}
 
                                             {/* Disclaimer for clients about cancellation restriction */}
-                                            <div className="alert alert-info" style={{ fontSize: 14, marginBottom: 12 }}>
-                                                <strong>Note:</strong> You cannot cancel a booking within 30 minutes of the session start time. If you need to contact a trainer or admin.
-                                            </div>
 
                                             {/* Bookings List */}
                                             <div style={{ marginBottom: 24 }}>
