@@ -64,7 +64,7 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                 } else {
                     setSelectedAdminDate(moment(today).format('YYYY-MM-DD'));
                 }
-            } catch (_) {}
+            } catch (_) { }
             // Call the default navigate to let the Calendar update its
             // internal state/label as expected.
             toolbar.onNavigate('TODAY');
@@ -417,7 +417,7 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                         if (typeof onVisibleMonthChange === 'function') {
                             onVisibleMonthChange(moment(newDate).startOf('month').format('YYYY-MM'));
                         }
-                    } catch (_) {}
+                    } catch (_) { }
 
                     if (currentUser?.is_staff) {
                         const dateStr = moment(newDate).format('YYYY-MM-DD');

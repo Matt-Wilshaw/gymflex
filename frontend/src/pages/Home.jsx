@@ -487,7 +487,7 @@ const Home = () => {
                                     }}
                                     title={!visibleMonthHasBookings ? "No bookings in this month" : (showBookingsPanel ? "Hide bookings panel" : "Open bookings panel")}
                                     aria-disabled={!visibleMonthHasBookings}
-                                    style={{ minWidth: '120px', whiteSpace: 'nowrap', textAlign: 'center', padding: '4px 6px', fontSize: '12px', marginRight: '8px', ...( !visibleMonthHasBookings ? { opacity: 0.65, cursor: 'not-allowed' } : { cursor: 'pointer' } ) }}
+                                    style={{ minWidth: '120px', whiteSpace: 'nowrap', textAlign: 'center', padding: '4px 6px', fontSize: '12px', marginRight: '8px', ...(!visibleMonthHasBookings ? { opacity: 0.65, cursor: 'not-allowed' } : { cursor: 'pointer' }) }}
                                 >
                                     {!visibleMonthHasBookings ? (
                                         "No Bookings"
