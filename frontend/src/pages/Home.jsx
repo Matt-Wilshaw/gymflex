@@ -310,7 +310,7 @@ const Home = () => {
                             gap: '12px',
                             marginBottom: '1.5rem',
                             justifyContent: 'space-between',
-                            // No extra margin for admin; match client exactly
+                            // No extra margin for client or admin; both headers aligned at the top
                         }}
                     >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -416,9 +416,10 @@ const Home = () => {
                                     className="btn btn-primary mb-2 w-100 show-bookings-btn"
                                     style={{ borderRadius: '8px' }}
                                     onClick={() => setShowBookingsPanel(!showBookingsPanel)}
-                                // ...existing code...
                                 >
-                                    {showBookingsPanel ? "Hide" : "Show"} My Bookings
+                                    <span style={{ display: 'inline-block', minWidth: 110, textAlign: 'center' }}>
+                                        {showBookingsPanel ? "Hide" : "Show"} My Bookings
+                                    </span>
                                 </button>
 
                                 {/* Collapsible Client Bookings Panel */}

@@ -56,6 +56,10 @@
                                                                     display: inline-flex !important;
                                                                     align-items: center !important;
                                                                     justify-content: center !important;
+                                                                    min-width: 120px !important;
+                                                                    max-width: 120px !important;
+                                                                    width: 120px !important;
+                                                                    text-align: center !important;
                                                                 }
 
                                                                 .calendar-month-label {
