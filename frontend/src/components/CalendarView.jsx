@@ -53,6 +53,20 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
         };
 
         const goToToday = () => {
+            // Ensure the calendar visible month jumps to today and that
+            // the selected date is set to today for clients so the blue
+            // highlight moves accordingly.
+            const today = new Date();
+            try {
+                setCalendarDate(today);
+                if (!currentUser?.is_staff) {
+                    setSelectedClientDate(moment(today).format('YYYY-MM-DD'));
+                } else {
+                    setSelectedAdminDate(moment(today).format('YYYY-MM-DD'));
+                }
+            } catch (_) {}
+            // Call the default navigate to let the Calendar update its
+            // internal state/label as expected.
             toolbar.onNavigate('TODAY');
         };
 
