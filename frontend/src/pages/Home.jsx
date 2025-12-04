@@ -428,55 +428,45 @@ const Home = () => {
                                         <div className="bookings-panel-inner" style={{ background: 'rgba(255, 255, 255, 0.95)', borderRadius: '8px', padding: '16px' }}>
                                             {/* Navigation Controls */}
                                             {groupedBookings.length > 1 && (
-                                                <div className="d-flex align-items-center gap-2 mb-3" style={{ marginBottom: '8px', flexWrap: 'wrap' }}>
-                                                    <button
-                                                        className="btn btn-sm btn-outline-secondary"
-                                                        onClick={() => setCurrentDayIndex(Math.max(0, currentDayIndex - 1))}
-                                                        disabled={currentDayIndex === 0}
-                                                        title="Previous day"
-                                                    >
-                                                        ←
-                                                    </button>
-                                                    <button
-                                                        className="btn btn-sm btn-outline-secondary"
-                                                        onClick={() => setCurrentDayIndex(0)}
-                                                        title="Go to next upcoming session"
-                                                    >
-                                                        Next Session
-                                                    </button>
-                                                    <button
-                                                        className="btn btn-sm btn-outline-secondary"
-                                                        onClick={() => setCurrentDayIndex(Math.min(groupedBookings.length - 1, currentDayIndex + 1))}
-                                                        disabled={currentDayIndex === groupedBookings.length - 1}
-                                                        title="Next day"
-                                                    >
-                                                        →
-                                                    </button>
+                                                <div style={{
+                                                    background: '#f8f9fa',
+                                                    border: '1px solid #e9ecef',
+                                                    borderRadius: '6px',
+                                                    padding: '6px 8px',
+                                                    marginBottom: '8px',
+                                                    display: 'flex',
+                                                    flexWrap: 'wrap',
+                                                    alignItems: 'center',
+                                                    gap: '12px'
+                                                }}>
+                                                    <div className="d-flex align-items-center gap-2 mb-2">
+                                                        <button
+                                                            className="btn btn-sm btn-outline-secondary"
+                                                            onClick={() => setCurrentDayIndex(Math.max(0, currentDayIndex - 1))}
+                                                            disabled={currentDayIndex === 0}
+                                                            title="Previous day"
+                                                        >
+                                                            ←
+                                                        </button>
+                                                        <button
+                                                            className="btn btn-sm btn-outline-secondary"
+                                                            onClick={() => setCurrentDayIndex(0)}
+                                                            title="Go to next upcoming session"
+                                                        >
+                                                            Next Session
+                                                        </button>
+                                                        <button
+                                                            className="btn btn-sm btn-outline-secondary"
+                                                            onClick={() => setCurrentDayIndex(Math.min(groupedBookings.length - 1, currentDayIndex + 1))}
+                                                            disabled={currentDayIndex === groupedBookings.length - 1}
+                                                            title="Next day"
+                                                        >
+                                                            →
+                                                        </button>
+                                                    </div>
                                                     <div className="text-center ms-2" style={{ minWidth: '180px' }}>
-                                                        <div style={{ fontWeight: 600, fontSize: "14px", color: "#333", marginTop: '6px', display: 'flex', alignItems: 'center' }}>
-                                                            <span>
-                                                                Showing: {moment(groupedBookings[currentDayIndex]?.date).format('ddd DD/MM/YY')}
-                                                            </span>
-                                                            <span style={{ marginLeft: '8px', cursor: 'pointer', position: 'relative' }}
-                                                                onClick={e => {
-                                                                    const tip = e.currentTarget.querySelector('.client-note-tooltip');
-                                                                    if (tip) tip.style.display = tip.style.display === 'block' ? 'none' : 'block';
-                                                                }}
-                                                                onBlur={e => {
-                                                                    const tip = e.currentTarget.querySelector('.client-note-tooltip');
-                                                                    if (tip) tip.style.display = 'none';
-                                                                }}
-                                                                tabIndex={0}
-                                                            >
-                                                                <svg width="16" height="16" fill="#3498db" viewBox="0 0 16 16" style={{ verticalAlign: 'middle' }}>
-                                                                    <circle cx="8" cy="8" r="8" fill="#e9ecef"/>
-                                                                    <text x="8" y="12" textAnchor="middle" fontSize="10" fill="#3498db">i</text>
-                                                                </svg>
-                                                                <span className="client-note-tooltip" style={{ display: 'none', position: 'absolute', left: '24px', top: '-8px', background: '#fff', color: '#333', border: '1px solid #e9ecef', borderRadius: '6px', padding: '8px 12px', fontSize: '13px', zIndex: 10, minWidth: '180px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-                                                                    <strong>Note:</strong> You cannot cancel a booking within 30 minutes of the session start time. If you need to contact a trainer or admin.
-                                                                </span>
-                                                            </span>
-                                                        </div>
+                                                        <div style={{ fontWeight: 600, fontSize: "14px", color: "#333", marginTop: '10px' }}>
+                                                            Showing: {moment(groupedBookings[currentDayIndex]?.date).format('ddd DD/MM/YY')}
                                                         </div>
                                                         <div className="alert alert-info" style={{ fontSize: 15, margin: '4px 0 0 0', padding: '8px 12px', borderRadius: '8px' }}>
                                                             <strong>Note:</strong> You cannot cancel a booking within 30 minutes of the session start time. If you need to contact a trainer or admin.
