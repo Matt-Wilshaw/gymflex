@@ -309,7 +309,8 @@ const Home = () => {
                             alignItems: 'center',
                             gap: '12px',
                             marginBottom: '1.5rem',
-                            justifyContent: 'space-between'
+                            justifyContent: 'space-between',
+                            // No extra margin for admin; match client exactly
                         }}
                     >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

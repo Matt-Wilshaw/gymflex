@@ -44,8 +44,9 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                         ←
                     </button>
                     <button
-                        className="today-btn"
+                        className={`today-btn${toolbar.date && moment(toolbar.date).isSame(moment(), 'day') ? ' today-btn--current' : ''}`}
                         onClick={goToToday}
+                        disabled={toolbar.date && moment(toolbar.date).isSame(moment(), 'day')}
                     >
                         Today
                     </button>
