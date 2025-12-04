@@ -315,6 +315,14 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                         min-height: 88px !important;
                     }
                 }
+                @media (max-width: 576px) {
+                    .rbc-month-row {
+                        height: 30px !important;
+                    }
+                    .emoji-bar-filtered {
+                        bottom: 50px !important;
+                    }
+                }
                 /* Vertical lines between date cells */
                 .rbc-month-view .rbc-day-bg {
                     border-right: 1.5px solid #d0d0d0 !important;

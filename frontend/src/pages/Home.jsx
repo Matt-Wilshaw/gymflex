@@ -59,12 +59,8 @@ const Home = () => {
     // Toggle visibility of bookings panel (admin and client)
     const [showBookingsPanel, setShowBookingsPanel] = useState(false);
 
-    // Track selected date for client calendar view - default to today unless viewing next session
-    const [selectedClientDate, setSelectedClientDate] = useState(() => {
-        // If there are upcoming bookings, default to today unless the next session is being viewed
-        const today = moment().format("YYYY-MM-DD");
-        return today;
-    });
+    // Track selected date for client calendar view - initialize with today's date like admin does
+    const [selectedClientDate, setSelectedClientDate] = useState(moment().format("YYYY-MM-DD"));
 
     // Ref for client bookings panel scroll behavior
     const clientPanelRef = useRef(null);
@@ -238,19 +234,15 @@ const Home = () => {
     // Update selected client date when navigating bookings
     useEffect(() => {
         if (!currentUser?.is_staff && groupedBookings.length > 0) {
-            if (showBookingsPanel) {
-                // When opening bookings or navigating, sync calendar to current session
-                const currentGroup = groupedBookings[currentDayIndex];
-                const currentSession = currentGroup?.sessions[0];
-                if (currentSession) {
-                    setSelectedClientDate(currentSession.date);
+            if (groupedBookings[currentDayIndex]) {
+                const firstSession = groupedBookings[currentDayIndex].sessions[0];
+                if (firstSession) {
+                    console.log('Setting selectedClientDate to:', firstSession.date);
+                    setSelectedClientDate(firstSession.date);
                 }
-            } else {
-                // When bookings panel is closed, default to today
-                setSelectedClientDate(moment().format("YYYY-MM-DD"));
             }
         }
-    }, [showBookingsPanel, groupedBookings, currentUser, currentDayIndex]);
+    }, [currentDayIndex, groupedBookings, currentUser]);
 
     // When client bookings panel opens, scroll into view AFTER the expand transition completes
     useEffect(() => {
@@ -292,7 +284,13 @@ const Home = () => {
     }, [groupedBookings]);
 
     return (
-        <div className="container mt-4" style={{ background: "linear-gradient(120deg, #e0f7ff 0%, #ffffff 100%)", minHeight: "100dvh", paddingLeft: "22px", paddingRight: "22px", paddingTop: "18px" }}>
+        <div className="container mt-4" style={{
+            background: "#e0f7ff",
+            minHeight: "100dvh",
+            paddingLeft: window.innerWidth < 768 ? "12px" : "22px",
+            paddingRight: window.innerWidth < 768 ? "12px" : "22px",
+            paddingTop: window.innerWidth < 768 ? "6px" : "9px"
+        }}>
             {/* Show loading screen until initial data is loaded */}
             {initialLoading ? (
                 <div className="loading-screen" style={{
@@ -324,9 +322,9 @@ const Home = () => {
                             display: 'flex',
                             alignItems: 'center',
                             gap: '12px',
-                            marginBottom: '0.5rem',
+                            marginBottom: '1.5rem',
                             justifyContent: 'space-between',
-                            marginTop: '18px', // Move header slightly down
+                            marginTop: '9px', // Move header down a bit
                         }}
                     >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -338,14 +336,14 @@ const Home = () => {
                             />
                             <h2 style={{ margin: 0, padding: 0, color: '#2c3e50' }}>GymFlex</h2>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: window.innerWidth < 768 ? '8px' : '12px' }}>
                             {currentUser && (
                                 <button
                                     className="logout-icon-btn"
                                     onClick={handleLogout}
                                     aria-label="Logout"
                                     style={{
-                                        padding: '0.4rem',
+                                        padding: window.innerWidth < 768 ? '0.3rem' : '0.4rem',
                                         borderRadius: '50%',
                                         background: '#3498db',
                                         border: 'none',
@@ -359,7 +357,10 @@ const Home = () => {
                                     onMouseOver={e => e.currentTarget.style.background = '#2980b9'}
                                     onMouseOut={e => e.currentTarget.style.background = '#3498db'}
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        width={window.innerWidth < 768 ? "18" : "22"}
+                                        height={window.innerWidth < 768 ? "18" : "22"}
+                                        viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                                         <polyline points="16 17 21 12 16 7" />
                                         <line x1="21" y1="12" x2="9" y2="12" />
@@ -371,17 +372,21 @@ const Home = () => {
                     {/* Welcome message and username under logo/title */}
                     {currentUser && window.innerWidth >= 768 && (
                         <div style={{ textAlign: 'left', marginBottom: '1.2rem', marginLeft: '2px' }}>
-                            <h4 className="mt-1" style={{ margin: 0, fontWeight: 500, color: '#2c3e50' }}>
+                            <span style={{ margin: 0, fontWeight: 500, color: '#2c3e50', fontSize: '14px' }}>
                                 Welcome, {currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}
-                            </h4>
+                            </span>
                         </div>
                     )}
 
-                    {/* Mobile header: month selector + welcome message */}
+                    {/* Mobile header: welcome message */}
                     {window.innerWidth < 768 ? (
-                        <div className="calendar-header-mobile" style={{ gap: 0, marginBottom: 4 }}>
+                        <div className="calendar-header-mobile" style={{ gap: 0, marginBottom: 6, marginTop: 4 }}>
                             {currentUser && (
-                                <span className="welcome-message-mobile">
+                                <span className="welcome-message-mobile" style={{
+                                    fontSize: '14px',
+                                    fontWeight: 500,
+                                    color: '#2c3e50'
+                                }}>
                                     Welcome, {currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}
                                 </span>
                             )}
@@ -417,7 +422,7 @@ const Home = () => {
                     </div>
 
                     {/* My Bookings / Admin View */}
-                    <div className="mb-4" style={{ marginTop: '8px' }}>
+                    <div className="mb-4" style={{ marginTop: window.innerWidth < 768 ? '6px' : '8px' }}>
                         {currentUser?.is_staff ? (
                             <AdminBookingsList
                                 currentUser={currentUser}
@@ -433,15 +438,13 @@ const Home = () => {
                         ) : (
                             <React.Fragment>
                                 {/* Client Bookings Toggle Button */}
-                                <div style={{ marginBottom: 12 }}>
-                                    <button
-                                        className="today-btn"
-                                        onClick={() => setShowBookingsPanel(!showBookingsPanel)}
-                                        title={showBookingsPanel ? "Hide bookings panel" : "Open bookings panel"}
-                                    >
-                                        {showBookingsPanel ? "Hide Bookings" : "Open Bookings"}
-                                    </button>
-                                </div>
+                                <button
+                                    className="today-btn"
+                                    onClick={() => setShowBookingsPanel(!showBookingsPanel)}
+                                    title={showBookingsPanel ? "Hide bookings panel" : "Open bookings panel"}
+                                >
+                                    {showBookingsPanel ? "Hide Bookings" : "Open Bookings"}
+                                </button>
 
                                 {/* Collapsible Client Bookings Panel */}
                                 <div

@@ -16,15 +16,6 @@
                                                                     display: inline-flex !important;
                                                                     align-items: center !important;
                                                                     justify-content: center !important;
-                                                                    border: 1.5px solid #3498db !important;
-                                                                    color: #fff !important;
-                                                                    font-weight: 600 !important;
-                                                                    box-shadow: 0 1px 4px rgba(52, 152, 219, 0.08) !important;
-                                                                    transition: border 0.2s !important;
-                                                                    cursor: pointer !important;
-                                                                    display: inline-flex !important;
-                                                                    align-items: center !important;
-                                                                    justify-content: center !important;
                                                                 }
 
                                                                 .arrow-btn {
