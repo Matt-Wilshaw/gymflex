@@ -405,12 +405,10 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                     // highlighted square remains on today's date.
                     setCalendarDate(moment(newDate).toDate());
 
-                    // If the bookings panel is open, close it when the
-                    // user navigates months — they're now viewing the
-                    // month grid rather than bookings.
-                    if (setShowBookingsPanel && showBookingsPanel) {
-                        setShowBookingsPanel(false);
-                    }
+                    // Do not forcibly close the bookings panel here —
+                    // let the parent (`Home.jsx`) decide whether to
+                    // keep it open or collapse based on bookings in
+                    // the newly visible month.
 
                     // Inform parent about the visible month change (YYYY-MM)
                     try {
