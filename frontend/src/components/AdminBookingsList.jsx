@@ -106,20 +106,13 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
                 >
                     {/* In-panel date context and navigation */}
                     <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        gap: 12,
-                        marginBottom: 8,
                         padding: '6px 8px',
                         background: '#f8f9fa',
                         border: '1px solid #e9ecef',
-                        borderRadius: 6
+                        borderRadius: 6,
+                        marginBottom: 8
                     }}>
-                        <div style={{ fontWeight: 600 }}>
-                            Showing: {moment(currentDate).format('MMMM D, YYYY')}
-                        </div>
-                        <div className="d-flex align-items-center gap-2">
+                        <div className="d-flex align-items-center gap-2 mb-2">
                             <button
                                 className="btn btn-sm btn-outline-secondary"
                                 onClick={() => {
@@ -149,6 +142,9 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
                             >
                                 →
                             </button>
+                        </div>
+                        <div style={{ fontWeight: 600, marginTop: '10px' }}>
+                            Showing: {moment(currentDate).format('ddd DD/MM/YY')}
                         </div>
                     </div>
                     {adminLoading && adminSessions.length === 0 ? (
