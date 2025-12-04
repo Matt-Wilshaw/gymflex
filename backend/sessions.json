@@ -163,5 +163,2172 @@
             "time": "19:00:00",
             "capacity": 10
         }
+    },
+    {
+        "model": "api.session",
+        "pk": 16,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-03-02",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 17,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-03-02",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 18,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-03-03",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 19,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-03-03",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 20,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-03-03",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 21,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-03-04",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 22,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-03-04",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 23,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-03-05",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 24,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-03-05",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 25,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-03-05",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 26,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-03-06",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 27,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-03-06",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 28,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-03-09",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 29,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-03-09",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 30,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-03-10",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 31,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-03-10",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 32,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-03-10",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 33,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-03-11",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 34,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-03-11",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 35,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-03-12",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 36,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-03-12",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 37,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-03-12",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 38,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-03-13",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 39,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-03-13",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 40,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-03-16",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 41,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-03-16",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 42,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-03-17",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 43,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-03-17",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 44,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-03-17",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 45,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-03-18",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 46,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-03-18",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 47,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-03-19",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 48,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-03-19",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 49,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-03-19",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 50,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-03-20",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 51,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-03-20",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 52,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-03-23",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 53,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-03-23",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 54,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-03-24",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 55,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-03-24",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 56,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-03-24",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 57,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-03-25",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 58,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-03-25",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 59,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-03-26",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 60,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-03-26",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 61,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-03-26",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 62,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-03-27",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 63,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-03-27",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 64,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-03-30",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 65,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-03-30",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 66,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-03-31",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 67,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-03-31",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 68,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-03-31",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 69,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-04-01",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 70,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-04-01",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 71,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-04-02",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 72,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-04-02",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 73,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-04-02",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 74,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-04-03",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 75,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-04-03",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 76,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-04-06",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 77,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-04-06",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 78,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-04-07",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 79,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-04-07",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 80,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-04-07",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 81,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-04-08",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 82,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-04-08",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 83,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-04-09",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 84,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-04-09",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 85,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-04-09",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 86,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-04-10",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 87,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-04-10",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 88,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-04-13",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 89,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-04-13",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 90,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-04-14",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 91,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-04-14",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 92,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-04-14",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 93,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-04-15",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 94,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-04-15",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 95,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-04-16",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 96,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-04-16",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 97,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-04-16",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 98,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-04-17",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 99,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-04-17",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 100,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-04-20",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 101,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-04-20",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 102,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-04-21",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 103,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-04-21",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 104,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-04-21",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 105,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-04-22",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 106,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-04-22",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 107,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-04-23",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 108,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-04-23",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 109,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-04-23",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 110,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-04-24",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 111,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-04-24",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 112,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-04-27",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 113,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-04-27",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 114,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-04-28",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 115,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-04-28",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 116,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-04-28",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 117,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-04-29",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 118,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-04-29",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 119,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-04-30",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 120,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-04-30",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 121,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-04-30",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 122,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2025-12-08",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 123,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2025-12-08",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 124,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2025-12-09",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 125,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2025-12-09",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 126,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2025-12-09",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 127,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2025-12-10",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 128,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2025-12-10",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 129,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2025-12-11",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 130,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2025-12-11",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 131,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2025-12-11",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 132,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2025-12-12",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 133,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2025-12-12",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 134,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2025-12-15",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 135,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2025-12-15",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 136,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2025-12-16",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 137,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2025-12-16",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 138,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2025-12-16",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 139,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2025-12-17",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 140,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2025-12-17",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 141,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2025-12-18",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 142,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2025-12-18",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 143,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2025-12-18",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 144,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2025-12-19",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 145,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2025-12-19",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 146,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2025-12-22",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 147,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2025-12-22",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 148,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2025-12-23",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 149,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2025-12-23",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 150,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2025-12-23",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 151,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2025-12-24",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 152,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2025-12-24",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 153,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2025-12-25",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 154,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2025-12-25",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 155,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2025-12-25",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 156,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2025-12-26",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 157,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2025-12-26",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 158,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2025-12-29",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 159,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2025-12-29",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 160,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2025-12-30",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 161,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2025-12-30",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 162,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2025-12-30",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 163,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2025-12-31",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 164,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2025-12-31",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 165,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-02-02",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 166,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-02-02",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 167,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-02-03",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 168,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-02-03",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 169,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-02-03",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 170,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-02-04",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 171,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-02-04",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 172,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-02-05",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 173,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-02-05",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 174,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-02-05",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 175,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-02-06",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 176,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-02-06",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 177,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-02-09",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 178,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-02-09",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 179,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-02-10",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 180,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-02-10",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 181,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-02-10",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 182,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-02-11",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 183,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-02-11",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 184,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-02-12",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 185,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-02-12",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 186,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-02-12",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 187,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-02-13",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 188,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-02-13",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 189,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-02-16",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 190,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-02-16",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 191,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-02-17",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 192,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-02-17",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 193,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-02-17",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 194,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-02-18",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 195,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-02-18",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 196,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-02-19",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 197,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-02-19",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 198,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-02-19",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 199,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-02-20",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 200,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-02-20",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 201,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-02-23",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 202,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-02-23",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 203,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-02-24",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 204,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-02-24",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 205,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-02-24",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 206,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-02-25",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 207,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-02-25",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 208,
+        "fields": {
+            "activity_type": "yoga",
+            "trainer": 1,
+            "date": "2026-02-26",
+            "time": "08:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 209,
+        "fields": {
+            "activity_type": "hiit",
+            "trainer": 1,
+            "date": "2026-02-26",
+            "time": "12:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 210,
+        "fields": {
+            "activity_type": "pilates",
+            "trainer": 1,
+            "date": "2026-02-26",
+            "time": "18:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 211,
+        "fields": {
+            "activity_type": "cardio",
+            "trainer": 1,
+            "date": "2026-02-27",
+            "time": "09:00:00",
+            "capacity": 10
+        }
+    },
+    {
+        "model": "api.session",
+        "pk": 212,
+        "fields": {
+            "activity_type": "weights",
+            "trainer": 1,
+            "date": "2026-02-27",
+            "time": "18:00:00",
+            "capacity": 10
+        }
     }
 ]
