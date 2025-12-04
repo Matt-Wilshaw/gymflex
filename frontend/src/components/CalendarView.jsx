@@ -36,45 +36,22 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                 padding: '10px 0',
                 flexWrap: 'wrap'
             }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <button
+                        className="arrow-btn"
                         onClick={goToBack}
-                        style={{
-                            padding: '8px 16px',
-                            cursor: 'pointer',
-                            border: '1px solid #ddd',
-                            borderRadius: '4px',
-                            background: 'white',
-                            fontSize: '16px'
-                        }}
                     >
                         ←
                     </button>
                     <button
+                        className="today-btn"
                         onClick={goToToday}
-                        style={{
-                            padding: '8px 20px',
-                            cursor: 'pointer',
-                            border: '1px solid #0d6efd',
-                            borderRadius: '4px',
-                            background: '#0d6efd',
-                            color: 'white',
-                            fontWeight: '500',
-                            fontSize: '14px'
-                        }}
                     >
                         Today
                     </button>
                     <button
+                        className="arrow-btn"
                         onClick={goToNext}
-                        style={{
-                            padding: '8px 16px',
-                            cursor: 'pointer',
-                            border: '1px solid #ddd',
-                            borderRadius: '4px',
-                            background: 'white',
-                            fontSize: '16px'
-                        }}
                     >
                         →
                     </button>
@@ -226,10 +203,11 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
             justifyContent: "center",
             borderRadius: "50%",
             padding: "0",
-            border: "2px solid #0d6efd",
-            background: "#0d6efd",
+            border: "2px solid #3498db",
+            background: "#3498db",
             color: "white",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            boxShadow: "0 2px 4px rgba(52,152,219,0.10)",
+            marginRight: "8px",
         };
 
         const emojiBarStyle = activityFilter ? {
@@ -323,23 +301,48 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
     };
 
     return (
-        <div
-            style={
-                isMobile
-                    ? { minHeight: 'unset', maxHeight: 'unset', height: 'auto', position: 'relative', marginBottom: 0, paddingBottom: 0 }
-                    : { minHeight: 800, maxHeight: 1000, height: '100%', display: 'flex', flexDirection: 'column', marginBottom: 0, paddingBottom: 0, gap: 0 }
-            }
-        >
+        <div>
+            <style>{`
+                /* Add 2px top margin to day numbers in month view */
+                .rbc-month-view .rbc-date-cell .rbc-button-link {
+                    margin-top: 2px;
+                }
+                @media (min-width: 768px) {
+                    .rbc-month-view {
+                        min-height: 520px !important;
+                    }
+                    .rbc-month-row {
+                        min-height: 88px !important;
+                    }
+                }
+                /* Vertical lines between date cells */
+                .rbc-month-view .rbc-day-bg {
+                    border-right: 1.5px solid #d0d0d0 !important;
+                }
+                .rbc-month-view .rbc-day-bg:nth-child(7n) {
+                    border-right: none !important;
+                }
+                
+                /* Horizontal lines between week rows */
+                .rbc-month-view .rbc-month-row {
+                    border-bottom: 1.5px solid #d0d0d0 !important;
+                }
+                
+                /* Force flex layout */
+                .rbc-row-bg {
+                    display: flex !important;
+                }
+                
+                .rbc-day-bg {
+                    flex: 1 !important;
+                }
+            `}</style>
             <Calendar
                 localizer={localiser}
                 events={[]}
                 startAccessor="start"
                 endAccessor="end"
-                style={
-                    isMobile
-                        ? { height: 'auto', marginBottom: 0, paddingBottom: 0, display: 'block', minHeight: 'unset', maxHeight: 'unset' }
-                        : { height: '700px', marginBottom: 0, paddingBottom: 0, display: 'block' }
-                }
+                style={isMobile ? { height: 'auto' } : { height: '700px' }}
                 onDrillDown={handleDrillDown}
                 views={["month"]}
                 date={currentUser?.is_staff

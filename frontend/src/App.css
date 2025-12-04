@@ -1,630 +1,545 @@
-/* ========== CLEAN & PROFESSIONAL BLUE/WHITE COLOR SCHEME ========== */
+  border-radius: 8px !important;
 
-/* ========== AUTH PAGES (LOGIN & REGISTER) ========== */
-.auth-container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(120deg, #e0f7ff 0%, #ffffff 100%);
-  padding: 20px;
-}
-
-.auth-card {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(52, 152, 219, 0.15);
-  padding: 2.5rem 2.5rem 2rem 2.5rem;
-  width: 100%;
-  max-width: 370px;
-  text-align: center;
-}
-
-.auth-logo {
-  height: 48px;
-  margin-bottom: 12px;
-}
-
-.auth-title {
-  margin-bottom: 18px;
-  font-weight: 700;
-  color: #2c3e50;
-  font-size: 1.75rem;
-}
-
-.auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.auth-input {
-  padding: 0.75rem;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-  font-size: 16px;
-  transition: border-color 0.2s ease;
-}
-
-.auth-input:focus {
-  outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-}
-
-.auth-button {
-  background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 0.75rem;
-  font-weight: 600;
-  font-size: 17px;
-  margin-top: 8px;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.auth-button:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-}
-
-.auth-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.auth-link {
-  margin-top: 18px;
-  font-size: 15px;
-}
-
-.auth-link a {
-  color: #3498db;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
-}
-
-.auth-link a:hover {
-  color: #2980b9;
-  text-decoration: underline;
-}
-
-.auth-error {
-  color: #dc3545;
-  margin-top: 12px;
-  font-weight: 500;
-  font-size: 14px;
-}
-
-/* ========== HOME PAGE ========== */
-
-/* Loading screen */
-.loading-screen {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100dvh;
-  color: #2c3e50;
-  text-align: center;
-  gap: 2rem;
-  background: linear-gradient(120deg, #e0f7ff 0%, #ffffff 100%);
-}
-
-.loading-logo {
-  height: 120px;
-  width: 120px;
-  animation: logoFloat 3s ease-in-out infinite;
-  filter: drop-shadow(0 10px 20px rgba(52, 152, 219, 0.3));
-}
-
-@keyframes logoFloat {
-
-  0%,
-  100% {
-    transform: translateY(0px) scale(1);
+  .show-bookings-btn {
+    font-size: 11px !important;
+    padding: 1px 6px !important;
+    border-radius: 6px !important;
+    min-width: 0 !important;
   }
 
-  50% {
-    transform: translateY(-20px) scale(1.05);
-  }
-}
+  /* ========== CLEAN & PROFESSIONAL BLUE/WHITE COLOR SCHEME ========== */
 
-.loading-text {
-  font-size: 2.5rem;
-  color: #2c3e50;
-  font-weight: 700;
-  letter-spacing: 2px;
-  margin: 0;
-}
-
-.spinner-border.text-primary {
-  color: #3498db !important;
-  width: 3.5rem;
-  height: 3.5rem;
-  border-width: 0.4em;
-  margin-top: 1rem;
-}
-
-/* Calendar styling with new colors */
-.rbc-month-view {
-  border: none !important;
-  background: white !important;
-  border-radius: 12px !important;
-  overflow: hidden !important;
-  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15) !important;
-}
-
-/* Remove any outer calendar container borders */
-.rbc-calendar {
-  border: none !important;
-  box-shadow: none !important;
-}
-
-.calendar-container {
-  border: none !important;
-}
-
-/* Calendar header styling with blue gradient */
-.rbc-header {
-  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%) !important;
-  color: white !important;
-  font-weight: 600 !important;
-  padding: 12px 4px !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
-  border-left: none !important;
-}
-
-.rbc-header:nth-child(7n) {
-  border-right: none !important;
-}
-
-/* Vertical lines between date cells */
-.rbc-month-view .rbc-day-bg {
-  border-right: 1.5px solid #e8f4f8 !important;
-  border-left: none !important;
-  transition: background 0.2s ease !important;
-}
-
-.rbc-month-view .rbc-day-bg:nth-child(7n) {
-  border-right: none !important;
-}
-
-/* Horizontal lines between week rows */
-.rbc-month-view .rbc-month-row {
-  border-bottom: 1.5px solid #e8f4f8 !important;
-}
-
-/* Force the background row to display as flex */
-.rbc-row-bg {
-  display: flex !important;
-}
-
-/* Make each day background cell flex to fill space */
-.rbc-day-bg {
-  flex: 1 !important;
-}
-
-/* Remove any default borders from month view container */
-.rbc-month-view .rbc-row {
-  border: none !important;
-}
-
-/* Style the session count badge with blue gradient */
-.session-count-circle {
-  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%) !important;
-  border: 2px solid white !important;
-  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.4) !important;
-}
-
-/* Hover effect on calendar cells */
-.rbc-day-bg:hover {
-  background: rgba(52, 152, 219, 0.05) !important;
-}
-
-/* Selected date styling with blue theme */
-.rbc-day-bg[style*="rgb(212, 233, 255)"] {
-  background: rgba(52, 152, 219, 0.1) !important;
-  border: 2px solid #3498db !important;
-}
-
-/* ========== EXISTING STYLES (Keep all your existing CSS below) ========== */
-
-@media (max-width: 576px) {
-  .bookings-panel-inner {
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-}
-
-/* Hide info legend below calendar on mobile, show inside bookings panel */
-@media (max-width: 576px) {
-  .legend-info .info-legend {
-    display: none !important;
+  /* ========== AUTH PAGES (LOGIN & REGISTER) ========== */
+  .auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(120deg, #e0f7ff 0%, #ffffff 100%);
+    padding: 20px;
   }
 
-  .info-legend-mobile {
-    display: block !important;
-    margin: 0 !important;
-    padding: 0 !important;
+  .auth-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(52, 152, 219, 0.15);
+    padding: 2.5rem 2.5rem 2rem 2.5rem;
+    width: 100%;
+    max-width: 370px;
     text-align: center;
-    line-height: 1 !important;
   }
 
-  .info-legend-mobile small {
-    margin: 0 !important;
-    padding: 0 !important;
-    line-height: 1 !important;
-    display: inline-block;
+  .auth-logo {
+    height: 48px;
+    margin-bottom: 12px;
   }
 
-  .alert.alert-info {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-  }
-}
-
-@media (min-width: 577px) {
-  .info-legend-mobile {
-    display: none !important;
-  }
-}
-
-/* Hide .d-none-mobile on screens 576px and below */
-@media (max-width: 576px) {
-  .d-none-mobile {
-    display: none !important;
-  }
-}
-
-/* FINAL override: Remove all spacing between calendar and legend on mobile */
-@media (max-width: 576px) {
-
-  .calendar-container,
-  .legend-info {
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    background: none !important;
-    min-height: unset !important;
-    height: unset !important;
-    display: block !important;
-    position: static !important;
-    line-height: 1.3 !important;
+  .auth-title {
+    margin-bottom: 18px;
+    font-weight: 700;
+    color: #2c3e50;
+    font-size: 1.75rem;
   }
 
-  .calendar-container {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-    border-bottom: none !important;
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 
-  .legend-info {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    border: none !important;
-    background: none !important;
-    min-height: unset !important;
-    height: unset !important;
-    display: block !important;
-    position: static !important;
-    line-height: 1.3 !important;
-  }
-}
-
-/* Ensure legend paragraph has zero margin on all screens */
-.legend-info,
-.calendar-container>.legend-info {
-  margin-bottom: 0 !important;
-  margin-top: 0 !important;
-  padding-bottom: 0 !important;
-  padding-top: 0 !important;
-}
-
-@media (max-width: 576px) {
-  .calendar-container {
-    position: relative !important;
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-    min-height: 0 !important;
-    height: auto !important;
-    max-height: unset !important;
+  .auth-input {
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    font-size: 16px;
+    transition: border-color 0.2s ease;
   }
 
-  .rbc-calendar {
-    height: auto !important;
-    min-height: 0 !important;
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-    border-bottom: none !important;
-    box-shadow: none !important;
+  .auth-input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
   }
 
-  .calendar-container,
-  .rbc-calendar,
-  .rbc-month-view,
-  .rbc-month-row,
-  .rbc-row-content,
-  .legend-info {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-    border-bottom: none !important;
+  .auth-button {
+    background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-weight: 600;
+    font-size: 17px;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .rbc-calendar::after,
-  .rbc-month-view::after {
-    display: none !important;
-    content: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
+  .auth-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
   }
 
-  .legend-info {
-    position: static !important;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    border: none !important;
-    background: transparent !important;
-    line-height: 1.3 !important;
-    margin-block-start: 0 !important;
-    margin-block-end: 0 !important;
+  .auth-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
   }
 
-  .calendar-container {
-    padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
-    border-bottom: none !important;
+  .auth-link {
+    margin-top: 18px;
+    font-size: 15px;
   }
 
-  .rbc-calendar {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-    border-bottom: none !important;
-  }
-}
-
-#root {
-  max-width: 1280px;
-  min-width: 320px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+  .auth-link a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
   }
 
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-/* COMPLETELY remove ALL React Big Calendar's "today" cell styling */
-.rbc-day-bg.rbc-today,
-.rbc-date-cell.rbc-now,
-.rbc-today,
-.rbc-now,
-.rbc-current {
-  background-color: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-/* Also target specific nested elements */
-.rbc-month-view .rbc-day-bg.rbc-today,
-.rbc-month-view .rbc-date-cell.rbc-now,
-.rbc-month-row .rbc-day-bg.rbc-today {
-  background-color: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-/* Target button links inside today cells */
-@media (max-width: 576px) {
-
-  .rbc-date-cell.rbc-now .rbc-button-link,
-  .rbc-date-cell.rbc-now>a {
-    border: none !important;
-    box-shadow: none !important;
-    outline: none !important;
+  .auth-link a:hover {
+    color: #2980b9;
+    text-decoration: underline;
   }
 
-  /* Ensure off-range (other month) cells stay grey */
-  .rbc-off-range-bg.rbc-today {
-    background-color: #f0f0f0 !important;
+  .auth-error {
+    color: #dc3545;
+    margin-top: 12px;
+    font-weight: 500;
+    font-size: 14px;
   }
 
-  /* Make all calendar borders more visible */
-  .rbc-month-row {
-    border-top: 2px solid #666 !important;
+  /* ========== HOME PAGE ========== */
+
+  /* Loading screen */
+  .loading-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+    text-align: center;
+    gap: 1.5rem;
   }
 
-  .rbc-day-bg+.rbc-day-bg {
-    border-left: 3px solid #666 !important;
+  .loading-logo {
+    height: 100px;
+    width: 100px;
+    animation: spin 2s linear infinite;
   }
 
-  .rbc-header+.rbc-header {
-    border-left: 3px solid #666 !important;
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
   }
 
-  /* Increase specificity to ensure vertical borders render across all layouts */
-  .rbc-month-view .rbc-day-bg+.rbc-day-bg {
-    border-left: 3px solid #666 !important;
+  .loading-text {
+    font-size: 2rem;
+    color: #2c3e50;
+    font-weight: 700;
   }
 
-  .rbc-month-row .rbc-day-bg+.rbc-day-bg {
-    border-left: 3px solid #666 !important;
-  }
-
-  .rbc-row-content .rbc-date-cell+.rbc-date-cell {
-    border-left: 3px solid #666 !important;
-  }
-
-  /* Explicitly target month grid date cells for vertical lines */
-  .rbc-month-row .rbc-row-content>.rbc-date-cell {
-    box-sizing: border-box;
-    border-left: 3px solid #666 !important;
-    border-right: 0;
-  }
-
-  /* Ensure the very first cell also has a left border for consistency */
-  .rbc-month-row .rbc-row-content>.rbc-date-cell:first-child {
-    border-left: 3px solid #666 !important;
-  }
-
-  /* Also enforce vertical separators via right borders to increase visibility */
-  .rbc-month-row .rbc-row-content>.rbc-date-cell+.rbc-date-cell {
-    border-right: 3px solid #666 !important;
-  }
-
-  /* Header cells: strengthen vertical lines across the week names */
-  .rbc-month-header .rbc-header+.rbc-header {
-    border-left: 3px solid #666 !important;
-  }
-
-  /* Strengthen header separators across all breakpoints */
-  .rbc-month-header .rbc-header {
-    box-sizing: border-box;
-    border-right: 2px solid #666 !important;
-  }
-
-  .rbc-month-header .rbc-header:last-child {
-    border-right: 0 !important;
-    /* avoid double border at row end */
-  }
-
-  /* Target row background container as some themes draw lines there */
-  .rbc-row-bg .rbc-day-bg+.rbc-day-bg {
-    border-left: 2px solid #666 !important;
-  }
-
-  /* Add a subtle right border for completeness (left may be hidden by layout) */
-  .rbc-day-bg {
-    border-right: 2px solid #666 !important;
-  }
-
-  /* Ensure off-range days also keep vertical lines */
-  .rbc-off-range-bg {
-    border-right: 2px solid #666 !important;
-  }
-
-  /* Remove white space under calendar */
-  .rbc-calendar {
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important;
-    line-height: 1 !important;
-    height: 700px !important;
-  }
-
+  /* Calendar styling with new colors */
   .rbc-month-view {
-    margin: 0 !important;
-    padding: 0 !important;
-    height: 100% !important;
-    display: block !important;
+    border: none !important;
+    background: white !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15) !important;
   }
 
-  .rbc-month-row {
-    margin: 0 !important;
-    padding: 0 !important;
+  /* Remove any outer calendar container borders */
+  .rbc-calendar {
+    border: none !important;
+    box-shadow: none !important;
   }
 
-  .rbc-row-content {
-    margin: 0 !important;
-    padding: 0 !important;
+  .calendar-container {
+    border: none !important;
   }
 
-  .rbc-row {
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  /* Force remove any spacing after calendar */
-  .rbc-calendar::after,
-  .rbc-month-view::after {
-    display: none !important;
-    content: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  /* Remove spacing from calendar header */
+  /* Calendar header styling with blue gradient */
   .rbc-header {
-    line-height: 1 !important;
-    margin: 0 !important;
-    padding: 4px !important;
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    padding: 12px 4px !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-left: none !important;
   }
 
-  /* Remove spacing from toolbar */
-  .rbc-toolbar {
-    margin-bottom: 10px !important;
-    margin-top: 0 !important;
-    padding: 0 !important;
+  .rbc-header:nth-child(7n) {
+    border-right: none !important;
   }
 
-  /* Remove spacing from legend paragraph */
+  /* Vertical lines between date cells */
+  .rbc-month-view .rbc-day-bg {
+    border-right: 1.5px solid #d0d0d0 !important;
+    border-left: none !important;
+    transition: background 0.2s ease !important;
+  }
+
+  .rbc-month-view .rbc-day-bg:nth-child(7n) {
+    border-right: none !important;
+  }
+
+  /* Horizontal lines between week rows */
+  .rbc-month-view .rbc-month-row {
+    border-bottom: 1.5px solid #d0d0d0 !important;
+  }
+
+  /* Force the background row to display as flex */
+  .rbc-row-bg {
+    display: flex !important;
+  }
+
+  /* Make each day background cell flex to fill space */
+  .rbc-day-bg {
+    flex: 1 !important;
+  }
+
+  /* Remove any default borders from month view container */
+  .rbc-month-view .rbc-row {
+    border: none !important;
+  }
+
+  /* Style the session count badge with blue gradient */
+  .session-count-circle {
+    background: #e0e7ff !important;
+    border: 2px solid #3498db !important;
+    color: #3498db !important;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.10) !important;
+  }
+
+  /* Hover effect on calendar cells */
+  .rbc-day-bg:hover {
+    background: rgba(52, 152, 219, 0.05) !important;
+  }
+
+  /* Selected date styling with blue theme */
+  .rbc-day-bg[style*="rgb(212, 233, 255)"] {
+    background: rgba(52, 152, 219, 0.1) !important;
+    border: 2px solid #3498db !important;
+  }
+
+  /* ========== EXISTING STYLES (Keep all your existing CSS below) ========== */
+
+  /* Bootstrap Breakpoint: X-Small (xs) - Mobile */
+  @media (max-width: 575px) {
+    .bookings-panel-inner {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  }
+
+  /* Hide info legend below calendar on mobile, show inside bookings panel */
+  /* Bootstrap Breakpoint: X-Small (xs) - Mobile */
+  @media (max-width: 575px) {
+    .legend-info .info-legend {
+      display: none !important;
+    }
+
+    .info-legend-mobile {
+      display: block !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      text-align: center;
+      line-height: 1 !important;
+    }
+
+    .info-legend-mobile small {
+      margin: 0 !important;
+      padding: 0 !important;
+      line-height: 1 !important;
+      display: inline-block;
+    }
+
+    .alert.alert-info {
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+    }
+  }
+
+  /* Bootstrap Breakpoint: Small (sm) and above */
+  @media (min-width: 576px) {
+    .info-legend-mobile {
+      display: none !important;
+    }
+  }
+
+  /* Hide .d-none-mobile on X-Small screens */
+  /* Bootstrap Breakpoint: X-Small (xs) - Mobile */
+  @media (max-width: 575px) {
+    .d-none-mobile {
+      display: none !important;
+    }
+  }
+
+  /* FINAL override: Remove all spacing between calendar and legend on mobile */
+  /* Bootstrap Breakpoint: X-Small (xs) - Mobile */
+  @media (max-width: 575px) {
+
+    .calendar-container,
+    .legend-info {
+      margin-bottom: 0 !important;
+      padding: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+      background: none !important;
+      /* min-height: unset !important; */
+      /* height: unset !important; */
+      display: block !important;
+      position: static !important;
+      line-height: 1.3 !important;
+    }
+
+    .calendar-container {
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
+      border-bottom: none !important;
+    }
+
+    .legend-info {
+      margin-bottom: 0 !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      border: none !important;
+      background: none !important;
+      min-height: unset !important;
+      height: unset !important;
+      display: block !important;
+      position: static !important;
+      line-height: 1.3 !important;
+    }
+  }
+
+  /* Ensure legend paragraph has zero margin on all screens */
+  .legend-info,
+  .calendar-container>.legend-info {
+    padding-bottom: 0 !important;
+  }
+
+  /* Add spacing on larger screens to prevent legend creeping into table */
+  /* Bootstrap Breakpoint: Medium (md) and above - Tablets/Desktops */
+  @media (min-width: 768px) {
+    .legend-info {
+      margin-top: 64px !important;
+      margin-bottom: 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      position: static !important;
+      width: 100% !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 1 !important;
+    }
+
+    .calendar-legend-spacer {
+      display: none !important;
+    }
+
+    .calendar-container {
+      display: block !important;
+      position: static !important;
+      margin-bottom: 32px !important;
+      padding-bottom: 0 !important;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      /* min-height: unset !important; */
+      /* height: auto !important; */
+    }
+
+    .rbc-calendar {
+      display: block !important;
+      position: static !important;
+      margin-bottom: 32px !important;
+      padding-bottom: 0 !important;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      /* min-height: unset !important; */
+      /* height: auto !important; */
+    }
+
+    .legend-container {
+      width: 100%;
+      margin-top: 64px;
+      margin-bottom: 0;
+      padding: 0;
+      display: block;
+      position: static;
+      background: none;
+      border: none;
+      box-shadow: none;
+    }
+  }
+
+  /* ========== LEGEND STYLES ========== */
+
+  /* Base legend container styles */
+  .legend-container {
+    width: 100%;
+    margin-top: 48px;
+    margin-bottom: 0;
+    padding: 0;
+    display: block;
+    position: static;
+    background: none;
+    border: none;
+    box-shadow: none;
+  }
+
+  /* Legend info styles */
   .legend-info {
     margin-top: 0 !important;
-    padding-top: 0 !important;
-    margin-block-start: 0 !important;
-    margin-block-end: 0 !important;
-  }
-
-  /* Remove spacing from calendar container */
-  .calendar-container>div {
     margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    position: static !important;
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1 !important;
   }
 
-  /* Center emoji bar when filtering by activity (all screen sizes) */
-  .emoji-bar-filtered {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    grid-template-columns: unset !important;
-    grid-template-rows: unset !important;
-    grid-auto-flow: unset !important;
-    gap: 4px !important;
+  /* Bootstrap Breakpoint: X-Small (xs) - Mobile */
+  @media (max-width: 575px) {
+    .legend-container {
+      margin-top: 0 !important;
+      padding: 0 !important;
+      display: block !important;
+      position: static !important;
+      background: none !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    .legend-info {
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      position: static !important;
+      width: 100% !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 1 !important;
+    }
   }
 
-  .calendar-container>div {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
+  /* Bootstrap Breakpoint: Small (sm) and above */
+  @media (min-width: 576px) {
+    .legend-container {
+      margin-top: 48px;
+    }
   }
-}
+
+  /* Bootstrap Breakpoint: Medium (md) and above - Tablets/Desktops */
+  @media (min-width: 768px) {
+    .legend-container {
+      width: 100%;
+      margin-top: 64px;
+      margin-bottom: 0;
+      padding: 0;
+      display: block;
+      position: static;
+      background: none;
+      border: none;
+      box-shadow: none;
+    }
+
+    .legend-info {
+      margin-top: 0;
+      margin-bottom: 0;
+      padding: 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      position: static;
+      width: 100%;
+      left: 0;
+      right: 0;
+      z-index: 1;
+    }
+
+    .calendar-container {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      display: block;
+      position: static;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      /* min-height: unset; */
+      /* height: auto; */
+    }
+
+    .rbc-calendar {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      display: block;
+      position: static;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      min-height: unset;
+      height: auto;
+    }
+  }
+
+  /* Mobile styles for calendar header container */
+  @media (max-width: 767px) {
+    .calendar-header-mobile {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      margin-bottom: 12px;
+      width: 100%;
+    }
+
+    .calendar-header-mobile .calendar-month-label {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 2px;
+      background: #3498db !important;
+      color: white !important;
+      border: none !important;
+    }
+
+    .calendar-header-mobile .welcome-message-mobile {
+      font-size: 15px;
+      font-weight: 500;
+      color: #2c3e50;
+      margin-bottom: 0;
+      margin-left: 0;
+      background: #3498db !important;
+      color: white !important;
+      border: none !important;
+    }
+  }
+
+  /* Logo drop-shadow */
+  .logo {
+    height: 6em;
+    padding: 1.5em;
+    will-change: filter;
+    transition: filter 300ms;
+    background: #3498db;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 0 2em #3498db);
+  }

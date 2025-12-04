@@ -276,23 +276,27 @@ const Home = () => {
         };
     }, [showBookingsPanel, currentUser]);
 
+    // Get current month label for mobile header
+    const currentMonthLabel = useMemo(() => {
+        if (groupedBookings.length === 0) return "";
+        const firstSessionDate = groupedBookings[0].sessions[0].date;
+        return moment(firstSessionDate).format("MMMM YYYY");
+    }, [groupedBookings]);
+
     return (
-        <div className="container mt-4" style={{ background: "linear-gradient(120deg, #e0f7ff 0%, #ffffff 100%)", minHeight: "100dvh", paddingLeft: "22px", paddingRight: "22px", paddingTop: "12px" }}>
+        <div className="container mt-4" style={{ background: "linear-gradient(120deg, #e0f7ff 0%, #ffffff 100%)", minHeight: "100dvh", paddingLeft: "22px", paddingRight: "22px", paddingTop: "18px" }}>
             {/* Show loading screen until initial data is loaded */}
             {initialLoading ? (
                 <div className="loading-screen">
                     <img src="/favicons/favicon.svg" alt="GymFlex logo" className="loading-logo" />
                     <div className="loading-text">GymFlex</div>
-                    <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                    </div>
                 </div>
             ) : (
                 <React.Fragment>
                     {/* Header */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1.5rem', justifyContent: 'space-between' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <img src="/favicons/favicon.svg" alt="GymFlex logo" style={{ height: '45px', width: '40px', objectFit: 'contain', margin: 0, padding: 0 }} />
+                            <img src="/favicons/favicon.svg" alt="GymFlex logo" style={{ height: '45px', width: '45px', objectFit: 'cover', margin: 0, padding: 0, borderRadius: '50%', background: '#3498db' }} />
                             <h2 style={{ margin: 0, padding: 0, color: '#2c3e50' }}>GymFlex</h2>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -326,7 +330,7 @@ const Home = () => {
                         </div>
                     </div>
                     {/* Welcome message and username under logo/title */}
-                    {currentUser && (
+                    {currentUser && window.innerWidth >= 768 && (
                         <div style={{ textAlign: 'left', marginBottom: '1.2rem', marginLeft: '2px' }}>
                             <h4 className="mt-1" style={{ margin: 0, fontWeight: 500, color: '#2c3e50' }}>
                                 Welcome, {currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}
@@ -334,8 +338,18 @@ const Home = () => {
                         </div>
                     )}
 
-                    {/* Calendar with Legend inside */}
-                    <div className="calendar-container" style={{ marginBottom: 0, paddingBottom: 0, position: 'relative' }}>
+                    {/* Mobile header: month selector + welcome message */}
+                    {window.innerWidth < 768 ? (
+                        <div className="calendar-header-mobile" style={{ gap: 0, marginBottom: 4 }}>
+                            {currentUser && (
+                                <span className="welcome-message-mobile">
+                                    Welcome, {currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}
+                                </span>
+                            )}
+                        </div>
+                    ) : null}
+                    {/* Always render calendar and legend below header */}
+                    <div className="calendar-container">
                         <CalendarView
                             sessions={sessions}
                             activityFilter={activityFilter}
@@ -349,16 +363,17 @@ const Home = () => {
                             bookedSessions={sortedUpcomingBookings}
                         />
 
-                        {/* Legend positioned directly under calendar */}
-                        <div className="legend-info" style={{ marginTop: '4px', paddingTop: '4px', lineHeight: '1.4', color: '#2c3e50' }}>
-                            <small className="activity-legend" style={{ display: 'block', marginBottom: '4px' }}>
-                                <strong>Activities:</strong> 🏃 Cardio | 🏋️ Weights | 🧘 Yoga | ⚡ HIIT | 🤸 Pilates
-                            </small>
-                            <small className="info-legend" style={{ display: 'block' }}>
-                                <strong>Info:</strong> <span style={{ display: 'inline-block', padding: '2px 6px', background: '#3498db', color: 'white', borderRadius: '12px', fontSize: '11px', fontWeight: '600' }}>3</span> Session count
-                                {' '}|{' '}
-                                <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>✓</span> Booked slot/s
-                            </small>
+                        <div className="legend-container">
+                            <div className="legend-info">
+                                <small className="activity-legend" style={{ display: 'block', marginBottom: '4px' }}>
+                                    <strong>Activities:</strong> 🏃 Cardio | 🏋️ Weights | 🧘 Yoga | ⚡ HIIT | 🤸 Pilates
+                                </small>
+                                <small className="info-legend" style={{ display: 'block' }}>
+                                    <strong>Info:</strong> <span style={{ display: 'inline-block', padding: '2px 6px', background: '#3498db', color: 'white', borderRadius: '12px', fontSize: '11px', fontWeight: '600' }}>3</span> Session count
+                                    {' '}|{' '}
+                                    <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>✓</span> Booked slot/s
+                                </small>
+                            </div>
                         </div>
                     </div>
 
@@ -380,15 +395,10 @@ const Home = () => {
                             <React.Fragment>
                                 {/* Client Bookings Toggle Button */}
                                 <button
-                                    className="btn btn-primary mb-2 w-100"
+                                    className="btn btn-primary mb-2 w-100 show-bookings-btn"
+                                    style={{ borderRadius: '8px' }}
                                     onClick={() => setShowBookingsPanel(!showBookingsPanel)}
-                                    style={{
-                                        background: '#3498db',
-                                        border: 'none',
-                                        color: 'white',
-                                        fontWeight: '600',
-                                        boxShadow: '0 2px 8px rgba(52, 152, 219, 0.3)',
-                                    }}
+                                // ...existing code...
                                 >
                                     {showBookingsPanel ? "Hide" : "Show"} My Bookings
                                 </button>
@@ -412,7 +422,8 @@ const Home = () => {
                                             {groupedBookings.length > 1 && (
                                                 <div className="d-flex align-items-center gap-2 mb-3">
                                                     <button
-                                                        className="btn btn-sm btn-outline-secondary"
+                                                        className="btn btn-sm btn-outline-secondary show-bookings-btn"
+                                                        style={{ borderRadius: '8px' }}
                                                         onClick={() => setCurrentDayIndex(Math.max(0, currentDayIndex - 1))}
                                                         disabled={currentDayIndex === 0}
                                                         title="Previous day"
@@ -420,14 +431,16 @@ const Home = () => {
                                                         ←
                                                     </button>
                                                     <button
-                                                        className="btn btn-sm btn-outline-secondary"
+                                                        className="btn btn-sm btn-outline-secondary show-bookings-btn"
+                                                        style={{ borderRadius: '8px' }}
                                                         onClick={() => setCurrentDayIndex(0)}
                                                         title="Go to next upcoming session"
                                                     >
                                                         Next Session
                                                     </button>
                                                     <button
-                                                        className="btn btn-sm btn-outline-secondary"
+                                                        className="btn btn-sm btn-outline-secondary show-bookings-btn"
+                                                        style={{ borderRadius: '8px' }}
                                                         onClick={() => setCurrentDayIndex(Math.min(groupedBookings.length - 1, currentDayIndex + 1))}
                                                         disabled={currentDayIndex === groupedBookings.length - 1}
                                                         title="Next day"
