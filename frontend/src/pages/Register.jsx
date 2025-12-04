@@ -61,28 +61,29 @@ const Register = () => {
     return (
         // Container div for centring the form and setting max width
         <div style={{
-            height: "100vh",
+            minHeight: "100vh",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             background: "linear-gradient(120deg, #e0f7ff 0%, #ffffff 100%)",
-            overflow: "hidden"
+            overflow: "auto",
+            padding: "20px"
         }}>
             {/* Card-like container for the registration form */}
             <div style={{
                 background: "#fff",
                 borderRadius: 16,
                 boxShadow: "0 4px 24px rgba(52, 152, 219, 0.15)",
-                padding: "2.5rem 2.5rem 2rem 2.5rem",
-                minWidth: 320,
-                maxWidth: 370,
+                padding: "1.5rem",
+                minWidth: "280px",
+                maxWidth: "370px",
                 width: "100%",
                 textAlign: "center"
             }}>
-                <img src="/favicons/favicon.svg" alt="GymFlex logo" style={{ height: 48, marginBottom: 12 }} />
-                <h2 style={{ marginBottom: 18, fontWeight: 700, color: "#2c3e50" }}>Register</h2>
+                <img src="/favicons/favicon.svg" alt="GymFlex logo" style={{ height: 40, marginBottom: 12 }} />
+                <h2 style={{ marginBottom: 16, fontWeight: 700, color: "#2c3e50", fontSize: "1.5rem" }}>Register</h2>
                 {/* Registration form */}
-                <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                     {/* Username input */}
                     <input
                         type="text"
@@ -90,7 +91,7 @@ const Register = () => {
                         value={username}
                         onChange={e => setUsername(e.target.value)}
                         required
-                        style={{ padding: "0.75rem", borderRadius: 8, border: "1px solid #e0e0e0", fontSize: 16 }}
+                        style={{ padding: "0.65rem", borderRadius: 8, border: "1px solid #e0e0e0", fontSize: 15 }}
                     />
                     {/* Password input */}
                     <input
@@ -99,7 +100,7 @@ const Register = () => {
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                         required
-                        style={{ padding: "0.75rem", borderRadius: 8, border: "1px solid #e0e0e0", fontSize: 16 }}
+                        style={{ padding: "0.65rem", borderRadius: 8, border: "1px solid #e0e0e0", fontSize: 15 }}
                     />
                     {/* Confirm Password input */}
                     <input
@@ -108,7 +109,7 @@ const Register = () => {
                         value={confirmPassword}
                         onChange={e => setConfirmPassword(e.target.value)}
                         required
-                        style={{ padding: "0.75rem", borderRadius: 8, border: "1px solid #e0e0e0", fontSize: 16 }}
+                        style={{ padding: "0.65rem", borderRadius: 8, border: "1px solid #e0e0e0", fontSize: 15 }}
                     />
                     {/* Submit button */}
                     <button type="submit" disabled={loading} style={{
@@ -116,23 +117,23 @@ const Register = () => {
                         color: "#fff",
                         border: "none",
                         borderRadius: 8,
-                        padding: "0.75rem",
+                        padding: "0.65rem",
                         fontWeight: 600,
-                        fontSize: 17,
-                        marginTop: 8,
+                        fontSize: 16,
+                        marginTop: 6,
                         cursor: loading ? "not-allowed" : "pointer"
                     }}>
                         {loading ? "Registering..." : "Register"}
                     </button>
                 </form>
                 {/* Link to login page for users who already have an account */}
-                <div style={{ marginTop: 18, fontSize: 15 }}>
+                <div style={{ marginTop: 14, fontSize: 14 }}>
                     <Link to="/login" style={{ color: "#3498db", textDecoration: "underline" }}>
                         Already have an account? Login
                     </Link>
                 </div>
                 {/* Error message display */}
-                {error && <div style={{ color: "#dc3545", marginTop: 12, fontWeight: 500 }}>{error}</div>}
+                {error && <div style={{ color: "#dc3545", marginTop: 10, fontWeight: 500, fontSize: 13 }}>{error}</div>}
             </div>
         </div>
     );

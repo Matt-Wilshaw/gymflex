@@ -287,9 +287,17 @@ const Home = () => {
         <div className="container mt-4" style={{ background: "linear-gradient(120deg, #e0f7ff 0%, #ffffff 100%)", minHeight: "100dvh", paddingLeft: "22px", paddingRight: "22px", paddingTop: "18px" }}>
             {/* Show loading screen until initial data is loaded */}
             {initialLoading ? (
-                <div className="loading-screen">
+                <div className="loading-screen" style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'linear-gradient(135deg, #f8f9fa 0%, #e3e6f3 100%)',
+                    zIndex: 9999
+                }}>
                     <div className="loading-text" style={{
-                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', fontSize: '2rem', fontWeight: 700, color: '#3498db', letterSpacing: '2px', background: 'linear-gradient(135deg, #f8f9fa 0%, #e3e6f3 100%)'
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', fontSize: '2rem', fontWeight: 700, color: '#3498db', letterSpacing: '2px'
                     }}>
                         GymFlex
                         <div style={{ marginTop: '2rem' }}>
