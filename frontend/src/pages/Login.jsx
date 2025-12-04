@@ -59,7 +59,7 @@ const Login = () => {
                 width: "100%",
                 textAlign: "center"
             }}>
-                <img src="/favicons/favicon.svg" alt="GymFlex logo"
+                <img src="/static/gymflex-logo.png" alt="GymFlex logo"
                     style={{ height: 40, marginBottom: 12 }}
                     onError={e => { e.target.onerror = null; e.target.src = '/static/gymflex-logo.png'; }}
                 />
