@@ -318,7 +318,7 @@ const Home = () => {
                             gap: '12px',
                             marginBottom: '1.5rem',
                             justifyContent: 'space-between',
-                            // No extra margin for client or admin; both headers aligned at the top
+                            marginTop: '0.8rem',
                         }}
                     >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -420,15 +420,15 @@ const Home = () => {
                         ) : (
                             <React.Fragment>
                                 {/* Client Bookings Toggle Button */}
-                                <button
-                                    className="btn btn-primary mb-2 w-100 show-bookings-btn"
-                                    style={{ borderRadius: '8px' }}
-                                    onClick={() => setShowBookingsPanel(!showBookingsPanel)}
-                                >
-                                    <span style={{ display: 'inline-block', minWidth: 110, textAlign: 'center' }}>
-                                        {showBookingsPanel ? "Hide" : "Show"} My Bookings
-                                    </span>
-                                </button>
+                                <div style={{ marginBottom: 12 }}>
+                                    <button
+                                        className="today-btn"
+                                        onClick={() => setShowBookingsPanel(!showBookingsPanel)}
+                                        title={showBookingsPanel ? "Hide bookings panel" : "Open bookings panel"}
+                                    >
+                                        {showBookingsPanel ? "Hide Bookings" : "Open Bookings"}
+                                    </button>
+                                </div>
 
                                 {/* Collapsible Client Bookings Panel */}
                                 <div
