@@ -61,7 +61,7 @@ const Login = () => {
             }}>
                 <img src="/favicons/favicon.svg" alt="GymFlex logo"
                     style={{ height: 40, marginBottom: 12 }}
-                    onError={e => { e.target.onerror = null; e.target.src = '/favicons/favicon-128.png'; }}
+                    onError={e => { e.target.onerror = null; e.target.src = '/static/gymflex-logo.png'; }}
                 />
                 <h2 style={{ marginBottom: 16, fontWeight: 700, color: "#2c3e50", fontSize: "1.5rem" }}>Login</h2>
                 <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
