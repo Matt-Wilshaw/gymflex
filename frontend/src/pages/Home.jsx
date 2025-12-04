@@ -128,6 +128,15 @@ const Home = () => {
                 );
                 setModalEvents(eventsForDate);
             }
+            // Refresh booked sessions so UI (button state / lists) updates
+            // when a booking is created or cancelled. This will update
+            // `bookedSessions` in the sessions hook and recompute
+            // `sortedUpcomingBookings`/`visibleMonthHasBookings` via effects.
+            try {
+                await fetchBookedSessions();
+            } catch (__) {
+                // ignore fetch errors here; UI will reflect latest known state
+            }
         } catch (err) {
             const errorMsg = err.response?.data?.status || err.response?.data?.error || "Booking failed. Please try again.";
             alert(errorMsg);
@@ -282,6 +291,35 @@ const Home = () => {
         return moment(firstSessionDate).format("MMMM YYYY");
     }, [groupedBookings]);
 
+    // Visible month (YYYY-MM) tracked from CalendarView
+    const [visibleMonth, setVisibleMonth] = useState(moment(selectedClientDate).format('YYYY-MM'));
+    const [visibleMonthHasBookings, setVisibleMonthHasBookings] = useState(false);
+
+    // Update visibleMonthHasBookings when sortedUpcomingBookings or visibleMonth changes
+    useEffect(() => {
+        const has = sortedUpcomingBookings.some(s => moment(s.date).format('YYYY-MM') === visibleMonth);
+        setVisibleMonthHasBookings(has);
+
+        // If the bookings panel is open but there are no bookings in the
+        // currently visible month, close the panel and prevent opening.
+        if (showBookingsPanel && !has) {
+            setShowBookingsPanel(false);
+        }
+
+        // If the panel is open and this month has bookings, jump to the
+        // first booking in that month.
+        if (showBookingsPanel && has) {
+            const bookingsInMonth = sortedUpcomingBookings.filter(s => moment(s.date).format('YYYY-MM') === visibleMonth);
+            if (bookingsInMonth.length > 0) {
+                const firstDate = bookingsInMonth[0].date;
+                setSelectedClientDate(firstDate);
+                // Find the groupedBookings index for that date
+                const idx = groupedBookings.findIndex(g => g.sessions.some(ss => ss.date === firstDate));
+                if (idx >= 0) setCurrentDayIndex(idx);
+            }
+        }
+    }, [visibleMonth, sortedUpcomingBookings, showBookingsPanel, groupedBookings]);
+
     return (
         <div className="container mt-4" style={{
             background: "#e0f7ff",
@@ -290,6 +328,7 @@ const Home = () => {
             paddingRight: window.innerWidth < 768 ? "12px" : "22px",
             paddingTop: window.innerWidth < 768 ? "6px" : "9px"
         }}>
+            <style>{`.today-btn[aria-disabled="true"]{ cursor: not-allowed !important; }`}</style>
             {/* Show loading screen until initial data is loaded */}
             {initialLoading ? (
                 <div className="loading-screen" style={{
@@ -403,7 +442,10 @@ const Home = () => {
                             setSelectedAdminDate={setSelectedAdminDate}
                             selectedClientDate={selectedClientDate}
                             setSelectedClientDate={setSelectedClientDate}
+                            showBookingsPanel={showBookingsPanel}
+                            setShowBookingsPanel={setShowBookingsPanel}
                             bookedSessions={sortedUpcomingBookings}
+                            onVisibleMonthChange={setVisibleMonth}
                         />
 
                         <div className="legend-container">
@@ -439,10 +481,19 @@ const Home = () => {
                                 {/* Client Bookings Toggle Button */}
                                 <button
                                     className="today-btn"
-                                    onClick={() => setShowBookingsPanel(!showBookingsPanel)}
-                                    title={showBookingsPanel ? "Hide bookings panel" : "Open bookings panel"}
+                                    onClick={(e) => {
+                                        if (!visibleMonthHasBookings) return;
+                                        setShowBookingsPanel(!showBookingsPanel);
+                                    }}
+                                    title={!visibleMonthHasBookings ? "No bookings in this month" : (showBookingsPanel ? "Hide bookings panel" : "Open bookings panel")}
+                                    aria-disabled={!visibleMonthHasBookings}
+                                    style={{ minWidth: '120px', whiteSpace: 'nowrap', textAlign: 'center', padding: '4px 6px', fontSize: '12px', marginRight: '8px', ...( !visibleMonthHasBookings ? { opacity: 0.65, cursor: 'not-allowed' } : { cursor: 'pointer' } ) }}
                                 >
-                                    {showBookingsPanel ? "Hide Bookings" : "Open Bookings"}
+                                    {!visibleMonthHasBookings ? (
+                                        "No Bookings"
+                                    ) : (
+                                        (showBookingsPanel ? "Hide Bookings" : "Open Bookings")
+                                    )}
                                 </button>
 
                                 {/* Collapsible Client Bookings Panel */}
@@ -479,6 +530,7 @@ const Home = () => {
                                                             onClick={() => setCurrentDayIndex(Math.max(0, currentDayIndex - 1))}
                                                             disabled={currentDayIndex === 0}
                                                             title="Previous day"
+                                                            style={{ padding: '4px 6px', fontSize: '13px', minWidth: '34px' }}
                                                         >
                                                             ←
                                                         </button>
@@ -487,6 +539,7 @@ const Home = () => {
                                                             onClick={() => setCurrentDayIndex(0)}
                                                             title="Go to next upcoming session"
                                                             disabled={currentDayIndex === 0}
+                                                            style={{ padding: '4px 6px', fontSize: '13px' }}
                                                         >
                                                             Next Session
                                                         </button>
@@ -495,6 +548,7 @@ const Home = () => {
                                                             onClick={() => setCurrentDayIndex(Math.min(groupedBookings.length - 1, currentDayIndex + 1))}
                                                             disabled={currentDayIndex === groupedBookings.length - 1}
                                                             title="Next day"
+                                                            style={{ padding: '4px 6px', fontSize: '13px', minWidth: '34px' }}
                                                         >
                                                             →
                                                         </button>
@@ -546,7 +600,7 @@ const Home = () => {
                                                                                 }}
                                                                                 style={{
                                                                                     marginLeft: 12,
-                                                                                    padding: "6px 10px",
+                                                                                    padding: "4px 8px",
                                                                                     fontSize: 12,
                                                                                     borderRadius: 6,
                                                                                     border: "1px solid rgba(0,0,0,0.1)",

@@ -9,7 +9,7 @@ const localiser = momentLocalizer(moment);
 // The cell wrapper shows a compact emoji summary and a small session-count
 // button. For staff users the whole cell is clickable to select a date for
 // admin viewing; for regular users the button opens a modal drill-down.
-const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrillDown, currentUser, selectedAdminDate, setSelectedAdminDate, selectedClientDate, setSelectedClientDate, bookedSessions }) => {
+const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrillDown, currentUser, selectedAdminDate, setSelectedAdminDate, selectedClientDate, setSelectedClientDate, showBookingsPanel, setShowBookingsPanel, bookedSessions, onVisibleMonthChange }) => {
     // Detect mobile screen
     const isMobile = typeof window !== 'undefined' ? window.innerWidth <= 576 : false;
 
@@ -53,18 +53,6 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
         };
 
         const goToToday = () => {
-            // Make the visible month today and also set the selected
-            // client date to today so the blue highlight moves to today
-            // when the user explicitly clicks Today.
-            const today = new Date();
-            setCalendarDate(today);
-            if (!currentUser?.is_staff) {
-                setSelectedClientDate(moment(today).format('YYYY-MM-DD'));
-            } else if (currentUser?.is_staff) {
-                setSelectedAdminDate(moment(today).format('YYYY-MM-DD'));
-            }
-            // Also call the default navigate so Calendar internal state
-            // and label update as expected.
             toolbar.onNavigate('TODAY');
         };
 
@@ -385,6 +373,7 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                 .rbc-day-bg {
                     flex: 1 !important;
                 }
+                
             `}</style>
             <Calendar
                 localizer={localiser}
@@ -401,6 +390,21 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                     // not change the selected client date so the blue
                     // highlighted square remains on today's date.
                     setCalendarDate(moment(newDate).toDate());
+
+                    // If the bookings panel is open, close it when the
+                    // user navigates months — they're now viewing the
+                    // month grid rather than bookings.
+                    if (setShowBookingsPanel && showBookingsPanel) {
+                        setShowBookingsPanel(false);
+                    }
+
+                    // Inform parent about the visible month change (YYYY-MM)
+                    try {
+                        if (typeof onVisibleMonthChange === 'function') {
+                            onVisibleMonthChange(moment(newDate).startOf('month').format('YYYY-MM'));
+                        }
+                    } catch (_) {}
+
                     if (currentUser?.is_staff) {
                         const dateStr = moment(newDate).format('YYYY-MM-DD');
                         setSelectedAdminDate(dateStr);
