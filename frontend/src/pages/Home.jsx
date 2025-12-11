@@ -48,6 +48,9 @@ const Home = () => {
     // Track initial loading state
     const [initialLoading, setInitialLoading] = useState(true);
 
+    // Track booking note visibility
+    const [showBookingNote, setShowBookingNote] = useState(false);
+
     // Modal visibility and content
     const [showModal, setShowModal] = useState(false);
     const [modalEvents, setModalEvents] = useState([]);
@@ -70,10 +73,25 @@ const Home = () => {
 
     // Always keep lastSelectedSessionRef in sync with selectedClientDate when menu is open
     useEffect(() => {
-        if (showBookingsPanel && selectedClientDate) {
-            lastSelectedSessionRef.current = selectedClientDate;
+        if (showBookingsPanel && !currentUser?.is_staff) {
+            // When opening, jump to first session in visible month, else today
+            const visibleMonth = moment().format('YYYY-MM');
+            const filtered = bookedSessions.filter(
+                (s) =>
+                    !s.has_started &&
+                    (!activityFilter || s.activity_type === activityFilter) &&
+                    moment(s.date).format('YYYY-MM') === visibleMonth
+            );
+            if (filtered.length > 0) {
+                setSelectedClientDate(filtered[0].date);
+            } else {
+                setSelectedClientDate(moment().format('YYYY-MM-DD'));
+            }
+        } else if (!showBookingsPanel && !currentUser?.is_staff) {
+            // When closing, clear selectedClientDate (no date highlighted)
+            setSelectedClientDate("");
         }
-    }, [selectedClientDate, showBookingsPanel]);
+    }, [showBookingsPanel, currentUser, bookedSessions, activityFilter]);
     // Track if user manually closed the bookings panel
     const [userClosedPanel, setUserClosedPanel] = useState(true); // true on initial load to prevent auto-open
 
@@ -103,6 +121,10 @@ const Home = () => {
     useEffect(() => {
         if (!token) return;
         fetchSessions(activityFilter);
+        // For clients: close bookings panel when activity filter changes
+        if (!currentUser?.is_staff && showBookingsPanel) {
+            setShowBookingsPanel(false);
+        }
     }, [activityFilter, token]);
 
     // Control page overflow based on loading state and bookings panel visibility
@@ -610,18 +632,36 @@ const Home = () => {
                                                             →
                                                         </button>
                                                     </div>
-                                                    <div className="text-center ms-2" style={{ minWidth: '180px' }}>
-                                                        <div style={{ fontWeight: 600, fontSize: "14px", color: "#333", marginTop: '10px' }}>
-                                                            Showing: {moment(selectedClientDate).format('ddd DD/MM/YY')}
-                                                        </div>
-                                                        <div className="alert alert-info" style={{ fontSize: '14px', margin: '4px 0 0 0', padding: '8px 12px', borderRadius: '8px' }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px' }}>
+                                                        <button
+                                                            onClick={() => setShowBookingNote(!showBookingNote)}
+                                                            style={{
+                                                                background: 'none',
+                                                                border: 'none',
+                                                                fontSize: '14px',
+                                                                cursor: 'pointer',
+                                                                padding: '4px 8px',
+                                                                color: '#0066cc',
+                                                            }}
+                                                            title="Toggle note"
+                                                        >
+                                                            ℹ️ Note
+                                                        </button>
+                                                    </div>
+                                                    {showBookingNote && (
+                                                        <div className="alert alert-info" style={{ fontSize: '14px', margin: '8px 0 0 0', padding: '8px 12px', borderRadius: '8px' }}>
                                                             <strong>Note:</strong> You cannot cancel a booking within 30 minutes of the session start time. If you need to contact a trainer or admin.
                                                         </div>
-                                                    </div>
+                                                    )}
                                                 </div>
                                             )}
 
                                             {/* Disclaimer for clients about cancellation restriction */}
+
+                                            {/* Date Display - Above Bookings List */}
+                                            <div style={{ fontSize: '14px', fontWeight: 500, color: '#333', marginBottom: '12px', marginTop: '8px' }}>
+                                                📅 {moment(selectedClientDate).format('ddd DD/MM/YY')}
+                                            </div>
 
                                             {/* Bookings List */}
                                             <div style={{ marginBottom: 24 }}>
@@ -695,7 +735,7 @@ const Home = () => {
                     />
                 </React.Fragment>
             )}
-            <Toaster position="top-right" />
+            <Toaster position="top-center" />
         </div>
     );
 }

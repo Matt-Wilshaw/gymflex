@@ -48,7 +48,13 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
     }
     // If no date selected, default to today if available, else first available
     const currentDate = selectedAdminDate || (allDates.includes(moment().format('YYYY-MM-DD')) ? moment().format('YYYY-MM-DD') : allDates[0]);
-    const displayed = adminSessions.filter((s) => moment(s.date).format('YYYY-MM-DD') === currentDate);
+    // Get activity filter from window (passed via prop in Home.jsx)
+    const activityFilter = window.activityFilter || "";
+    const displayed = adminSessions.filter(
+        (s) =>
+            moment(s.date).format('YYYY-MM-DD') === currentDate &&
+            (!activityFilter || s.activity_type === activityFilter)
+    );
 
     // When panel opens, scroll into view AFTER the expand transition completes
     useEffect(() => {
