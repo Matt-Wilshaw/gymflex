@@ -19,7 +19,8 @@ const BookingsModal = ({ showModal, modalEvents, modalDate, setShowModal, handle
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    backgroundColor: "rgba(0,0,0,0.5)",
+                    background: "rgba(30,34,45,0.35)",
+                    zIndex: 1040,
                 }}
                 onClick={() => setShowModal(false)}
             />
