@@ -1,22 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
+import { createPortal } from "react-dom";
 
 // Setup calendar localiser using Moment.js
 const localiser = momentLocalizer(moment);
 
-// CalendarView: renders a month calendar with a custom date cell wrapper.
-// The cell wrapper shows a compact emoji summary and a small session-count
-// button. For staff users the whole cell is clickable to select a date for
-// admin viewing; for regular users the button opens a modal drill-down.
 const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrillDown, currentUser, selectedAdminDate, setSelectedAdminDate, selectedClientDate, setSelectedClientDate, showBookingsPanel, setShowBookingsPanel, bookedSessions, onVisibleMonthChange }) => {
-    // Detect mobile screen
     const isMobile = typeof window !== 'undefined' ? window.innerWidth <= 576 : false;
 
-    // Visible month/date for the calendar. Keep this separate from the
-    // selectedClientDate so month navigation can move the visible month
-    // without changing the blue highlighted selected date (which should
-    // remain on today for clients unless explicitly changed).
     const [calendarDate, setCalendarDate] = useState(() => {
         if (currentUser?.is_staff) {
             return selectedAdminDate ? moment(selectedAdminDate).toDate() : new Date();
@@ -24,25 +16,18 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
         return selectedClientDate ? moment(selectedClientDate).toDate() : new Date();
     });
 
-    // Keep calendarDate in sync when the selected admin date changes
     useEffect(() => {
         if (currentUser?.is_staff && selectedAdminDate) {
             setCalendarDate(moment(selectedAdminDate).toDate());
         }
     }, [selectedAdminDate, currentUser]);
 
-    // When the selected client date changes (for example on initial load
-    // or when the bookings panel explicitly sets it), update the visible
-    // month so the user can see the selected day. We avoid updating
-    // calendarDate on normal month navigation to preserve the blue
-    // highlighted today's date behavior.
     useEffect(() => {
         if (!currentUser?.is_staff && selectedClientDate) {
             setCalendarDate(moment(selectedClientDate).toDate());
         }
     }, [selectedClientDate, currentUser]);
 
-    // Custom toolbar with Today button between arrows
     const CustomToolbar = (toolbar) => {
         const goToBack = () => {
             toolbar.onNavigate('PREV');
@@ -53,9 +38,6 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
         };
 
         const goToToday = () => {
-            // Ensure the calendar visible month jumps to today and that
-            // the selected date is set to today for clients so the blue
-            // highlight moves accordingly. Also collapse the menu for clients.
             const today = new Date();
             try {
                 setCalendarDate(today);
@@ -66,8 +48,6 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                     setSelectedAdminDate(moment(today).format('YYYY-MM-DD'));
                 }
             } catch (_) { }
-            // Call the default navigate to let the Calendar update its
-            // internal state/label as expected.
             toolbar.onNavigate('TODAY');
         };
 
@@ -81,24 +61,9 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                 flexWrap: 'wrap'
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <button
-                        className="arrow-btn"
-                        onClick={goToBack}
-                    >
-                        ←
-                    </button>
-                    <button
-                        className="today-btn"
-                        onClick={goToToday}
-                    >
-                        Today
-                    </button>
-                    <button
-                        className="arrow-btn"
-                        onClick={goToNext}
-                    >
-                        →
-                    </button>
+                    <button className="arrow-btn" onClick={goToBack}>←</button>
+                    <button className="today-btn" onClick={goToToday}>Today</button>
+                    <button className="arrow-btn" onClick={goToNext}>→</button>
                 </div>
                 <span className="calendar-month-label" style={{ fontSize: '18px', fontWeight: '600' }}>
                     {toolbar.label}
@@ -108,7 +73,6 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
         );
     };
 
-    // Activity Filter positioned below the toolbar
     const ActivityFilterSection = () => (
         <div style={{ marginBottom: '12px', marginTop: '-4px' }}>
             <label style={{ marginRight: '8px', fontWeight: 500, fontSize: '14px' }}>Filter by Activity:</label>
@@ -128,32 +92,21 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
         </div>
     );
 
-    // Tip positioned directly below the filter
     const ToolbarTip = () => (
         <div style={{ color: '#555', marginBottom: '6px', marginTop: '4px' }}>
             <small>Click a day to view sessions.</small>
         </div>
     );
 
-    // DateCellWrapper: computes the events for the given day and renders
-    // a small emoji bar plus a session-count button anchored to the cell.
-    // Note the UK spelling of 'behaviour' in comments below to match
-    // project convention.
     const DateCellWrapper = ({ children, value }) => {
         const dateStr = moment(value).format("YYYY-MM-DD");
         const isPastDate = moment(value).isBefore(moment(), 'day');
         const isOtherMonth = moment(value).month() !== moment(selectedAdminDate || selectedClientDate || new Date()).month();
 
-        // Debug logging
-        const isToday = moment().format("YYYY-MM-DD") === dateStr;
-        if (isToday && !currentUser?.is_staff) {
-            console.log('selectedAdminDate:', selectedAdminDate, 'currentUser.is_staff:', currentUser?.is_staff);
-        }
-
         const isSelected = (currentUser?.is_staff && selectedAdminDate && moment(selectedAdminDate).format("YYYY-MM-DD") === dateStr) ||
             (!currentUser?.is_staff && selectedClientDate && moment(selectedClientDate).format("YYYY-MM-DD") === dateStr);
+        const isToday = moment(value).isSame(moment(), 'day');
 
-        // Apply current activity filter to decide which emojis to show
         const displayedSessions = activityFilter
             ? sessions.filter((s) => s.activity_type === activityFilter)
             : sessions;
@@ -161,23 +114,15 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
             (s) => moment(s.date).format("YYYY-MM-DD") === dateStr
         );
 
-        // For tick: check if user has a booking on this day
-        // When filtering, only show tick if booking matches the filtered activity
         const hasBooking = bookedSessions && bookedSessions.some(
             (s) => moment(s.date).format("YYYY-MM-DD") === dateStr &&
                 (!activityFilter || s.activity_type === activityFilter)
         );
 
-        // For admin: check if any session on this day has bookings
-        // When filtering, only check sessions that match the filtered activity
         const hasAnyBooking = currentUser?.is_staff && dayEvents.some(
             (s) => s.attendees && s.attendees.length > 0
         );
 
-        // containerStyle ensures the emoji bar and button are positioned
-        // relative to the calendar cell. If there are no events for the
-        // day we just render the default cell contents.
-        // Grey out past dates and lighten other months
         const containerStyle = {
             position: "relative",
             width: "100%",
@@ -187,11 +132,63 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
             opacity: isPastDate ? 0.5 : isOtherMonth ? 0.7 : 1,
             cursor: (isPastDate && !currentUser?.is_staff) ? "not-allowed" : "pointer",
             border: isSelected ? "2px solid #0d6efd" : "none",
-            transition: "all 0.2s ease"
+            transition: "all 0.2s ease",
+            zIndex: 5
         };
+
+        const containerRef = useRef(null);
+        const [overlayPos, setOverlayPos] = useState(null);
+
+        const updateOverlay = () => {
+            const el = containerRef.current;
+            if (!el) return setOverlayPos(null);
+            const rect = el.getBoundingClientRect();
+            setOverlayPos({ top: rect.top, left: rect.left, right: rect.right, width: rect.width, height: rect.height });
+        };
+
+        useLayoutEffect(() => {
+            // Ensure overlay position is calculated when the cell is selected or when it's today.
+            if (!(isSelected || isToday)) {
+                setOverlayPos(null);
+                return;
+            }
+            updateOverlay();
+            window.addEventListener('resize', updateOverlay);
+            window.addEventListener('scroll', updateOverlay, true);
+            return () => {
+                window.removeEventListener('resize', updateOverlay);
+                window.removeEventListener('scroll', updateOverlay, true);
+            };
+        }, [isSelected, isToday, value]);
+
+        // Ensure the native date link (rendered in `children`) visually pops above other elements
+        // by cloning it and applying inline styles. This is stronger than component CSS rules
+        // and avoids DOM reordering that can interfere with click handling.
+        const childrenWithEnhancedDate = React.Children.map(children, (child) => {
+            if (React.isValidElement(child) && child.props && typeof child.props.className === 'string' && child.props.className.includes('rbc-button-link')) {
+                const existingStyle = child.props.style || {};
+                const enhancedStyle = {
+                    ...existingStyle,
+                    position: 'relative',
+                    zIndex: 9999,
+                    background: 'rgba(255,255,255,0.98)',
+                    borderRadius: 6,
+                    padding: '2px 6px',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
+                    color: '#0b1a2b',
+                    fontWeight: 600,
+                    pointerEvents: 'none',
+                };
+                return React.cloneElement(child, { style: enhancedStyle });
+            }
+            return child;
+        });
+
         if (dayEvents.length === 0) {
             return (
                 <div
+                    ref={containerRef}
+                    className={`${isSelected ? 'selected-calendar-cell' : ''} ${isToday ? 'today-calendar-cell' : ''}`.trim()}
                     style={containerStyle}
                     onClick={(e) => {
                         if (isPastDate && !currentUser?.is_staff) {
@@ -208,13 +205,18 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                         }
                     }}
                 >
-                    <div style={{ display: "flex", flexDirection: "column", height: "100%", pointerEvents: "none" }}>{children}</div>
+                    <div style={{ display: "flex", flexDirection: "column", height: "100%", pointerEvents: "none" }}>{childrenWithEnhancedDate}</div>
+                    {(isSelected || isToday) && overlayPos && createPortal(
+                        <span className="calendar-portal-date" style={{ position: 'fixed', top: overlayPos.top + 4 + 'px', left: (overlayPos.left + overlayPos.width - 22) + 'px', pointerEvents: 'none' }}>
+                            {moment(value).date()}
+                        </span>,
+                        document.body
+                    )}
                 </div>
             );
         }
 
         const uniqueActivities = [...new Set(dayEvents.map((e) => e.activity_type))];
-        // Always render 5 emoji slots for consistent width
         const map = {
             cardio: "🏃",
             weights: "🏋️",
@@ -262,6 +264,7 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
             background: "#3498db",
             color: "white",
             boxShadow: "0 2px 4px rgba(52,152,219,0.10)",
+            zIndex: 30,
             marginRight: "8px",
         };
 
@@ -277,6 +280,7 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
             justifyContent: "center",
             alignItems: "center",
             background: "transparent",
+            zIndex: 30,
         } : {
             position: "absolute",
             top: "40%",
@@ -296,114 +300,135 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
             background: "transparent",
             maxHeight: "34px",
             overflow: "hidden",
+            zIndex: 30,
         };
 
-        // For staff users a click anywhere in the cell selects the date
-        // for the admin bookings list; for non-staff users the small button
-        // will call `handleDrillDown` to open the sessions modal. We stop
-        // propagation on the button so the two actions do not conflict.
-        // Prevent clicks on past dates.
         return (
-            <div style={{ position: "relative", width: "100%", height: "100%" }}>
-                <button
-                    type="button"
-                    className="calendar-cell-btn"
-                    style={{
-                        ...containerStyle,
-                        padding: 0,
-                        border: isSelected ? "2px solid #0d6efd" : "none",
-                        background: containerStyle.backgroundColor,
-                        width: "100%",
-                        height: "100%",
-                        zIndex: 10,
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0
-                    }}
-                    onClick={(e) => {
-                        if (isPastDate && !currentUser?.is_staff) {
-                            e.stopPropagation();
-                            return;
-                        }
-                        if (currentUser?.is_staff) {
-                            e.stopPropagation();
-                            const dateStr = moment(value).format("YYYY-MM-DD");
-                            setSelectedAdminDate(dateStr);
-                        } else {
-                            e.stopPropagation();
-                            handleDrillDown(value);
-                        }
-                    }}
-                    tabIndex={0}
-                    aria-label={isSelected ? "Selected date" : "Calendar date"}
+            <div
+                ref={containerRef}
+                className={`${isSelected ? 'selected-calendar-cell' : ''} ${isToday ? 'today-calendar-cell' : ''}`.trim()}
+                style={containerStyle}
+                onClick={(e) => {
+                    if (isPastDate && !currentUser?.is_staff) {
+                        e.stopPropagation();
+                        return;
+                    }
+                    if (currentUser?.is_staff) {
+                        e.stopPropagation();
+                        const dateStr = moment(value).format("YYYY-MM-DD");
+                        setSelectedAdminDate(dateStr);
+                    } else {
+                        e.stopPropagation();
+                        handleDrillDown(value);
+                    }
+                }}
+            >
+                <div style={{ display: "flex", flexDirection: "column", height: "100%", pointerEvents: "none", position: "relative", zIndex: 1 }}>
+                    {childrenWithEnhancedDate}
+                </div>
+                <div className={activityFilter ? "emoji-bar emoji-bar-filtered" : "emoji-bar"} style={emojiBarStyle} title={uniqueActivities.join(", ")}>
+                    {emojiElements}
+                </div>
+                <div
+                    className="session-count-circle"
+                    style={buttonStyleWithFlex}
+                    title={uniqueActivities.join(", ")}
                 >
-                    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>{children}</div>
-                    <div className={activityFilter ? "emoji-bar emoji-bar-filtered" : "emoji-bar"} style={emojiBarStyle} title={uniqueActivities.join(", ")}>
-                        {emojiElements}
-                    </div>
-                    <div
-                        className="session-count-circle"
-                        style={buttonStyleWithFlex}
-                        title={uniqueActivities.join(", ")}
+                    <span>{countText}</span>
+                </div>
+                {(hasAnyBooking || hasBooking) && (
+                    <span
+                        className="booking-checkmark"
+                        style={{
+                            position: "absolute",
+                            bottom: 6,
+                            right: 8,
+                            fontSize: 16,
+                            color: "#28a745",
+                            fontWeight: "bold",
+                            pointerEvents: "none",
+                            zIndex: 30,
+                        }}
+                        title={hasBooking ? "You have a booking on this day" : "Has bookings"}
                     >
-                        <span>{countText}</span>
-                    </div>
-                    {/* Checkmark to the right of the session count circle */}
-                    {(hasAnyBooking || hasBooking) && (
-                        <span
-                            className="booking-checkmark"
-                            style={{
-                                position: "absolute",
-                                bottom: 6,
-                                right: 8,
-                                fontSize: 16,
-                                color: "#28a745",
-                                fontWeight: "bold",
-                                pointerEvents: "none",
-                            }}
-                            title={hasBooking ? "You have a booking on this day" : "Has bookings"}
-                        >
-                            ✓
-                        </span>
-                    )}
-                </button>
+                        ✓
+                    </span>
+                )}
+                {(isSelected || isToday) && overlayPos && createPortal(
+                    <span className="calendar-portal-date" style={{ position: 'fixed', top: overlayPos.top + 4 + 'px', left: (overlayPos.left + overlayPos.width - 22) + 'px', pointerEvents: 'none' }}>
+                        {moment(value).date()}
+                    </span>,
+                    document.body
+                )}
             </div>
         );
     };
 
     return (
-        <div>
+        <div style={{ width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
             <style>{`
-                /* Make default day number not intercept pointer events */
+                /* Ensure date numbers are visible and above background */
+                .rbc-date-cell {
+                    position: relative;
+                    z-index: 2;
+                }
                 .rbc-date-cell .rbc-button-link {
-                    pointer-events: none !important;
-                }
-                /* Ensure our button wrapper receives pointer events */
-                .calendar-cell-btn {
-                    pointer-events: auto !important;
-                }
-                /* Add 2px top margin to day numbers in month view */
-                .rbc-month-view .rbc-date-cell .rbc-button-link {
                     margin-top: 2px;
+                    position: relative;
+                    z-index: 60;
+                    pointer-events: none;
                 }
+                /* When using the portal overlay, hide the in-cell native date number to avoid duplication */
+                .selected-calendar-cell .rbc-button-link,
+                .today-calendar-cell .rbc-button-link {
+                    opacity: 0;
+                }
+                
                 @media (min-width: 768px) {
                     .rbc-month-view {
-                        min-height: 520px !important;
+                        min-height: 450px !important;
                     }
                     .rbc-month-row {
-                        min-height: 88px !important;
+                        min-height: 70px !important;
                     }
                 }
-                @media (max-width: 576px) {
+                
+                @media (max-width: 767px) {
+                    .rbc-month-view {
+                        min-height: 380px !important;
+                    }
                     .rbc-month-row {
-                        height: 30px !important;
+                        min-height: 56px !important;
+                    }
+                    .custom-calendar-toolbar {
+                        padding: 6px 0 !important;
+                        margin-bottom: 6px !important;
+                    }
+                    .calendar-month-label {
+                        font-size: 16px !important;
+                    }
+                    .arrow-btn, .today-btn {
+                        font-size: 12px !important;
+                        padding: 3px 8px !important;
+                    }
+                }
+                
+                @media (max-width: 576px) {
+                    .rbc-month-view {
+                        min-height: 350px !important;
+                    }
+                    .rbc-month-row {
+                        min-height: 50px !important;
+                    }
+                    .rbc-header {
+                        font-size: 11px !important;
+                        padding: 4px 2px !important;
                     }
                     .emoji-bar-filtered {
                         bottom: 50px !important;
                     }
                 }
+                
                 /* Vertical lines between date cells */
                 .rbc-month-view .rbc-day-bg {
                     border-right: 1.5px solid #d0d0d0 !important;
@@ -425,36 +450,37 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                 .rbc-day-bg {
                     flex: 1 !important;
                 }
-                
+                /* Portal overlay for selected day number (compact) */
+                .calendar-portal-date {
+                    position: fixed !important;
+                    z-index: 2147483647 !important;
+                    pointer-events: none !important;
+                    background: rgba(255,255,255,0.96) !important;
+                    padding: 1px 4px !important;
+                    border-radius: 4px !important;
+                    box-shadow: 0 1px 2px rgba(0,0,0,0.08) !important;
+                    font-weight: 700 !important;
+                    color: #0b1a2b !important;
+                    font-size: 11px !important;
+                    line-height: 1 !important;
+                }
             `}</style>
             <Calendar
                 localizer={localiser}
                 events={[]}
                 startAccessor="start"
                 endAccessor="end"
-                style={isMobile ? { height: 'auto' } : { height: '700px' }}
+                style={{ height: isMobile ? 'auto' : '600px', width: '100%', maxWidth: '100%' }}
                 onDrillDown={handleDrillDown}
                 views={["month"]}
                 date={calendarDate}
                 onNavigate={(newDate) => {
-                    // Update visible month only. For admins we also keep
-                    // the selected admin date in sync; for clients we do
-                    // not change the selected client date so the blue
-                    // highlighted square remains on today's date.
                     setCalendarDate(moment(newDate).toDate());
-
-                    // Do not forcibly close the bookings panel here —
-                    // let the parent (`Home.jsx`) decide whether to
-                    // keep it open or collapse based on bookings in
-                    // the newly visible month.
-
-                    // Inform parent about the visible month change (YYYY-MM)
                     try {
                         if (typeof onVisibleMonthChange === 'function') {
                             onVisibleMonthChange(moment(newDate).startOf('month').format('YYYY-MM'));
                         }
                     } catch (_) { }
-
                     if (currentUser?.is_staff) {
                         const dateStr = moment(newDate).format('YYYY-MM-DD');
                         setSelectedAdminDate(dateStr);
@@ -474,4 +500,6 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
             />
         </div>
     );
-}; export default CalendarView;
+};
+
+export default CalendarView;
