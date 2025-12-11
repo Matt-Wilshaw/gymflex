@@ -1,6 +1,7 @@
 // src/pages/Home.jsx
 
 import React, { useState, useEffect, useMemo, useRef } from "react";
+import Toast from "../components/Toast";
 import { useNavigate } from "react-router-dom";
 import { momentLocalizer } from "react-big-calendar";
 import moment from "moment";
@@ -126,6 +127,14 @@ const Home = () => {
         };
     }, [initialLoading, showBookingsPanel, currentUser]);
 
+
+    // Toast state
+    const [toast, setToast] = useState({ show: false, message: "", type: "info" });
+    const showToast = (message, type = "info") => {
+        setToast({ show: true, message, type });
+        setTimeout(() => setToast(t => ({ ...t, show: false })), 2200);
+    };
+
     // ------------------ HANDLERS ------------------
 
     // Handle booking/unbooking a session
@@ -133,7 +142,10 @@ const Home = () => {
     const handleBook = async (session) => {
         try {
             const { status, refreshed } = await hookHandleBook(session);
-            alert(`Booking status: ${status}`);
+            showToast(
+                status === "booked" ? "Session booked!" : status === "unbooked" ? "Booking cancelled." : `Booking status: ${status}`,
+                status === "booked" ? "success" : status === "unbooked" ? "info" : "info"
+            );
 
             if (showModal && modalDate && refreshed) {
                 const dateStr = moment(modalDate).format("YYYY-MM-DD");
@@ -142,18 +154,12 @@ const Home = () => {
                 );
                 setModalEvents(eventsForDate);
             }
-            // Refresh booked sessions so UI (button state / lists) updates
-            // when a booking is created or cancelled. This will update
-            // `bookedSessions` in the sessions hook and recompute
-            // `sortedUpcomingBookings`/`visibleMonthHasBookings` via effects.
             try {
                 await fetchBookedSessions();
-            } catch (__) {
-                // ignore fetch errors here; UI will reflect latest known state
-            }
+            } catch (__) { }
         } catch (err) {
             const errorMsg = err.response?.data?.status || err.response?.data?.error || "Booking failed. Please try again.";
-            alert(errorMsg);
+            showToast(errorMsg, "error");
         }
     };
 
@@ -695,6 +701,7 @@ const Home = () => {
                     />
                 </React.Fragment>
             )}
+            <Toast message={toast.message} show={toast.show} type={toast.type} />
         </div>
     );
 }

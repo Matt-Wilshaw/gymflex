@@ -113,8 +113,8 @@ const BookingsModal = ({ showModal, modalEvents, modalDate, setShowModal, handle
                                         >
                                             {event.has_started ? "Past" : `${event.available_slots} slots`}
                                         </div>
-                                        <div style={{ color: event.booked ? "#dc3545" : "transparent", fontWeight: "600" }}>
-                                            {event.booked ? "✓ Booked" : ""}
+                                        <div style={{ color: event.booked ? "#dc3545" : "transparent", fontWeight: "600", minHeight: "1em" }}>
+                                            ✓ Booked
                                         </div>
                                     </div>
                                 </div>
