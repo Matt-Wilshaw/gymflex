@@ -139,7 +139,8 @@ const Home = () => {
             if (showModal && modalDate && refreshed) {
                 const dateStr = moment(modalDate).format("YYYY-MM-DD");
                 const eventsForDate = refreshed.filter(
-                    (s) => moment(s.date).format("YYYY-MM-DD") === dateStr
+                    (s) => moment(s.date).format("YYYY-MM-DD") === dateStr &&
+                        (!activityFilter || s.activity_type === activityFilter)
                 );
                 setModalEvents(eventsForDate);
             }
@@ -183,7 +184,8 @@ const Home = () => {
         }
 
         const eventsForDate = sessions.filter(
-            (s) => moment(s.date).format("YYYY-MM-DD") === dateStr
+            (s) => moment(s.date).format("YYYY-MM-DD") === dateStr &&
+                (!activityFilter || s.activity_type === activityFilter)
         );
         if (eventsForDate.length > 0) {
             setModalDate(date);
@@ -243,13 +245,13 @@ const Home = () => {
 
     // Only show upcoming bookings (hide past ones), sorted by date/time
     const sortedUpcomingBookings = useMemo(() => {
-        const upcoming = bookedSessions.filter((s) => !s.has_started);
+        const upcoming = bookedSessions.filter((s) => !s.has_started && (!activityFilter || s.activity_type === activityFilter));
         return upcoming.sort((a, b) => {
             const aDate = moment(`${a.date}T${a.time}`);
             const bDate = moment(`${b.date}T${b.time}`);
             return aDate.diff(bDate);
         });
-    }, [bookedSessions]);
+    }, [bookedSessions, activityFilter]);
 
     const groupedBookings = useMemo(() => {
         return groupBookings(sortedUpcomingBookings, bookingsGroupBy);
@@ -356,6 +358,13 @@ const Home = () => {
         isInitialMount.current = false;
     }, [visibleMonth, sortedUpcomingBookings, adminSessions, showBookingsPanel, groupedBookings, userClosedPanel, currentUser]);
 
+    // When activity filter changes and bookings panel is open, reset to first matching booking
+    useEffect(() => {
+        if (showBookingsPanel && !currentUser?.is_staff) {
+            setCurrentDayIndex(0);
+        }
+    }, [activityFilter, showBookingsPanel, currentUser]);
+
     return (
         <div className="container mt-4" style={{
             background: "#e0f7ff",
@@ -444,28 +453,13 @@ const Home = () => {
                         </div>
                     </div>
                     {/* Welcome message and username under logo/title */}
-                    {currentUser && window.innerWidth >= 768 && (
+                    {currentUser && (
                         <div style={{ textAlign: 'left', marginBottom: '1.2rem', marginLeft: '2px' }}>
-                            <span style={{ margin: 0, fontWeight: 500, color: '#2c3e50', fontSize: '14px' }}>
+                            <span style={{ margin: 0, fontWeight: 500, color: '#2c3e50', fontSize: '20px' }}>
                                 Welcome, {currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}
                             </span>
                         </div>
                     )}
-
-                    {/* Mobile header: welcome message */}
-                    {window.innerWidth < 768 ? (
-                        <div className="calendar-header-mobile" style={{ gap: 0, marginBottom: 6, marginTop: 4 }}>
-                            {currentUser && (
-                                <span className="welcome-message-mobile" style={{
-                                    fontSize: '14px',
-                                    fontWeight: 500,
-                                    color: '#2c3e50'
-                                }}>
-                                    Welcome, {currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}
-                                </span>
-                            )}
-                        </div>
-                    ) : null}
                     {/* Always render calendar and legend below header */}
                     <div className="calendar-container">
                         <CalendarView
@@ -490,7 +484,7 @@ const Home = () => {
                                     <strong>Activities:</strong> 🏃 Cardio | 🏋️ Weights | 🧘 Yoga | ⚡ HIIT | 🤸 Pilates
                                 </small>
                                 <small className="info-legend" style={{ display: 'block' }}>
-                                    <strong>Info:</strong> <span style={{ display: 'inline-block', padding: '2px 6px', background: '#3498db', color: 'white', borderRadius: '12px', fontSize: '11px', fontWeight: '600' }}>3</span> Session count
+                                    <strong>Info:</strong> <span style={{ display: 'inline-block', padding: '2px 6px', background: '#3498db', color: 'white', borderRadius: '12px', fontSize: '12px', fontWeight: '600' }}>3</span> Session count
                                     {' '}|{' '}
                                     <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>✓</span> Booked slot/s
                                 </small>
@@ -593,7 +587,7 @@ const Home = () => {
                                                             onClick={() => setCurrentDayIndex(Math.max(0, currentDayIndex - 1))}
                                                             disabled={currentDayIndex === 0}
                                                             title="Previous day"
-                                                            style={{ padding: '4px 6px', fontSize: '13px', minWidth: '34px' }}
+                                                            style={{ padding: '4px 6px', fontSize: '12px', minWidth: '34px' }}
                                                         >
                                                             ←
                                                         </button>
@@ -602,7 +596,7 @@ const Home = () => {
                                                             onClick={() => setCurrentDayIndex(0)}
                                                             title="Go to next upcoming session"
                                                             disabled={currentDayIndex === 0}
-                                                            style={{ padding: '4px 6px', fontSize: '13px' }}
+                                                            style={{ padding: '4px 6px', fontSize: '12px' }}
                                                         >
                                                             Next Session
                                                         </button>
@@ -611,7 +605,7 @@ const Home = () => {
                                                             onClick={() => setCurrentDayIndex(Math.min(groupedBookings.length - 1, currentDayIndex + 1))}
                                                             disabled={currentDayIndex === groupedBookings.length - 1}
                                                             title="Next day"
-                                                            style={{ padding: '4px 6px', fontSize: '13px', minWidth: '34px' }}
+                                                            style={{ padding: '4px 6px', fontSize: '12px', minWidth: '34px' }}
                                                         >
                                                             →
                                                         </button>
@@ -620,7 +614,7 @@ const Home = () => {
                                                         <div style={{ fontWeight: 600, fontSize: "14px", color: "#333", marginTop: '10px' }}>
                                                             Showing: {moment(selectedClientDate).format('ddd DD/MM/YY')}
                                                         </div>
-                                                        <div className="alert alert-info" style={{ fontSize: 15, margin: '4px 0 0 0', padding: '8px 12px', borderRadius: '8px' }}>
+                                                        <div className="alert alert-info" style={{ fontSize: '14px', margin: '4px 0 0 0', padding: '8px 12px', borderRadius: '8px' }}>
                                                             <strong>Note:</strong> You cannot cancel a booking within 30 minutes of the session start time. If you need to contact a trainer or admin.
                                                         </div>
                                                     </div>

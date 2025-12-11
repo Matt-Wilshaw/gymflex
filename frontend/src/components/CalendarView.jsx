@@ -100,7 +100,7 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                         →
                     </button>
                 </div>
-                <span className="calendar-month-label" style={{ fontSize: '18px', fontWeight: '600' }}>
+                <span className="calendar-month-label" style={{ fontSize: '20px', fontWeight: '600' }}>
                     {toolbar.label}
                 </span>
                 <div style={{ width: '200px' }}></div>
@@ -116,7 +116,7 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                 value={activityFilter}
                 onChange={(e) => setActivityFilter(e.target.value)}
                 className="form-select d-inline-block"
-                style={{ width: 'auto', minWidth: '150px', fontSize: '14px' }}
+                style={{ width: 'auto', minWidth: '150px', fontSize: '12px' }}
             >
                 <option value="">All</option>
                 <option value="cardio">Cardio</option>
@@ -304,7 +304,7 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            fontSize: 13,
+            fontSize: 12,
             pointerEvents: "none",
             width: "80%",
             display: "grid",
