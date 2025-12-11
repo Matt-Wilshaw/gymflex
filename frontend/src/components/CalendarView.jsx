@@ -214,17 +214,28 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
         }
 
         const uniqueActivities = [...new Set(dayEvents.map((e) => e.activity_type))];
-        const emojiElements = uniqueActivities.map((activityType, index) => {
-            const map = {
-                cardio: "🏃",
-                weights: "🏋️",
-                yoga: "🧘",
-                hiit: "⚡",
-                pilates: "🤸",
-            };
+        // Always render 5 emoji slots for consistent width
+        const map = {
+            cardio: "🏃",
+            weights: "🏋️",
+            yoga: "🧘",
+            hiit: "⚡",
+            pilates: "🤸",
+        };
+        const emojiElements = Array.from({ length: 5 }).map((_, i) => {
+            const activityType = uniqueActivities[i];
             return (
-                <span key={index} style={{ display: "inline-block" }}>
-                    {map[activityType] || "💪"}
+                <span
+                    key={i}
+                    style={{
+                        display: "inline-block",
+                        width: "22px",
+                        minWidth: "22px",
+                        textAlign: "center",
+                        opacity: activityType ? 1 : 0,
+                    }}
+                >
+                    {activityType ? map[activityType] || "💪" : "💪"}
                 </span>
             );
         });
@@ -293,53 +304,71 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
         // propagation on the button so the two actions do not conflict.
         // Prevent clicks on past dates.
         return (
-            <div
-                style={containerStyle}
-                onClick={(e) => {
-                    if (isPastDate && !currentUser?.is_staff) {
-                        e.stopPropagation();
-                        return;
-                    }
-                    if (currentUser?.is_staff) {
-                        e.stopPropagation();
-                        const dateStr = moment(value).format("YYYY-MM-DD");
-                        setSelectedAdminDate(dateStr);
-                    } else {
-                        // For non-staff users, make the entire cell clickable
-                        e.stopPropagation();
-                        handleDrillDown(value);
-                    }
-                }}
-            >
-                <div style={{ display: "flex", flexDirection: "column", height: "100%", pointerEvents: "none" }}>{children}</div>
-                <div className={activityFilter ? "emoji-bar emoji-bar-filtered" : "emoji-bar"} style={emojiBarStyle} title={uniqueActivities.join(", ")}>
-                    {emojiElements}
-                </div>
-                <div
-                    className="session-count-circle"
-                    style={buttonStyleWithFlex}
-                    title={uniqueActivities.join(", ")}
+            <div style={{ position: "relative", width: "100%", height: "100%" }}>
+                <button
+                    type="button"
+                    className="calendar-cell-btn"
+                    style={{
+                        ...containerStyle,
+                        padding: 0,
+                        border: isSelected ? "2px solid #0d6efd" : "none",
+                        background: containerStyle.backgroundColor,
+                        width: "100%",
+                        height: "100%",
+                        zIndex: 10,
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0
+                    }}
+                    onClick={(e) => {
+                        if (isPastDate && !currentUser?.is_staff) {
+                            e.stopPropagation();
+                            return;
+                        }
+                        if (currentUser?.is_staff) {
+                            e.stopPropagation();
+                            const dateStr = moment(value).format("YYYY-MM-DD");
+                            setSelectedAdminDate(dateStr);
+                        } else {
+                            e.stopPropagation();
+                            handleDrillDown(value);
+                        }
+                    }}
+                    tabIndex={0}
+                    aria-label={isSelected ? "Selected date" : "Calendar date"}
                 >
-                    <span>{countText}</span>
-                </div>
-                {/* Checkmark to the right of the session count circle */}
-                {(hasAnyBooking || hasBooking) && (
-                    <span
-                        className="booking-checkmark"
-                        style={{
-                            position: "absolute",
-                            bottom: 6,
-                            right: 8,
-                            fontSize: 16,
-                            color: "#28a745",
-                            fontWeight: "bold",
-                            pointerEvents: "none",
-                        }}
-                        title={hasBooking ? "You have a booking on this day" : "Has bookings"}
+                    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>{children}</div>
+                    <div className={activityFilter ? "emoji-bar emoji-bar-filtered" : "emoji-bar"} style={emojiBarStyle} title={uniqueActivities.join(", ")}>
+                        {emojiElements}
+                    </div>
+                    <div
+                        className="session-count-circle"
+                        style={buttonStyleWithFlex}
+                        title={uniqueActivities.join(", ")}
                     >
-                        ✓
-                    </span>
-                )}
+                        <span>{countText}</span>
+                    </div>
+                    {/* Checkmark to the right of the session count circle */}
+                    {(hasAnyBooking || hasBooking) && (
+                        <span
+                            className="booking-checkmark"
+                            style={{
+                                position: "absolute",
+                                bottom: 6,
+                                right: 8,
+                                fontSize: 16,
+                                color: "#28a745",
+                                fontWeight: "bold",
+                                pointerEvents: "none",
+                            }}
+                            title={hasBooking ? "You have a booking on this day" : "Has bookings"}
+                        >
+                            ✓
+                        </span>
+                    )}
+                </button>
             </div>
         );
     };
@@ -347,6 +376,14 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
     return (
         <div>
             <style>{`
+                /* Make default day number not intercept pointer events */
+                .rbc-date-cell .rbc-button-link {
+                    pointer-events: none !important;
+                }
+                /* Ensure our button wrapper receives pointer events */
+                .calendar-cell-btn {
+                    pointer-events: auto !important;
+                }
                 /* Add 2px top margin to day numbers in month view */
                 .rbc-month-view .rbc-date-cell .rbc-button-link {
                     margin-top: 2px;
