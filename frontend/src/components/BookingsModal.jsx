@@ -19,8 +19,10 @@ const BookingsModal = ({ showModal, modalEvents, modalDate, setShowModal, handle
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    background: "rgba(30,34,45,0.35)",
-                    zIndex: 1040,
+                    backgroundColor: "rgba(0,0,0,0.45)",
+                    backdropFilter: "blur(2px)",
+                    WebkitBackdropFilter: "blur(2px)",
+                    zIndex: 1000,
                 }}
                 onClick={() => setShowModal(false)}
             />
@@ -34,8 +36,8 @@ const BookingsModal = ({ showModal, modalEvents, modalDate, setShowModal, handle
                     transform: "translate(-50%, -50%)",
                     backgroundColor: "white",
                     borderRadius: "16px",
-                    boxShadow: "0 10px 40px rgba(0,0,0,0.3)",
-                    zIndex: 1050,
+                    boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
+                    zIndex: 1001,
                     width: "90%",
                     maxWidth: "500px",
                     maxHeight: "80vh",
@@ -113,8 +115,8 @@ const BookingsModal = ({ showModal, modalEvents, modalDate, setShowModal, handle
                                         >
                                             {event.has_started ? "Past" : `${event.available_slots} slots`}
                                         </div>
-                                        <div style={{ color: event.booked ? "#dc3545" : "transparent", fontWeight: "600", minHeight: "1em" }}>
-                                            ✓ Booked
+                                        <div style={{ color: event.booked ? "#dc3545" : "transparent", fontWeight: "600", minHeight: "20px", lineHeight: "1.4" }}>
+                                            {event.booked ? "✓ Booked" : "\u00A0"}
                                         </div>
                                     </div>
                                 </div>

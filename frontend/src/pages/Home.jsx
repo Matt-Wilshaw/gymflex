@@ -1,10 +1,10 @@
 // src/pages/Home.jsx
 
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import Toast from "../components/Toast";
 import { useNavigate } from "react-router-dom";
 import { momentLocalizer } from "react-big-calendar";
 import moment from "moment";
+import toast, { Toaster } from "react-hot-toast";
 import api from "../api";
 import CalendarView from "../components/CalendarView";
 import BookingsModal from "../components/BookingsModal";
@@ -127,14 +127,6 @@ const Home = () => {
         };
     }, [initialLoading, showBookingsPanel, currentUser]);
 
-
-    // Toast state
-    const [toast, setToast] = useState({ show: false, message: "", type: "info" });
-    const showToast = (message, type = "info") => {
-        setToast({ show: true, message, type });
-        setTimeout(() => setToast(t => ({ ...t, show: false })), 2200);
-    };
-
     // ------------------ HANDLERS ------------------
 
     // Handle booking/unbooking a session
@@ -142,10 +134,7 @@ const Home = () => {
     const handleBook = async (session) => {
         try {
             const { status, refreshed } = await hookHandleBook(session);
-            showToast(
-                status === "booked" ? "Session booked!" : status === "unbooked" ? "Booking cancelled." : `Booking status: ${status}`,
-                status === "booked" ? "success" : status === "unbooked" ? "info" : "info"
-            );
+            toast.success(`Booking status: ${status}`);
 
             if (showModal && modalDate && refreshed) {
                 const dateStr = moment(modalDate).format("YYYY-MM-DD");
@@ -154,12 +143,18 @@ const Home = () => {
                 );
                 setModalEvents(eventsForDate);
             }
+            // Refresh booked sessions so UI (button state / lists) updates
+            // when a booking is created or cancelled. This will update
+            // `bookedSessions` in the sessions hook and recompute
+            // `sortedUpcomingBookings`/`visibleMonthHasBookings` via effects.
             try {
                 await fetchBookedSessions();
-            } catch (__) { }
+            } catch (__) {
+                // ignore fetch errors here; UI will reflect latest known state
+            }
         } catch (err) {
             const errorMsg = err.response?.data?.status || err.response?.data?.error || "Booking failed. Please try again.";
-            showToast(errorMsg, "error");
+            toast.error(errorMsg);
         }
     };
 
@@ -168,10 +163,10 @@ const Home = () => {
         if (!window.confirm("Remove this attendee from the session?")) return;
         try {
             await hookRemoveAttendee(sessionId, attendeeId);
-            alert("Attendee removed.");
+            toast.success("Attendee removed.");
         } catch (err) {
             console.error("Error removing attendee:", err);
-            alert(err.response?.data?.detail || "Failed to remove attendee.");
+            toast.error(err.response?.data?.detail || "Failed to remove attendee.");
         }
     };
 
@@ -318,34 +313,39 @@ const Home = () => {
     // Update visibleMonthHasBookings when sortedUpcomingBookings or visibleMonth changes
     const isInitialMount = useRef(true);
     useEffect(() => {
-        const has = sortedUpcomingBookings.some(s => moment(s.date).format('YYYY-MM') === visibleMonth);
+        // For admins, check adminSessions; for clients, check bookedSessions
+        const dataToCheck = currentUser?.is_staff ? adminSessions : sortedUpcomingBookings;
+        const has = dataToCheck.some(s => moment(s.date).format('YYYY-MM') === visibleMonth);
         setVisibleMonthHasBookings(has);
 
-        // If user navigates to a month with no bookings, collapse the panel but do not change selectedClientDate
-        if (showBookingsPanel && !has) {
-            setShowBookingsPanel(false);
-            autoCollapsedRef.current = true;
-        }
-
-        // If panel was auto-collapsed and user navigates to a month with bookings, reopen panel and jump to first session
-        if (!isInitialMount.current && has && autoCollapsedRef.current) {
-            setShowBookingsPanel(true);
-            autoCollapsedRef.current = false;
-            const bookingsInMonth = sortedUpcomingBookings.filter(s => moment(s.date).format('YYYY-MM') === visibleMonth);
-            if (bookingsInMonth.length > 0) {
-                const firstDate = bookingsInMonth[0].date;
-                setSelectedClientDate(firstDate);
-                const idx = groupedBookings.findIndex(g => g.sessions.some(ss => ss.date === firstDate));
-                if (idx >= 0) setCurrentDayIndex(idx);
+        // Only apply auto-collapse logic for non-admin users
+        if (!currentUser?.is_staff) {
+            // If user navigates to a month with no bookings, collapse the panel but do not change selectedClientDate
+            if (showBookingsPanel && !has) {
+                setShowBookingsPanel(false);
+                autoCollapsedRef.current = true;
             }
-        } else if (!isInitialMount.current && has && showBookingsPanel) {
-            // Always jump to first session when navigating months with menu open
-            const bookingsInMonth = sortedUpcomingBookings.filter(s => moment(s.date).format('YYYY-MM') === visibleMonth);
-            if (bookingsInMonth.length > 0) {
-                const firstDate = bookingsInMonth[0].date;
-                setSelectedClientDate(firstDate);
-                const idx = groupedBookings.findIndex(g => g.sessions.some(ss => ss.date === firstDate));
-                if (idx >= 0) setCurrentDayIndex(idx);
+
+            // If panel was auto-collapsed and user navigates to a month with bookings, reopen panel and jump to first session
+            if (!isInitialMount.current && has && autoCollapsedRef.current) {
+                setShowBookingsPanel(true);
+                autoCollapsedRef.current = false;
+                const bookingsInMonth = sortedUpcomingBookings.filter(s => moment(s.date).format('YYYY-MM') === visibleMonth);
+                if (bookingsInMonth.length > 0) {
+                    const firstDate = bookingsInMonth[0].date;
+                    setSelectedClientDate(firstDate);
+                    const idx = groupedBookings.findIndex(g => g.sessions.some(ss => ss.date === firstDate));
+                    if (idx >= 0) setCurrentDayIndex(idx);
+                }
+            } else if (!isInitialMount.current && has && showBookingsPanel) {
+                // Always jump to first session when navigating months with menu open
+                const bookingsInMonth = sortedUpcomingBookings.filter(s => moment(s.date).format('YYYY-MM') === visibleMonth);
+                if (bookingsInMonth.length > 0) {
+                    const firstDate = bookingsInMonth[0].date;
+                    setSelectedClientDate(firstDate);
+                    const idx = groupedBookings.findIndex(g => g.sessions.some(ss => ss.date === firstDate));
+                    if (idx >= 0) setCurrentDayIndex(idx);
+                }
             }
         }
         // On initial mount, always highlight today's date and keep menu collapsed
@@ -354,7 +354,7 @@ const Home = () => {
             setShowBookingsPanel(false);
         }
         isInitialMount.current = false;
-    }, [visibleMonth, sortedUpcomingBookings, showBookingsPanel, groupedBookings, userClosedPanel]);
+    }, [visibleMonth, sortedUpcomingBookings, adminSessions, showBookingsPanel, groupedBookings, userClosedPanel, currentUser]);
 
     return (
         <div className="container mt-4" style={{
@@ -701,7 +701,7 @@ const Home = () => {
                     />
                 </React.Fragment>
             )}
-            <Toast message={toast.message} show={toast.show} type={toast.type} />
+            <Toaster position="top-right" />
         </div>
     );
 }

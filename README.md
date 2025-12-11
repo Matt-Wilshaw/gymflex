@@ -2,7 +2,7 @@
 
 GymFlex is a web-based gym management platform designed to help users book sessions, track their workouts, and communicate with trainers—all in one place.
 
-At its core, GymFlex is built with HTML, CSS, JavaScript, Python, React, Django, and Bootstrap. These technologies power an interactive, responsive experience that makes managing gym schedules and bookings simple and intuitive.
+At its core, GymFlex is built with **React** (Vite), **Django**, **Bootstrap**, **react-big-calendar** for calendar functionality, and **react-hot-toast** for notifications. These technologies power an interactive, responsive experience that makes managing gym schedules and bookings simple and intuitive.
 
 ## Architecture Overview (Summary)
 GymFlex is a full-stack application where a React (Vite) frontend is built into static assets and served by the Django backend in production (Heroku). Requests flow:
@@ -357,21 +357,23 @@ The platform is structured around key user flows:
 * User registration and authentication
 * Trainer and client profile management
 * Create, view, edit, and cancel bookings (CRUD functionality)
-* Interactive calendar view for gym sessions** powered by react-big-calendar
-* Responsive front-end built with Bootstrap and custom CSS
-* Secure, relational data handling via Django
+* Interactive calendar view for gym sessions powered by react-big-calendar
+* Toast notifications for user feedback (booking confirmations, errors)
+* Activity filtering on calendar with visual emoji indicators
+* Responsive front-end built with React, Bootstrap, and custom CSS
+* Secure, relational data handling via Django REST Framework
 * Deployed on Heroku with a managed relational database (PostgreSQL)
 
 ---
 
 ## Technologies Used
 
-* Frontend: HTML, CSS, JavaScript, Bootstrap, react-big-calendar
-* Backend: Django (Python)
-* Database: SQLite (development) / PostgreSQL (production)
-* Hosting: Heroku
-* Version Control: Git & GitHub
-* Authentication: JWT (JSON Web Token), Django REST Framework (DRF)
+* **Frontend:** HTML, CSS, JavaScript, React (Vite), Bootstrap, react-big-calendar, react-hot-toast
+* **Backend:** Django (Python), Django REST Framework (DRF)
+* **Database:** SQLite (development) / PostgreSQL (production)
+* **Hosting:** Heroku
+* **Version Control:** Git & GitHub
+* **Authentication:** JWT (JSON Web Token)
 
 ---
 
