@@ -55,9 +55,7 @@ urlpatterns = [
     # WhiteNoise middleware handles compression and caching for production efficiency
     re_path(r'^assets/(?P<path>.*)$', serve, {'document_root': settings.BASE_DIR.parent / 'frontend' / 'dist' / 'assets'}),
     
-    # Catch-all route: serve React's index.html for all unmatched paths
-    # This enables React Router to handle client-side routing for SPA navigation
-    # MUST be the last pattern so it doesn't override other routes
-    # Any route not matched above (e.g., /, /login, /sessions/23) serves index.html
-    re_path(r"^.*$", TemplateView.as_view(template_name="index.html")),
+    # Catch-all route: serve React's index.html for all unmatched frontend routes (root and /assets handled above)
+    # Only match root and paths not starting with api/, admin/, or static/
+    re_path(r'^(?!api/|admin/|static/|assets/).*$' , TemplateView.as_view(template_name="index.html")),
 ]

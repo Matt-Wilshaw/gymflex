@@ -1,0 +1,12 @@
+{% extends "rest_framework/api.html" %}
+
+{% block branding %}
+<div style="text-align:center; margin-bottom: 2em;">
+    <img src="/static/gymflex-logo.png" alt="GymFlex Logo" style="height:80px; margin-bottom: 0.5em;" />
+    <h1>GymFlex API</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+{{ block.super }}
+{% endblock %}
