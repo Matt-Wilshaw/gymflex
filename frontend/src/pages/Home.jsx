@@ -72,25 +72,31 @@ const Home = () => {
     const lastSelectedSessionRef = useRef(null);
 
     // Always keep lastSelectedSessionRef in sync with selectedClientDate when menu is open
+    // Track previous open/closed state so we don't run selection logic on initial mount
+    const prevShowBookingsPanelRef = React.useRef(showBookingsPanel);
     useEffect(() => {
-        if (showBookingsPanel && !currentUser?.is_staff) {
-            // When opening, jump to first session in visible month, else today
-            const visibleMonth = moment().format('YYYY-MM');
-            const filtered = bookedSessions.filter(
-                (s) =>
-                    !s.has_started &&
-                    (!activityFilter || s.activity_type === activityFilter) &&
-                    moment(s.date).format('YYYY-MM') === visibleMonth
-            );
-            if (filtered.length > 0) {
-                setSelectedClientDate(filtered[0].date);
-            } else {
-                setSelectedClientDate(moment().format('YYYY-MM-DD'));
+        const prev = prevShowBookingsPanelRef.current;
+        if (!currentUser?.is_staff) {
+            if (!prev && showBookingsPanel) {
+                // panel opened: set to first session in visible month or today
+                const visibleMonth = moment().format('YYYY-MM');
+                const filtered = bookedSessions.filter(
+                    (s) =>
+                        !s.has_started &&
+                        (!activityFilter || s.activity_type === activityFilter) &&
+                        moment(s.date).format('YYYY-MM') === visibleMonth
+                );
+                if (filtered.length > 0) {
+                    setSelectedClientDate(filtered[0].date);
+                } else {
+                    setSelectedClientDate(moment().format('YYYY-MM-DD'));
+                }
+            } else if (prev && !showBookingsPanel) {
+                // panel closed: clear selection
+                setSelectedClientDate("");
             }
-        } else if (!showBookingsPanel && !currentUser?.is_staff) {
-            // When closing, clear selectedClientDate (no date highlighted)
-            setSelectedClientDate("");
         }
+        prevShowBookingsPanelRef.current = showBookingsPanel;
     }, [showBookingsPanel, currentUser, bookedSessions, activityFilter]);
     // Track if user manually closed the bookings panel
     const [userClosedPanel, setUserClosedPanel] = useState(true); // true on initial load to prevent auto-open
