@@ -31,7 +31,7 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
         }
     }, [selectedAdminDate, currentUser]);
 
-    // When the selected client date changes (for example on initial load
+    // Handle changes to the selected client date
     // or when the bookings panel explicitly sets it), update the visible
     // month so the user can see the selected day. We avoid updating
     // calendarDate on normal month navigation to preserve the blue
@@ -145,7 +145,7 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
         const isPastDate = moment(value).isBefore(moment(), 'day');
         const isOtherMonth = moment(value).month() !== moment(selectedAdminDate || selectedClientDate || new Date()).month();
 
-        // Debug logging
+        //
         const isToday = moment().format("YYYY-MM-DD") === dateStr;
         if (isToday && !currentUser?.is_staff) {
             console.log('selectedAdminDate:', selectedAdminDate, 'currentUser.is_staff:', currentUser?.is_staff);

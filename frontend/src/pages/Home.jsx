@@ -149,7 +149,7 @@ const Home = () => {
             try {
                 await fetchBookedSessions();
             } catch (__) {
-                // ignore fetch errors here; UI will reflect latest known state
+                // Fetch errors are ignored; UI will show the latest known state
             }
         } catch (err) {
             const errorMsg = err.response?.data?.status || err.response?.data?.error || "Booking failed. Please try again.";
@@ -157,7 +157,7 @@ const Home = () => {
         }
     };
 
-    // Admin: remove an attendee from a session
+    // Remove an attendee from a session (admin only)
     const removeAttendee = async (sessionId, attendeeId) => {
         if (!window.confirm("Remove this attendee from the session?")) return;
         try {

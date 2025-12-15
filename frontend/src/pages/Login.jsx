@@ -10,7 +10,7 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    // Remove body scroll for login page
+    // Prevent body scroll on login page
     React.useEffect(() => {
         document.body.style.overflow = 'hidden';
         document.body.style.margin = '0';

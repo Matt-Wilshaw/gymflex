@@ -15,7 +15,7 @@ const Register = () => {
 
     const navigate = useNavigate(); // Hook to programmatically navigate between routes
 
-    // Remove body scroll for register page
+    // Prevent body scroll on register page
     React.useEffect(() => {
         document.body.style.overflow = 'hidden';
         document.body.style.margin = '0';

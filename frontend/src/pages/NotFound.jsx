@@ -35,9 +35,9 @@ const NotFound = () => {
                 width: "100%",
                 textAlign: "center"
             }}>
-                <img src="/favicons/favicon.svg" alt="GymFlex logo"
+                <img src="/gymflex-logo.png" alt="GymFlex logo"
                     style={{ height: 40, marginBottom: 12 }}
-                    onError={e => { e.target.onerror = null; e.target.src = '/favicons/favicon-128.png'; }}
+                    onError={e => { e.target.onerror = null; e.target.src = '/gymflex-logo.png'; }}
                 />
 
                 <div style={{
