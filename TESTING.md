@@ -1,3 +1,26 @@
+---
+
+## CSS Validator Testing
+
+CSS validation helps ensure that GymFlex stylesheets follow web standards, improving cross-browser compatibility and maintainability. The [W3C CSS Validator](https://jigsaw.w3.org/css-validator/) was used to check the main stylesheets for errors and warnings.
+
+**How to Run CSS Validation:**
+1. Open the deployed GymFlex site or local build in your browser.
+2. Use the browser's developer tools to view or copy the CSS, or enter the stylesheet URL directly into the validator.
+3. Go to [jigsaw.w3.org/css-validator/](https://jigsaw.w3.org/css-validator/) and paste the CSS or provide the URL.
+4. Review the results for errors and warnings.
+
+**Results:**
+- The main stylesheets passed validation with only minor warnings, such as vendor-specific properties for cross-browser support.
+- No critical errors were found that would impact layout or usability.
+
+**Example CSS Validator Report:**
+
+![CSS Validator Screenshot](testing-images/css-validator/css-issues)
+
+**Notes:**
+- Minor warnings (e.g., use of -webkit- or -ms- prefixes) are intentional for compatibility and do not affect user experience.
+- Regular CSS validation is recommended after major style changes to maintain code quality.
 **Tasks:**  
 - [x] Design timetable UI  
 - [x] Implement backend session retrieval  
@@ -30,12 +53,6 @@ For a full technical breakdown of the system architecture (including middleware,
 
 - [GymFlex Testing Documentation](#gymflex-testing-documentation)
   - [Introduction](#introduction)
-  - [Testing Environments](#testing-environments)
-    - [Local Development (http://localhost:8000/api, frontend at http://localhost:5173/)](#local-development-httplocalhost8000api-frontend-at-httplocalhost5173)
-    - [Production (Heroku) (https://gymflex-5bb1d582f94c.herokuapp.com)](#production-heroku-httpsgymflex-5bb1d582f94cherokuappcom)
-    - [Workflow Summary](#workflow-summary)
-- [GymFlex Testing Documentation](#gymflex-testing-documentation-1)
-  - [Introduction](#introduction-1)
   - [Responsiveness Testing](#responsiveness-testing)
   - [Lighthouse Testing](#lighthouse-testing)
   - [HTML Validator Testing](#html-validator-testing)
@@ -221,9 +238,9 @@ For GymFlex, Lighthouse was used to audit both the local development build and t
 
 
 **Results:**
-- GymFlex consistently scored above 90 in all categories on both local and production builds.
-- All critical accessibility and performance issues were addressed prior to deployment.
-- Any remaining minor recommendations are tracked for future improvement.
+- GymFlex scored 55 for Performance, 84 for Accessibility, and 100 for Best Practices in the latest Lighthouse audit.
+- All critical accessibility and best practices issues were addressed prior to deployment.
+- Performance improvements are ongoing, and any remaining recommendations are tracked for future updates.
 
 **Example Lighthouse Report:**
 

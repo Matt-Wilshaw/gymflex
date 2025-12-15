@@ -562,14 +562,12 @@
                                                                         padding: 2px 4px !important;
                                                                     }
 
-                                                                    min-height: 84px;
 
                                                                     /* a little more shorter on desktop */
                                                                     .rbc-toolbar-label {
                                                                         font-size: 11px !important;
                                                                     }
 
-                                                                    padding: 6px 8px;
                                                                     .rbc-label,
 
                                                                     /* Trim extra bottom spacing */
