@@ -198,7 +198,7 @@ HTML validation ensures that the GymFlex frontend adheres to web standards, impr
 
 **Example HTML Validator Report:**
 
-![HTML Validator Screenshot](testing-images/html-validator/html-validator.png)
+![HTML Validator Screenshot](testing-images/html-validator/html-validator-issues.png)
 
 **Notes:**
 - Regular HTML validation is recommended after major UI changes to maintain code quality and accessibility.
