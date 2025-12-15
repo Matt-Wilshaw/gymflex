@@ -68,36 +68,6 @@ const Home = () => {
     // Track selected date for client calendar view - initialize with today's date like admin does
     // Always default to today's date on initial load
     const [selectedClientDate, setSelectedClientDate] = useState(() => moment().format("YYYY-MM-DD"));
-    // Track last selected session date before collapsing panel
-    const lastSelectedSessionRef = useRef(null);
-
-    // Always keep lastSelectedSessionRef in sync with selectedClientDate when menu is open
-    // Track previous open/closed state so we don't run selection logic on initial mount
-    const prevShowBookingsPanelRef = React.useRef(showBookingsPanel);
-    useEffect(() => {
-        const prev = prevShowBookingsPanelRef.current;
-        if (!currentUser?.is_staff) {
-            if (!prev && showBookingsPanel) {
-                // panel opened: set to first session in visible month or today
-                const visibleMonth = moment().format('YYYY-MM');
-                const filtered = bookedSessions.filter(
-                    (s) =>
-                        !s.has_started &&
-                        (!activityFilter || s.activity_type === activityFilter) &&
-                        moment(s.date).format('YYYY-MM') === visibleMonth
-                );
-                if (filtered.length > 0) {
-                    setSelectedClientDate(filtered[0].date);
-                } else {
-                    setSelectedClientDate(moment().format('YYYY-MM-DD'));
-                }
-            } else if (prev && !showBookingsPanel) {
-                // panel closed: clear selection
-                setSelectedClientDate("");
-            }
-        }
-        prevShowBookingsPanelRef.current = showBookingsPanel;
-    }, [showBookingsPanel, currentUser, bookedSessions, activityFilter]);
     // Track if user manually closed the bookings panel
     const [userClosedPanel, setUserClosedPanel] = useState(true); // true on initial load to prevent auto-open
 
@@ -540,32 +510,26 @@ const Home = () => {
                                 <button
                                     className="today-btn"
                                     onClick={(e) => {
-                                        if (!visibleMonthHasBookings) return;
+                                        const today = moment().format('YYYY-MM-DD');
+                                        const todayMonth = moment().format('YYYY-MM');
                                         if (showBookingsPanel) {
-                                            // Store last selected session before collapsing
-                                            lastSelectedSessionRef.current = selectedClientDate;
-                                            // Collapse panel: if current month, set blue square to today; else, remove blue square
-                                            const todayMonth = moment().format('YYYY-MM');
+                                            // closing
+                                            setShowBookingsPanel(false);
+                                            setUserClosedPanel(true);
                                             if (visibleMonth === todayMonth) {
-                                                setSelectedClientDate(moment().format('YYYY-MM-DD'));
+                                                setSelectedClientDate(today);
                                             } else {
                                                 setSelectedClientDate(null);
                                             }
-                                            setShowBookingsPanel(false);
-                                            setUserClosedPanel(true);
                                         } else {
+                                            // opening
                                             setShowBookingsPanel(true);
                                             setUserClosedPanel(false);
-                                            // Restore last selected session if it exists in upcoming bookings
-                                            let restoreDate = lastSelectedSessionRef.current;
-                                            if (restoreDate && sortedUpcomingBookings.some(s => s.date === restoreDate)) {
-                                                setSelectedClientDate(restoreDate);
-                                                const idx = groupedBookings.findIndex(g => g.sessions.some(ss => ss.date === restoreDate));
-                                                if (idx >= 0) setCurrentDayIndex(idx);
-                                            } else if (sortedUpcomingBookings.length > 0) {
-                                                const nextDate = sortedUpcomingBookings[0].date;
-                                                setSelectedClientDate(nextDate);
-                                                const idx = groupedBookings.findIndex(g => g.sessions.some(ss => ss.date === nextDate));
+                                            // find sessions in visibleMonth
+                                            const sessionsInMonth = sortedUpcomingBookings.filter(s => moment(s.date).format('YYYY-MM') === visibleMonth);
+                                            if (sessionsInMonth.length > 0) {
+                                                setSelectedClientDate(sessionsInMonth[0].date);
+                                                const idx = groupedBookings.findIndex(g => g.sessions.some(ss => ss.date === sessionsInMonth[0].date));
                                                 if (idx >= 0) setCurrentDayIndex(idx);
                                             }
                                         }
