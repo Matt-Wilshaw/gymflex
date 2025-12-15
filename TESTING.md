@@ -1,30 +1,58 @@
-## Responsiveness Testing
-
-GymFlex was tested at the following breakpoints to ensure a consistent experience:
-
-- **320px:** Smallest mobile
-- **576px:** Mobile
-- **768px:** Tablet portrait
-- **992px:** Tablet landscape/laptop
-- **1200px:** Desktop
-
-|                    320px                    |                    576px                    |                    768px                    |                    992px                    |                     1200px                     |
-| :-----------------------------------------: | :-----------------------------------------: | :-----------------------------------------: | :-----------------------------------------: | :--------------------------------------------: |
-| ![320px](readme-images/mobile/320-home.png) | ![576px](readme-images/mobile/576-home.png) | ![768px](readme-images/tablet/768-home.png) | ![992px](readme-images/tablet/992-home.png) | ![1200px](readme-images/desktop/1200-home.png) |
-
-**Manual Test Steps:**
-1. Open the app in Chrome/Edge/Firefox.
-2. Open Dev Tools (F12) and toggle device toolbar.
-3. Set the width to each breakpoint above and verify layout, navigation, and usability.
-4. Take screenshots and save them in the appropriate `readme-images/` subfolder.
-
-**Note:** Some online preview tools (e.g., Am I Responsive) may not display Heroku apps due to iframe or CORS restrictions. Use browser dev tools for best results.
+**Tasks:**  
+- [x] Design timetable UI  
+- [x] Implement backend session retrieval  
+- [x] Test real-time updates or refresh functionality  
+**Tasks:**  
+- [x] Implement booking button and backend logic  
+- [x] Handle capacity constraints and conflicts  
+- [x] Provide confirmation feedback to the user  
+- [x] Test booking process  
+**Tasks:**  
+- [x] Implement cancel booking UI  
+- [x] Update backend booking status  
+- [x] Test cancellation flow and availability updates  
+**Tasks:**  
+- [x] Design trainer dashboard UI  
+- [x] Implement session CRUD functionality  
+- [x] Test session updates on client dashboards  
+**Tasks:**  
+- [x] Implement attendance toggle button in admin bookings list  
+- [x] Update backend to support attendance status changes  
+- [x] Test UI feedback (strikethrough, color)  
+- [x] Verify API updates attendance status  
+- [x] Add automated test for attendance toggle (future)
 # GymFlex Testing Documentation
 
 ## Introduction
 
 This document outlines the testing process for **GymFlex**, a gym management web application that allows users to register, book sessions, and interact with trainers through an intuitive interface.
 For a full technical breakdown of the system architecture (including middleware, data flow, and masking logic), see the [Architecture Document](./docs/ARCHITECTURE.md).
+
+- [GymFlex Testing Documentation](#gymflex-testing-documentation)
+  - [Introduction](#introduction)
+  - [Testing Environments](#testing-environments)
+    - [Local Development (http://localhost:8000/api, frontend at http://localhost:5173/)](#local-development-httplocalhost8000api-frontend-at-httplocalhost5173)
+    - [Production (Heroku) (https://gymflex-5bb1d582f94c.herokuapp.com)](#production-heroku-httpsgymflex-5bb1d582f94cherokuappcom)
+    - [Workflow Summary](#workflow-summary)
+- [GymFlex Testing Documentation](#gymflex-testing-documentation-1)
+  - [Introduction](#introduction-1)
+  - [Responsiveness Testing](#responsiveness-testing)
+  - [Lighthouse Testing](#lighthouse-testing)
+  - [HTML Validator Testing](#html-validator-testing)
+  - [4. Book a Session](#4-book-a-session)
+  - [5. Calendar and Bookings Panel Navigation](#5-calendar-and-bookings-panel-navigation)
+  - [6. Cancel a Booking](#6-cancel-a-booking)
+  - [7. Trainer Session Management](#7-trainer-session-management)
+  - [8. Admin Attendance Management](#8-admin-attendance-management)
+  - [8. Track Bookings](#8-track-bookings)
+  - [9. Accessibility](#9-accessibility)
+  - [10. Security \& Data Protection](#10-security--data-protection)
+  - [Manual Test: NotFound (404) Page](#manual-test-notfound-404-page)
+  - [Appendix: Adding Test Data](#appendix-adding-test-data)
+    - [Using Django Admin](#using-django-admin)
+    - [Using Django Shell](#using-django-shell)
+    - [Using Django Fixtures](#using-django-fixtures)
+
 
 Testing was conducted to ensure that all features of GymFlex function as intended, that the user experience is consistent across devices and browsers, and that both clients and trainers can interact with the system without errors or usability issues.
 
@@ -49,7 +77,8 @@ All discovered bugs, fixes, and retests are documented throughout this file.
 
 For additional project details and technical information, including instructions on running the site, please refer to the [README.md](./README.md)
 
----
+----
+
 
 ## Testing Environments
 
@@ -89,64 +118,120 @@ GymFlex is tested in two environments with different purposes and workflows:
 
 ---
 
-## User Acceptance Testing (UAT)
 
-## 1. User Registration
+# GymFlex Testing Documentation
 
-**Story:**  
-As a new user, I want to create an account so that I can access GymFlex features like booking sessions and tracking my workouts.
+## Introduction
 
-**Acceptance Criteria:**  
-- When I provide valid information and submit the registration form  
-- Then my account is created  
-- And I can log in immediately after registration
+This document outlines the testing process for **GymFlex**, a gym management web application that allows users to register, book sessions, and interact with trainers through an intuitive interface.
+For a full technical breakdown of the system architecture (including middleware, data flow, and masking logic), see the [Architecture Document](./docs/ARCHITECTURE.md).
 
-**Tasks:**  
-- [ ] Design registration form UI  
-- [ ] Implement backend registration logic  
-- [ ] Validate input and handle errors  
-- [ ] Test registration workflow  
+Testing was conducted to ensure that all features of GymFlex function as intended, that the user experience is consistent across devices and browsers, and that both clients and trainers can interact with the system without errors or usability issues.
 
-**Bug Tracking / Notes:**  
+The testing strategy followed a combination of **Behaviour-Driven Development (BDD)** and **Test-Driven Development (TDD)** principles:
 
----
+- **BDD (Behaviour-Driven Development):** Focused on real-world user stories, such as *“As a user, I want to book a session so that I can reserve my spot in advance.”*  
+- **TDD (Test-Driven Development):** Automated tests were written before implementing each feature to ensure correctness and maintainable code.
 
-## 2. User Login
+Both **manual** and **automated** testing methods were used to validate the functionality, usability, and accessibility of the application.
 
-**Story:**  
-As a registered user, I want to log in to my account so that I can access my bookings and book new sessions.
+Key areas covered in testing include:
+- User registration and authentication  
+- Session booking and cancellation  
+- Trainer session management (creating, editing, and deleting sessions as a trainer; verifying permissions and UI for trainers)
+- Data integrity and permission control  
+- Cross-browser and mobile responsiveness  
+- Accessibility compliance (WCAG standards)
 
-**Acceptance Criteria:**  
-- Given I have a registered account  
-- When I provide valid username and password  
-- Then I am logged in and redirected to the home page  
-- And I receive a valid JWT access token
+For each user story, **black box testing** was applied — evaluating the system purely from the user's perspective without knowledge of internal code logic.  
 
-**Tasks:**  
-- [ ] Design login form UI  
-- [ ] Implement JWT authentication backend  
-- [ ] Handle invalid credentials gracefully  
-- [ ] Test token refresh mechanism  
+All discovered bugs, fixes, and retests are documented throughout this file.
 
-**Bug Tracking / Notes:**
+For additional project details and technical information, including instructions on running the site, please refer to the [README.md](./README.md)
 
----
-
-## 3. View Timetable
-
-**Story:**  
-As a user, I want to view the gym timetable so that I can see available sessions and plan my schedule.
-
-**Acceptance Criteria:**  
-- Given I am logged in  
-- When I access the timetable page  
-- Then I can see all upcoming sessions with time, trainer, and availability  
+----
 - And sessions are updated in real-time if changes occur
 
 **Tasks:**  
+## Responsiveness Testing
+
+GymFlex was tested at the following breakpoints to ensure a consistent experience:
+
+- **320px:** Smallest mobile
+- **576px:** Mobile
+- **768px:** Tablet portrait
+- **992px:** Tablet landscape/laptop
+- **1200px:** Desktop
+
+|                    320px                    |                    576px                    |                    768px                    |                    992px                    |                     1200px                     |
+| :-----------------------------------------: | :-----------------------------------------: | :-----------------------------------------: | :-----------------------------------------: | :--------------------------------------------: |
+| ![320px](readme-images/mobile/320-home.png) | ![576px](readme-images/mobile/576-home.png) | ![768px](readme-images/tablet/768-home.png) | ![992px](readme-images/tablet/992-home.png) | ![1200px](readme-images/desktop/1200-home.png) |
+
+**Manual Test Steps:**
+1. Open the app in Chrome/Edge/Firefox.
+2. Open Dev Tools (F12) and toggle device toolbar.
+3. Set the width to each breakpoint above and verify layout, navigation, and usability.
+4. Take screenshots and save them in the appropriate `readme-images/` subfolder.
+
+**Note:** Some online preview tools (e.g., Am I Responsive) may not display Heroku apps due to iframe or CORS restrictions. Use browser dev tools for best results.
 - [ ] Design timetable UI  
 - [ ] Implement backend session retrieval  
 - [ ] Test real-time updates or refresh functionality  
+
+## Lighthouse Testing
+
+---
+
+## HTML Validator Testing
+
+HTML validation ensures that the GymFlex frontend adheres to web standards, improving browser compatibility, accessibility, and maintainability. The [W3C HTML Validator](https://validator.w3.org/) was used to check the main dashboard and key user flows for markup errors and warnings.
+
+**How to Run HTML Validation:**
+1. Open the deployed GymFlex site or local build in your browser.
+2. Right-click and select "View Page Source" or use the browser's developer tools to copy the HTML.
+3. Go to [validator.w3.org](https://validator.w3.org/) and paste the HTML, or enter the site URL directly.
+4. Review the results for errors and warnings.
+
+**Results:**
+- The main dashboard and all user flows passed validation with no critical errors.
+- Minor warnings (such as ARIA attributes or vendor-specific tags) were reviewed and determined to be non-blocking for accessibility or functionality.
+
+**Example HTML Validator Report:**
+
+![HTML Validator Screenshot](testing-images/html-validator/html-validator.png)
+
+**Notes:**
+- Regular HTML validation is recommended after major UI changes to maintain code quality and accessibility.
+
+Lighthouse is an open-source, automated tool from Google for improving the quality of web pages. It audits web applications for performance, accessibility, best practices, SEO, and progressive web app (PWA) features. Lighthouse provides actionable insights and scores that help developers identify and fix issues affecting user experience and discoverability.
+
+For GymFlex, Lighthouse was used to audit both the local development build and the deployed Heroku production site. This ensures the application meets high standards for speed, accessibility, and technical quality before and after deployment.
+
+**How to Run Lighthouse:**
+1. Open Chrome DevTools (F12) and go to the "Lighthouse" tab.
+2. Select the categories to audit (Performance, Accessibility, Best Practices, SEO, PWA).
+3. Run the audit on the main dashboard and key user flows (e.g., registration, booking, timetable).
+4. Review the scores and recommendations.
+
+**Key Metrics:**
+- Performance: Page load speed, time to interactive, resource optimisation
+- Accessibility: Colour contrast, ARIA labels, keyboard navigation
+- Best Practices: HTTPS, image optimisation, error handling
+- SEO: Metadata, mobile-friendliness, crawlability
+
+
+**Results:**
+- GymFlex consistently scored above 90 in all categories on both local and production builds.
+- All critical accessibility and performance issues were addressed prior to deployment.
+- Any remaining minor recommendations are tracked for future improvement.
+
+**Example Lighthouse Report:**
+
+![Lighthouse Testing Screenshot](testing-images/lighthouse/lighthouse-testing.png)
+
+**Notes:**
+- Some metrics (e.g., performance) may vary between local and production due to network and server differences.
+- For the most accurate results, run Lighthouse in an incognito window with no extensions enabled.
 
 **Bug Tracking / Notes:**
 
@@ -236,6 +321,9 @@ As a user, I want to cancel a previously booked session so that I can free up my
 ---
 
 ## 7. Trainer Session Management
+
+
+
 ## 8. Admin Attendance Management
 
 **Story:**  
@@ -308,10 +396,10 @@ As a visually impaired or mobility-challenged user, I want to navigate GymFlex u
 - And layouts remain functional under zoom or high-contrast settings
 
 **Tasks:**  
-- [ ] Apply semantic HTML and ARIA labels  
-- [ ] Test keyboard-only navigation  
-- [ ] Verify screen reader compatibility  
-- [ ] Ensure responsive layout under zoom/high-contrast  
+- [x] Apply semantic HTML and ARIA labels  
+- [x] Test keyboard-only navigation  
+- [x] Verify screen reader compatibility  
+- [x] Ensure responsive layout under zoom/high-contrast  
 - [x] Add mobile-responsive CSS for calendar display
 
 **Bug Tracking / Notes:**  
@@ -445,7 +533,7 @@ session2, created = Session.objects.get_or_create(
     capacity=15
 )
 
-# Add test user as attendee
+# Add test user as attendee (via SessionAttendee join table)
 session1.attendees.add(test_user)
 session2.attendees.add(test_user)
 ```
@@ -459,7 +547,7 @@ To restore all test data at once, use:
 ```powershell
 python manage.py loaddata backend/users.json
 python manage.py loaddata backend/sessions.json
-python manage.py loaddata backend/attendees.json
+python manage.py loaddata backend/attendees.json  # Loads booking data (SessionAttendee join table)
 ```
 
 This ensures your local environment matches the expected test scenarios.
