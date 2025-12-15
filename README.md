@@ -8,7 +8,6 @@ Please find the link below to the site
 
 Production (Heroku) app: https://gymflex-5bb1d582f94c.herokuapp.com/  
 
-
 ## Table of Contents
 
 - [Introduction](#introduction)
@@ -21,8 +20,10 @@ Production (Heroku) app: https://gymflex-5bb1d582f94c.herokuapp.com/
     - [Information Architecture](#information-architecture)
     - [Skeleton (Layout and Interaction)](#skeleton-layout-and-interaction)
   - [Features](#features)
+  - [Admin Access](#admin-access)
   - [Technologies Used](#technologies-used)
-  - [Design Choices](#design-choices)
+- [Design Choices](#design-choices)
+  - [Wireframes](#wireframes)
     - [Colour Palette](#colour-palette)
     - [Typography](#typography)
     - [Accessibility](#accessibility)
@@ -71,6 +72,7 @@ Production (Heroku) app: https://gymflex-5bb1d582f94c.herokuapp.com/
   - [Tips](#tips)
   - [Author](#author)
   - [Restoring Development Data](#restoring-development-data)
+  - [Credits](#credits)
 
 ---
 
@@ -150,6 +152,19 @@ The platform is structured around key user flows:
 
 ---
 
+## Admin Access
+
+If you are logged in as an admin user, you can access the Django admin panel to manage users, sessions, and bookings.
+
+- Click the "Admin" button in the navigation bar (see screenshot below).
+- Or, go directly to `/admin/` (e.g., http://localhost:8000/admin).
+
+![Admin Navigation](readme-images/miscellaneous/admin-navigation.png)
+
+Use your admin credentials to log in.
+
+---
+
 ## Technologies Used
 
 * **Frontend:** HTML, CSS, JavaScript, React (Vite), Bootstrap, react-big-calendar, react-hot-toast
@@ -161,7 +176,25 @@ The platform is structured around key user flows:
 
 ---
 
-## Design Choices
+# Design Choices
+
+## Wireframes
+
+Wireframes were created to guide the design and layout of GymFlex across devices. These visual blueprints helped ensure a consistent and user-friendly experience on all screen sizes.
+
+**Tablet Wireframe:**
+![Tablet Wireframe](readme-images/tablet/wireframe-tablet.png)
+
+**Desktop Wireframe:**
+![Desktop Wireframe](readme-images/desktop/wireframe-desktop.png)
+
+**Mobile Wireframe:**
+![Mobile Wireframe](readme-images/mobile/wireframe-mobile.png)
+
+> **Note on the Notes Feature:**
+> The Notes section (for trainers or users to add session notes) was not implemented in the initial release. This decision was made to prioritise delivering a fully working core project focused on booking, session management, and user experience. Notes functionality is planned for a future release, as it does not hinder the main use of the site and can be added without disrupting existing workflows.
+
+---
 
 ### Colour Palette
 GymFlex uses a calming blue theme to evoke trust, professionalism, and energy—perfect for a fitness platform. The colours promote a clean, modern look while ensuring accessibility.
@@ -515,4 +548,34 @@ python manage.py loaddata backend/sessions.json
 python manage.py loaddata backend/attendees.json  # Loads booking data (SessionAttendee join table)
 ```
 
+
 This will restore the core data for development and testing.
+
+---
+
+## Credits
+
+
+This project was made possible with the help of the following resources:
+
+- **React** (https://react.dev/) — Frontend framework
+- **Vite** (https://vitejs.dev/) — Frontend tooling
+- **Django** (https://www.djangoproject.com/) — Backend framework
+- **Django REST Framework** (https://www.django-rest-framework.org/) — API layer
+- **Simple JWT** (https://django-rest-framework-simplejwt.readthedocs.io/) — JWT authentication
+- **Bootstrap** (https://getbootstrap.com/) — UI styling and layout
+- **react-big-calendar** (https://github.com/jquense/react-big-calendar) — Calendar component
+- **react-hot-toast** (https://react-hot-toast.com/) — Toast notifications
+- **Heroku** (https://heroku.com/) — Hosting and deployment
+- **W3C Validators** (https://validator.w3.org/ and https://jigsaw.w3.org/css-validator/) — HTML and CSS validation
+- **Lighthouse** (https://developer.chrome.com/docs/lighthouse/overview/) — Accessibility and performance testing
+- **GitHub** (https://github.com/) — Version control and collaboration
+
+Icons, images, and other assets are either original, generated for this project, or used under open licenses as per their respective documentation.
+
+Additional support and solutions were found via:
+- **YouTube** — Video tutorials and walkthroughs for Django, React, and deployment
+- **Stack Overflow** (https://stackoverflow.com/) — Community Q&A for troubleshooting and code examples
+- **ChatGPT** — AI assistance for code explanations, debugging, and documentation
+
+Special thanks to the maintainers and communities of these open-source projects, and to the wider developer community for their invaluable tools, tutorials, and support.

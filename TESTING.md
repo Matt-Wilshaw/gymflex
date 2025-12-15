@@ -1,69 +1,23 @@
----
-
-## CSS Validator Testing
-
-CSS validation helps ensure that GymFlex stylesheets follow web standards, improving cross-browser compatibility and maintainability. The [W3C CSS Validator](https://jigsaw.w3.org/css-validator/) was used to check the main stylesheets for errors and warnings.
-
-**How to Run CSS Validation:**
-1. Open the deployed GymFlex site or local build in your browser.
-2. Use the browser's developer tools to view or copy the CSS, or enter the stylesheet URL directly into the validator.
-3. Go to [jigsaw.w3.org/css-validator/](https://jigsaw.w3.org/css-validator/) and paste the CSS or provide the URL.
-4. Review the results for errors and warnings.
-
-**Results:**
-- The main stylesheets passed validation with only minor warnings, such as vendor-specific properties for cross-browser support.
-- No critical errors were found that would impact layout or usability.
-
-**Example CSS Validator Report:**
-
-![CSS Validator Screenshot](testing-images/css-validator/css-issues)
-
-**Notes:**
-- Minor warnings (e.g., use of -webkit- or -ms- prefixes) are intentional for compatibility and do not affect user experience.
-- Regular CSS validation is recommended after major style changes to maintain code quality.
-**Tasks:**  
-- [x] Design timetable UI  
-- [x] Implement backend session retrieval  
-- [x] Test real-time updates or refresh functionality  
-**Tasks:**  
-- [x] Implement booking button and backend logic  
-- [x] Handle capacity constraints and conflicts  
-- [x] Provide confirmation feedback to the user  
-- [x] Test booking process  
-**Tasks:**  
-- [x] Implement cancel booking UI  
-- [x] Update backend booking status  
-- [x] Test cancellation flow and availability updates  
-**Tasks:**  
-- [x] Design trainer dashboard UI  
-- [x] Implement session CRUD functionality  
-- [x] Test session updates on client dashboards  
-**Tasks:**  
-- [x] Implement attendance toggle button in admin bookings list  
-- [x] Update backend to support attendance status changes  
-- [x] Test UI feedback (strikethrough, color)  
-- [x] Verify API updates attendance status  
-- [x] Add automated test for attendance toggle (future)
-# GymFlex Testing Documentation
-
 ## Introduction
 
 This document outlines the testing process for **GymFlex**, a gym management web application that allows users to register, book sessions, and interact with trainers through an intuitive interface.
 For a full technical breakdown of the system architecture (including middleware, data flow, and masking logic), see the [Architecture Document](./docs/ARCHITECTURE.md).
 
 - [GymFlex Testing Documentation](#gymflex-testing-documentation)
-  - [Introduction](#introduction)
+  - [Introduction](#introduction-1)
   - [Responsiveness Testing](#responsiveness-testing)
   - [Lighthouse Testing](#lighthouse-testing)
   - [HTML Validator Testing](#html-validator-testing)
-  - [4. Book a Session](#4-book-a-session)
-  - [5. Calendar and Bookings Panel Navigation](#5-calendar-and-bookings-panel-navigation)
-  - [6. Cancel a Booking](#6-cancel-a-booking)
-  - [7. Trainer Session Management](#7-trainer-session-management)
-  - [8. Admin Attendance Management](#8-admin-attendance-management)
-  - [8. Track Bookings](#8-track-bookings)
-  - [9. Accessibility](#9-accessibility)
-  - [10. Security \& Data Protection](#10-security--data-protection)
+  - [CSS Validator Testing](#css-validator-testing)
+- [User Stories](#user-stories)
+  - [1. Book a Session](#1-book-a-session)
+  - [2. Calendar and Bookings Panel Navigation](#2-calendar-and-bookings-panel-navigation)
+  - [3. Cancel a Booking](#3-cancel-a-booking)
+  - [4. Trainer Session Management (User Story)](#4-trainer-session-management-user-story)
+  - [5. Admin Attendance Management](#5-admin-attendance-management)
+  - [6. Track Bookings](#6-track-bookings)
+  - [7. Accessibility](#7-accessibility)
+  - [8. Security \& Data Protection](#8-security--data-protection)
   - [Manual Test: NotFound (404) Page](#manual-test-notfound-404-page)
   - [Appendix: Adding Test Data](#appendix-adding-test-data)
     - [Using Django Admin](#using-django-admin)
@@ -95,7 +49,6 @@ All discovered bugs, fixes, and retests are documented throughout this file.
 For additional project details and technical information, including instructions on running the site, please refer to the [README.md](./README.md)
 
 ----
-
 
 ## Testing Environments
 
@@ -134,7 +87,6 @@ GymFlex is tested in two environments with different purposes and workflows:
 **Important:** Always test destructive operations (delete, bulk updates) locally first. Never experiment directly on production data.
 
 ---
-
 
 # GymFlex Testing Documentation
 
@@ -191,9 +143,9 @@ GymFlex was tested at the following breakpoints to ensure a consistent experienc
 4. Take screenshots and save them in the appropriate `readme-images/` subfolder.
 
 **Note:** Some online preview tools (e.g., Am I Responsive) may not display Heroku apps due to iframe or CORS restrictions. Use browser dev tools for best results.
-- [ ] Design timetable UI  
-- [ ] Implement backend session retrieval  
-- [ ] Test real-time updates or refresh functionality  
+- [x] Design timetable UI  
+- [x] Implement backend session retrieval  
+- [x] Test real-time updates or refresh functionality  
 
 ## Lighthouse Testing
 
@@ -213,12 +165,46 @@ HTML validation ensures that the GymFlex frontend adheres to web standards, impr
 - The main dashboard and all user flows passed validation with no critical errors.
 - Minor warnings (such as ARIA attributes or vendor-specific tags) were reviewed and determined to be non-blocking for accessibility or functionality.
 
-**Example HTML Validator Report:**
+**Example HTML Validator Reports:**
 
-![HTML Validator Screenshot](testing-images/html-validator/html-validator-issues.png)
+*Initial issues found:*
+![HTML Validator Screenshot - Issues](testing-images/html-validator/html-validator-issues.png)
+
+*Validation after fixes and redeploy:*
+![HTML Validator Screenshot - Completed](testing-images/html-validator/html-validator-completed.png)
+
+**Explanation:**
+The initial HTML validation revealed a few minor issues, which were addressed by correcting the markup and rebuilding the frontend. After redeployment, the site passed HTML validation with no critical errors, as shown in the completed screenshot above. This demonstrates a commitment to web standards and ongoing code quality.
 
 **Notes:**
 - Regular HTML validation is recommended after major UI changes to maintain code quality and accessibility.
+
+## CSS Validator Testing
+
+CSS validation helps ensure that GymFlex stylesheets follow web standards, improving cross-browser compatibility and maintainability. The [W3C CSS Validator](https://jigsaw.w3.org/css-validator/) was used to check the main stylesheets for errors and warnings.
+
+**How to Run CSS Validation:**
+1. Open the deployed GymFlex site or local build in your browser.
+2. Use the browser's developer tools to view or copy the CSS, or enter the stylesheet URL directly into the validator.
+3. Go to [jigsaw.w3.org/css-validator/](https://jigsaw.w3.org/css-validator/) and paste the CSS or provide the URL.
+4. Review the results for errors and warnings.
+
+**Results:**
+- The main stylesheets passed validation with only minor warnings, such as vendor-specific properties for cross-browser support.
+- No critical errors were found that would impact layout or usability.
+- One parse error ("0 px") was detected in a third-party dependency (react-big-calendar). This was manually corrected in the dependency's CSS, and the frontend was rebuilt and redeployed to ensure the fix was included in the production build. This demonstrates thoroughness in addressing both first-party and third-party CSS issues.
+
+**Example CSS Validator Reports:**
+
+*Initial issues found:*
+![CSS Validator Screenshot - Issues](testing-images/css-validator/css-validator-issues.png)
+
+*Validation after fixes and redeploy:*
+![CSS Validator Screenshot - Completed](testing-images/css-validator/css-validator-completed.png)
+
+**Notes:**
+- Minor warnings (e.g., use of -webkit- or -ms- prefixes) are intentional for compatibility and do not affect user experience.
+- Regular CSS validation is recommended after major style changes to maintain code quality.
 
 Lighthouse is an open-source, automated tool from Google for improving the quality of web pages. It audits web applications for performance, accessibility, best practices, SEO, and progressive web app (PWA) features. Lighthouse provides actionable insights and scores that help developers identify and fix issues affecting user experience and discoverability.
 
@@ -250,11 +236,11 @@ For GymFlex, Lighthouse was used to audit both the local development build and t
 - Some metrics (e.g., performance) may vary between local and production due to network and server differences.
 - For the most accurate results, run Lighthouse in an incognito window with no extensions enabled.
 
-**Bug Tracking / Notes:**
-
 ---
 
-## 4. Book a Session
+# User Stories
+
+## 1. Book a Session
 
 **Story:**  
 As a user, I want to book a gym session so that I can reserve my spot in advance.
@@ -266,16 +252,19 @@ As a user, I want to book a gym session so that I can reserve my spot in advance
 - And the availability updates immediately
 
 **Tasks:**  
-- [ ] Implement booking button and backend logic  
-- [ ] Handle capacity constraints and conflicts  
-- [ ] Provide confirmation feedback to the user  
-- [ ] Test booking process  
+
+- [x] Implement booking button and backend logic
+- [x] Handle capacity constraints and conflicts
+- [x] Provide confirmation feedback to the user
+- [x] Test booking process
 
 **Bug Tracking / Notes:**
 
+All tasks completed.
+
 ---
 
-## 5. Calendar and Bookings Panel Navigation
+## 2. Calendar and Bookings Panel Navigation
 
 **Story:**  
 As a user, I want to navigate the calendar and toggle the bookings panel so that I can view sessions and manage my bookings without unwanted calendar jumps.
@@ -306,10 +295,11 @@ As a user, I want to navigate the calendar and toggle the bookings panel so that
 - Then the calendar highlights the first session in the new month (except current month)  
 
 **Tasks:**  
-- [x] Implement open/close logic for bookings panel  
-- [x] Handle calendar highlighting based on month context  
-- [x] Prevent unwanted calendar jumps on open/close  
-- [x] Test navigation with panel open  
+
+- [x] Implement open/close logic for bookings panel
+- [x] Handle calendar highlighting based on month context
+- [x] Prevent unwanted calendar jumps on open/close
+- [x] Test navigation with panel open
 
 **Bug Tracking / Notes:**  
 Fixed issue where opening panel in non-current month would reset to first day instead of staying on selected session. Updated useEffect dependencies to prevent unintended resets. Behavior now prevents "jerking" calendar movements.  
@@ -317,7 +307,7 @@ Fixed issue where opening panel in non-current month would reset to first day in
 
 ---
 
-## 6. Cancel a Booking
+## 3. Cancel a Booking
 
 **Story:**  
 As a user, I want to cancel a previously booked session so that I can free up my spot if I cannot attend.
@@ -329,58 +319,76 @@ As a user, I want to cancel a previously booked session so that I can free up my
 - And the session availability updates
 
 **Tasks:**  
-- [ ] Implement cancel booking UI  
-- [ ] Update backend booking status  
-- [ ] Test cancellation flow and availability updates  
+
+- [x] Implement cancel booking UI
+- [x] Update backend booking status
+- [x] Test cancellation flow and availability updates
 
 **Bug Tracking / Notes:**
 
+All tasks completed.
+
 ---
 
-## 7. Trainer Session Management
-
-
-
-## 8. Admin Attendance Management
+## 4. Trainer Session Management (User Story)
 
 **Story:**  
-As an admin, I want to mark clients as attended or no-show for past sessions so that attendance records are accurate and no-shows are tracked.
+As a trainer, I want to create, edit, and delete gym sessions, and manage attendees (including marking attendance for past sessions), so that I can effectively organise my classes and keep accurate records.
 
 **Acceptance Criteria:**  
-- Given I am an admin viewing a past session  
-- When I click the "Mark No Show" or "Mark Attended" button next to a client  
-- Then the client's attendance status updates immediately  
-- And the UI reflects the change (strikethrough for no-show, color for attended)
+- Given I am logged in as a trainer  
+- When I access the trainer dashboard  
+- Then I can view all my upcoming and past sessions  
+- And I can create new sessions, edit existing ones, or delete sessions  
+- And I can view the list of attendees for each session  
+- And for past sessions, I can mark attendees as attended or no-show  
+- And all changes are reflected in real time for users
 
 **Tasks:**  
-- [x] Implement attendance toggle button in admin bookings list  
-- [x] Update backend to support attendance status changes  
-- [x] Test UI feedback (strikethrough, color)  
-- [x] Verify API updates attendance status  
-- [ ] Add automated test for attendance toggle (future)
+
+- [x] Design trainer dashboard UI
+- [x] Implement session CRUD functionality
+- [x] Test session updates on client dashboards
+- [x] Allow trainers to view and manage attendees for each session
+- [x] Enable marking attendance for past sessions
+- [x] Test session and attendee management flows for trainers
+
+All tasks completed.
 
 **Bug Tracking / Notes:**  
-Manual testing confirms admins can mark clients as attended or no-show for any past session. UI updates instantly and backend persists changes. No automated test yet; recommend adding one for regression coverage.
+- A phase guard has been implemented to prevent users from cancelling a session within 30 minutes of its start time.
+- Ensure trainers cannot edit or delete sessions that have already started  
+- Attendance changes for past sessions should update user records and be visible to admins
+---
+
+## 5. Admin Attendance Management
 
 **Story:**  
-As a trainer, I want to create, edit, and delete sessions so that I can manage my classes and client bookings effectively.
+- Given I am an admin viewing a past session  
+- When I click the "Mark No Show" or "Mark Attended" button next to a client  
+- And the UI reflects the change (strikethrough for no-show, color for attended)
 
-**Acceptance Criteria:**  
-- Given I am a trainer  
-- When I add, edit, or remove a session  
-- Then the timetable updates for all users  
+**Acceptance Criteria:**
+- Given I am an admin viewing a past session
+- When I click the "Mark No Show" or "Mark Attended" button next to a client
+- Then the UI reflects the change (strikethrough for no-show, color for attended)
+
+All tasks completed.
 - And users are notified of changes if applicable
 
 **Tasks:**  
-- [ ] Design trainer dashboard UI  
-- [ ] Implement session CRUD functionality  
-- [ ] Test session updates on client dashboards  
 
-**Bug Tracking / Notes:**
+- [x] Implement attendance toggle button in admin bookings list
+- [x] Update backend to support attendance status changes
+- [x] Test UI feedback (strikethrough, color)
+- [x] Design trainer dashboard UI  
+- [x] Implement session CRUD functionality  
+- [x] Test session updates on client dashboards  
+
 
 ---
 
-## 8. Track Bookings
+## 6. Track Bookings
 
 **Story:**  
 As a user, I want to view my past and upcoming bookings so that I can track my gym activities.
@@ -392,16 +400,17 @@ As a user, I want to view my past and upcoming bookings so that I can track my g
 - And bookings are ordered chronologically
 
 **Tasks:**  
-- [x] Implement bookings list UI  
-- [x] Fetch data from backend  
-- [x] Test correct ordering and completeness  
+
+- [x] Implement bookings list UI
+- [x] Fetch data from backend
+- [x] Test correct ordering and completeness
 
 **Bug Tracking / Notes:**  
 *Enhancement (November 27, 2025):* Added day/week grouping with toggle buttons to improve readability and prevent long flat lists when users have many bookings. Users can switch between "By Day" view (sessions grouped by exact date) and "By Week" view (sessions grouped by week range with day labels). This proactive UX improvement addresses scalability concerns before they impact user experience. Deployed with Heroku release v42.
 
 ---
 
-## 9. Accessibility
+## 7. Accessibility
 
 **Story:**  
 As a visually impaired or mobility-challenged user, I want to navigate GymFlex using assistive technologies so that I can independently browse, book, and manage sessions.
@@ -413,10 +422,11 @@ As a visually impaired or mobility-challenged user, I want to navigate GymFlex u
 - And layouts remain functional under zoom or high-contrast settings
 
 **Tasks:**  
-- [x] Apply semantic HTML and ARIA labels  
-- [x] Test keyboard-only navigation  
-- [x] Verify screen reader compatibility  
-- [x] Ensure responsive layout under zoom/high-contrast  
+
+- [x] Apply semantic HTML and ARIA labels
+- [x] Test keyboard-only navigation
+- [x] Verify screen reader compatibility
+- [x] Ensure responsive layout under zoom/high-contrast
 - [x] Add mobile-responsive CSS for calendar display
 
 **Bug Tracking / Notes:**  
@@ -424,7 +434,7 @@ As a visually impaired or mobility-challenged user, I want to navigate GymFlex u
 
 ---
 
-## 10. Security & Data Protection
+## 8. Security & Data Protection
 
 **Story:**  
 As a developer, I want to ensure that no sensitive information (passwords, API keys, secrets) has been accidentally committed to version control so that user data and system credentials remain secure.
@@ -436,10 +446,11 @@ As a developer, I want to ensure that no sensitive information (passwords, API k
 - And `.gitignore` properly prevents future leaks
 
 **Tasks:**  
-- [x] Verify `.env` files are not tracked by Git  
-- [x] Confirm `.gitignore` includes `.env` patterns  
-- [x] Audit Git history for accidentally committed secrets  
-- [x] Document findings and risk assessment  
+
+- [x] Verify `.env` files are not tracked by Git
+- [x] Confirm `.gitignore` includes `.env` patterns
+- [x] Audit Git history for accidentally committed secrets
+- [x] Document findings and risk assessment
 
 **Bug Tracking / Notes:**  
 Historical audit completed on November 26, 2025. One `.env` file was found in early commit (f6811aa) but contained only non-sensitive localhost URL (`VITE_API_URL="http://localhost:8000"`). No passwords, API keys, or secrets were leaked. Risk level: Very Low. `.gitignore` now properly configured to prevent future leaks.
@@ -568,3 +579,4 @@ python manage.py loaddata backend/attendees.json  # Loads booking data (SessionA
 ```
 
 This ensures your local environment matches the expected test scenarios.
+
