@@ -41,7 +41,7 @@ def run():
     User = get_user_model()
     trainer = User.objects.filter(is_staff=True).order_by("id").first()
     if not trainer:
-        print("No staff user found; create an admin/staff user first.")
+
         return
 
     created = 0
@@ -65,7 +65,7 @@ def run():
             )
             created += 1
 
-    print(f"Seed complete. Sessions created: {created}. Total now: {Session.objects.count()}")
+
 
 
 if __name__ == "__main__":

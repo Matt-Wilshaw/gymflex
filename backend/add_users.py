@@ -10,7 +10,7 @@ django.setup()
 from django.contrib.auth.models import User
 
 # Create users
-print("Creating users...")
+
 
 users_data = [
     ('Edie', 'edie'),
@@ -23,6 +23,6 @@ for username, password in users_data:
     user.set_password(password)
     user.save()
     status = "Created" if created else "Updated"
-    print(f"  {status}: {username} / {password}")
 
-print("\nUsers ready!")
+
+

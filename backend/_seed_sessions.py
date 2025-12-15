@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from api.models import Session
 from datetime import time, timedelta
 
-print("-- Seeding with trainer=admin; users=mwilshaw, client --")
+
 
 # Ensure admin trainer exists and is staff
 admin = User.objects.filter(username="admin").first()
@@ -62,6 +62,6 @@ for username, specs in plan.items():
         obj.attendees.add(user)
         created.append((obj.id, "created" if was_created else "existing", act, d.isoformat(), t.strftime("%H:%M"), username))
 
-print("-- Seed summary --")
+
 for sid, msg, act, d, t, user in sorted(created, key=lambda x: (x[3], x[4], x[0])):
-    print(f"[{sid}] {msg}: {act} on {d} at {t} | booked: {user}")
+

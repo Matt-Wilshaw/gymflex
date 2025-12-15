@@ -1,8 +1,30 @@
+## Responsiveness Testing
+
+GymFlex was tested at the following breakpoints to ensure a consistent experience:
+
+- **320px:** Smallest mobile
+- **576px:** Mobile
+- **768px:** Tablet portrait
+- **992px:** Tablet landscape/laptop
+- **1200px:** Desktop
+
+|                    320px                    |                    576px                    |                    768px                    |                    992px                    |                     1200px                     |
+| :-----------------------------------------: | :-----------------------------------------: | :-----------------------------------------: | :-----------------------------------------: | :--------------------------------------------: |
+| ![320px](readme-images/mobile/320-home.png) | ![576px](readme-images/mobile/576-home.png) | ![768px](readme-images/tablet/768-home.png) | ![992px](readme-images/tablet/992-home.png) | ![1200px](readme-images/desktop/1200-home.png) |
+
+**Manual Test Steps:**
+1. Open the app in Chrome/Edge/Firefox.
+2. Open Dev Tools (F12) and toggle device toolbar.
+3. Set the width to each breakpoint above and verify layout, navigation, and usability.
+4. Take screenshots and save them in the appropriate `readme-images/` subfolder.
+
+**Note:** Some online preview tools (e.g., Am I Responsive) may not display Heroku apps due to iframe or CORS restrictions. Use browser dev tools for best results.
 # GymFlex Testing Documentation
 
 ## Introduction
 
 This document outlines the testing process for **GymFlex**, a gym management web application that allows users to register, book sessions, and interact with trainers through an intuitive interface.
+For a full technical breakdown of the system architecture (including middleware, data flow, and masking logic), see the [Architecture Document](./docs/ARCHITECTURE.md).
 
 Testing was conducted to ensure that all features of GymFlex function as intended, that the user experience is consistent across devices and browsers, and that both clients and trainers can interact with the system without errors or usability issues.
 
@@ -33,7 +55,7 @@ For additional project details and technical information, including instructions
 
 GymFlex is tested in two environments with different purposes and workflows:
 
-### Local Development (http://localhost:8000/api)
+### Local Development (http://localhost:8000/api, frontend at http://localhost:5173/)
 - **Purpose:** Feature development, debugging, rapid iteration
 - **Database:** SQLite (`db.sqlite3`)
 - **Start:** `python manage.py runserver` (backend) + `npm run dev` (frontend at `localhost:5173`)
@@ -352,8 +374,8 @@ Historical audit completed on November 26, 2025. One `.env` file was found in ea
 
 **Expected Outcome:**
 - The NotFound page appears for all undefined routes.
-- The design matches GymFlex branding and is responsive on all devices.
-- No redirect to home occurs unless the user clicks the button.
+  - The design matches GymFlex branding and is responsive on all devices.
+  - No redirect to home occurs unless the user clicks the button.
 
 **Notes:**
 - This test ensures correct routing and user experience for invalid URLs.

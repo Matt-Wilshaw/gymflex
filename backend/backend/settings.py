@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # DEBUG: Shows detailed error pages when True - should always be False in production
 # ALLOWED_HOSTS: List of domain names that Django will serve - prevents HTTP Host header attacks
 SECRET_KEY = os.environ.get('SECRET_KEY', "django-insecure-nma=xi6x2p-crjg^ifqqkapyu1qjd0l=+wn)-rijk_o%$!k3w_")
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'  # Set DEBUG to True for development
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'  # Set DEBUG to False by default for production
 ALLOWED_HOSTS = ['gymflex-5bb1d582f94c.herokuapp.com', '.herokuapp.com', 'localhost', '127.0.0.1']
 
 # REST Framework configuration - handles API behaviour

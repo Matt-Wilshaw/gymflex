@@ -1,3 +1,12 @@
+# Responsive Design
+
+GymFlex is fully responsive and adapts to all major device sizes. Below are screenshots at key breakpoints:
+
+|           320px (Smallest Mobile)           |               576px (Mobile)                |               768px (Tablet)                |       992px (Tablet Landscape/Laptop)       |                1200px (Desktop)                |
+| :-----------------------------------------: | :-----------------------------------------: | :-----------------------------------------: | :-----------------------------------------: | :--------------------------------------------: |
+| ![320px](readme-images/mobile/320-home.png) | ![576px](readme-images/mobile/576-home.png) | ![768px](readme-images/tablet/768-home.png) | ![992px](readme-images/tablet/992-home.png) | ![1200px](readme-images/desktop/1200-home.png) |
+
+**Tip:** Use browser dev tools to emulate these widths for accurate screenshots.
 # GymFlex
 
 GymFlex is a web-based gym management platform designed to help users book sessions, track their workouts, and communicate with trainers—all in one place.
@@ -27,6 +36,7 @@ Check out the live demo here:
 
 ## Table of Contents
 
+- [Responsive Design](#responsive-design)
 - [GymFlex](#gymflex)
   - [Architecture Overview (Summary)](#architecture-overview-summary)
 - [Link → GymFlex](#link--gymflex)
@@ -70,6 +80,10 @@ Check out the live demo here:
     - [Skeleton (Layout and Interaction)](#skeleton-layout-and-interaction)
   - [Features](#features)
   - [Technologies Used](#technologies-used)
+  - [Design Choices](#design-choices)
+    - [Colour Palette](#colour-palette)
+    - [Typography](#typography)
+    - [Accessibility](#accessibility)
   - [Future Enhancements](#future-enhancements-1)
 - [GymFlex Deployment Guide](#gymflex-deployment-guide)
   - [Prerequisites](#prerequisites)
@@ -379,8 +393,8 @@ The platform is structured around key user flows:
 
 ## Design Choices
 
-### Color Palette
-GymFlex uses a calming blue theme to evoke trust, professionalism, and energy—perfect for a fitness platform. The colors promote a clean, modern look while ensuring accessibility.
+### Colour Palette
+GymFlex uses a calming blue theme to evoke trust, professionalism, and energy—perfect for a fitness platform. The colours promote a clean, modern look while ensuring accessibility.
 
 - **Primary Blue** (#3498db): Used for buttons, links, and accents to draw attention and indicate interactivity.
 - **Light Background** (#e0f7ff): Provides a fresh, airy feel for the main layout, creating a welcoming atmosphere.
@@ -393,9 +407,9 @@ GymFlex uses a calming blue theme to evoke trust, professionalism, and energy—
 - **Why**: This stack leverages native OS fonts for optimal performance, faster loading (no external font requests), and better accessibility. It adapts to user preferences and devices, ensuring consistency and inclusivity without compromising speed or usability.
 
 ### Accessibility
-GymFlex prioritizes accessibility to ensure the app is usable by everyone, including users with disabilities. Key features include:
+GymFlex prioritises accessibility to ensure the app is usable by everyone, including users with disabilities. Key features include:
 
-- **High Contrast Colors**: The blue theme provides sufficient contrast (e.g., #3498db on white meets WCAG AA standards) for readability.
+- **High Contrast Colours**: The blue theme provides sufficient contrast (e.g., #3498db on white meets WCAG AA standards) for readability.
 - **Keyboard Navigation**: All interactive elements (buttons, links) are keyboard-accessible, with proper focus indicators.
 - **Screen Reader Support**: Semantic HTML, ARIA labels, and alt text for images ensure compatibility with screen readers.
 - **Responsive Design**: Mobile-friendly layout with scalable fonts and touch targets meeting minimum size requirements (44px).
@@ -403,7 +417,7 @@ GymFlex prioritizes accessibility to ensure the app is usable by everyone, inclu
 
 These choices follow WCAG 2.1 guidelines, making the app inclusive and compliant.
 
-These choices prioritize user experience, performance, visual harmony, and inclusivity, making the app feel responsive, trustworthy, and accessible.
+These choices prioritise user experience, performance, visual harmony, and inclusivity, making the app feel responsive, trustworthy, and accessible.
 
 ---
 
