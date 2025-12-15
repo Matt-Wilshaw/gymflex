@@ -219,8 +219,9 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                         fontWeight: "700",
                         color: "black",
                         pointerEvents: "none",
-                        zIndex: 25,
+                        zIndex: 9999,
                         lineHeight: "1",
+                        background: "transparent",
                     }}>
                         {dayNumber}
                     </span>
