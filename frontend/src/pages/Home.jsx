@@ -337,8 +337,8 @@ const Home = () => {
                     const idx = groupedBookings.findIndex(g => g.sessions.some(ss => ss.date === firstDate));
                     if (idx >= 0) setCurrentDayIndex(idx);
                 }
-            } else if (!isInitialMount.current && has && showBookingsPanel) {
-                // Always jump to first session when navigating months with menu open
+            } else if (!isInitialMount.current && has && showBookingsPanel && visibleMonth !== moment().format('YYYY-MM')) {
+                // Always jump to first session when navigating months with menu open (except current month)
                 const bookingsInMonth = sortedUpcomingBookings.filter(s => moment(s.date).format('YYYY-MM') === visibleMonth);
                 if (bookingsInMonth.length > 0) {
                     const firstDate = bookingsInMonth[0].date;
@@ -353,6 +353,10 @@ const Home = () => {
             setSelectedClientDate(moment().format("YYYY-MM-DD"));
             setShowBookingsPanel(false);
         }
+        // When navigating to current month with panel closed, highlight today's date
+        if (visibleMonth === moment().format('YYYY-MM') && !showBookingsPanel && !isInitialMount.current) {
+            setSelectedClientDate(moment().format("YYYY-MM-DD"));
+        }
         isInitialMount.current = false;
     }, [visibleMonth, sortedUpcomingBookings, adminSessions, showBookingsPanel, groupedBookings, userClosedPanel, currentUser]);
 
@@ -361,7 +365,7 @@ const Home = () => {
         if (showBookingsPanel && !currentUser?.is_staff) {
             setCurrentDayIndex(0);
         }
-    }, [activityFilter, showBookingsPanel, currentUser]);
+    }, [activityFilter]);
 
     return (
         <div className="container mt-4" style={{
