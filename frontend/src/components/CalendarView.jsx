@@ -238,24 +238,40 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
             hiit: "⚡",
             pilates: "🤸",
         };
-        const emojiElements = Array.from({ length: 5 }).map((_, i) => {
-            const activityType = uniqueActivities[i];
-            return (
+
+        let emojiElements;
+        if (activityFilter) {
+            emojiElements = uniqueActivities.map((activityType, i) => (
                 <span
                     key={i}
                     style={{
-                        display: "inline-block",
-                        width: "22px",
-                        minWidth: "22px",
+                        fontSize: "16px",
                         textAlign: "center",
-                        opacity: activityType ? 1 : 0,
-                        visibility: activityType ? "visible" : "hidden",
                     }}
                 >
-                    {activityType ? map[activityType] : ""}
+                    {map[activityType]}
                 </span>
-            );
-        });
+            ));
+        } else {
+            emojiElements = Array.from({ length: 5 }).map((_, i) => {
+                const activityType = uniqueActivities[i];
+                return (
+                    <span
+                        key={i}
+                        style={{
+                            display: "inline-block",
+                            width: "22px",
+                            minWidth: "22px",
+                            textAlign: "center",
+                            opacity: activityType ? 1 : 0,
+                            visibility: activityType ? "visible" : "hidden",
+                        }}
+                    >
+                        {activityType ? map[activityType] : ""}
+                    </span>
+                );
+            });
+        }
 
         const countText = `${dayEvents.length}`;
 
@@ -285,10 +301,10 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
         const isMobile = window.innerWidth <= 576;
         const emojiBarStyle = activityFilter ? {
             position: "absolute",
-            top: isMobile ? "-50px" : "50%",
+            top: "40%",
             left: "50%",
-            transform: isMobile ? "translateX(-50%)" : "translate(-50%, -50%)",
-            fontSize: 16,
+            transform: "translate(-50%, -50%)",
+            fontSize: 24,
             pointerEvents: "none",
             width: "auto",
             maxWidth: "90%",
@@ -299,7 +315,7 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
             margin: 0,
             padding: 0,
             overflow: "visible",
-            zIndex: 5,
+            zIndex: 15,
         } : {
             position: "absolute",
             top: "50%",
@@ -376,9 +392,6 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                     }}>
                         {dayNumber}
                     </span>
-                    <div className={activityFilter ? "emoji-bar emoji-bar-filtered" : "emoji-bar"} style={emojiBarStyle} title={uniqueActivities.join(", ")}>
-                        {emojiElements}
-                    </div>
                     <div
                         className="session-count-circle"
                         style={buttonStyleWithFlex}
@@ -392,18 +405,21 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                             className="booking-checkmark"
                             style={{
                                 position: "absolute",
-                                bottom: 6,
-                                right: 8,
+                                ...(activityFilter ? (isMobile ? { top: 12, right: 2 } : { bottom: 6, right: 8 }) : { bottom: isMobile ? 20 : 6, right: 8 }),
                                 fontSize: 16,
                                 color: "#28a745",
                                 fontWeight: "bold",
                                 pointerEvents: "none",
+                                zIndex: 5,
                             }}
                             title={hasBooking ? "You have a booking on this day" : "Has bookings"}
                         >
                             ✓
                         </span>
                     )}
+                    <div className={activityFilter ? "emoji-bar emoji-bar-filtered" : "emoji-bar"} style={emojiBarStyle} title={uniqueActivities.join(", ")}>
+                        {emojiElements}
+                    </div>
                 </button>
             </div>
         );

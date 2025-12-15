@@ -406,6 +406,43 @@ const Home = () => {
                             <h2 style={{ margin: 0, padding: 0, color: '#2c3e50' }}>GymFlex</h2>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: window.innerWidth < 768 ? '8px' : '12px' }}>
+                            {currentUser?.is_staff && (
+                                <a
+                                    href={(() => {
+                                        // Use the API base URL, strip trailing /api if present, then add /admin/
+                                        let apiUrl = import.meta.env.VITE_API_URL || '';
+                                        if (apiUrl.endsWith('/api')) apiUrl = apiUrl.slice(0, -4);
+                                        if (apiUrl.endsWith('/')) apiUrl = apiUrl.slice(0, -1);
+                                        return apiUrl + '/admin/';
+                                    })()}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="admin-panel-btn"
+                                    style={{
+                                        padding: window.innerWidth < 768 ? '0.3rem' : '0.4rem',
+                                        borderRadius: '50%',
+                                        background: '#3498db',
+                                        border: 'none',
+                                        boxShadow: '0 2px 8px rgba(52, 152, 219, 0.3)',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        transition: 'all 0.2s',
+                                    }}
+                                    onMouseOver={e => e.currentTarget.style.background = '#2980b9'}
+                                    onMouseOut={e => e.currentTarget.style.background = '#3498db'}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        width={window.innerWidth < 768 ? "18" : "22"}
+                                        height={window.innerWidth < 768 ? "18" : "22"}
+                                        viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="12" cy="12" r="10" fill="#3498db" stroke="#3498db" strokeWidth="2" />
+                                        <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" stroke="#fff" strokeWidth="1.5" />
+                                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.09a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="#fff" strokeWidth="1.5" />
+                                    </svg>
+                                </a>
+                            )}
                             {currentUser && (
                                 <button
                                     className="logout-icon-btn"
