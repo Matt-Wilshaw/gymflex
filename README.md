@@ -377,6 +377,36 @@ The platform is structured around key user flows:
 
 ---
 
+## Design Choices
+
+### Color Palette
+GymFlex uses a calming blue theme to evoke trust, professionalism, and energy—perfect for a fitness platform. The colors promote a clean, modern look while ensuring accessibility.
+
+- **Primary Blue** (#3498db): Used for buttons, links, and accents to draw attention and indicate interactivity.
+- **Light Background** (#e0f7ff): Provides a fresh, airy feel for the main layout, creating a welcoming atmosphere.
+- **Dark Text** (#2c3e50): Ensures high readability on light backgrounds, with a professional tone.
+- **Success Green** (#4CAF50): For confirmations and positive feedback, like booking successes.
+- **Error Red** (#e74c3c): For errors and warnings, providing clear visual cues.
+
+### Typography
+- **Font Family**: System fonts (-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif).
+- **Why**: This stack leverages native OS fonts for optimal performance, faster loading (no external font requests), and better accessibility. It adapts to user preferences and devices, ensuring consistency and inclusivity without compromising speed or usability.
+
+### Accessibility
+GymFlex prioritizes accessibility to ensure the app is usable by everyone, including users with disabilities. Key features include:
+
+- **High Contrast Colors**: The blue theme provides sufficient contrast (e.g., #3498db on white meets WCAG AA standards) for readability.
+- **Keyboard Navigation**: All interactive elements (buttons, links) are keyboard-accessible, with proper focus indicators.
+- **Screen Reader Support**: Semantic HTML, ARIA labels, and alt text for images ensure compatibility with screen readers.
+- **Responsive Design**: Mobile-friendly layout with scalable fonts and touch targets meeting minimum size requirements (44px).
+- **Error Handling**: Clear, descriptive error messages and form validation to guide users.
+
+These choices follow WCAG 2.1 guidelines, making the app inclusive and compliant.
+
+These choices prioritize user experience, performance, visual harmony, and inclusivity, making the app feel responsive, trustworthy, and accessible.
+
+---
+
 ## Future Enhancements
 
 * Email notifications for booking confirmations and reminders

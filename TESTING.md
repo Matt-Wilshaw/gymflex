@@ -151,7 +151,49 @@ As a user, I want to book a gym session so that I can reserve my spot in advance
 
 ---
 
-## 5. Cancel a Booking
+## 5. Calendar and Bookings Panel Navigation
+
+**Story:**  
+As a user, I want to navigate the calendar and toggle the bookings panel so that I can view sessions and manage my bookings without unwanted calendar jumps.
+
+**Acceptance Criteria:**  
+- Given I am viewing the calendar in the current month  
+- When I open the bookings panel  
+- Then the calendar highlights the first upcoming session in the current month  
+- And the panel shows sessions for that day  
+
+- Given I am viewing the calendar in a non-current month  
+- When I open the bookings panel  
+- Then the calendar highlights the first session in that month  
+- And the panel shows sessions for that day  
+- And the calendar does not jump to another month  
+
+- Given the bookings panel is open in the current month  
+- When I close the bookings panel  
+- Then the calendar highlights today's date  
+
+- Given the bookings panel is open in a non-current month  
+- When I close the bookings panel  
+- Then the calendar clears any highlight  
+- And the calendar stays on the non-current month  
+
+- Given I navigate to a different month with the bookings panel open  
+- When the month changes  
+- Then the calendar highlights the first session in the new month (except current month)  
+
+**Tasks:**  
+- [x] Implement open/close logic for bookings panel  
+- [x] Handle calendar highlighting based on month context  
+- [x] Prevent unwanted calendar jumps on open/close  
+- [x] Test navigation with panel open  
+
+**Bug Tracking / Notes:**  
+Fixed issue where opening panel in non-current month would reset to first day instead of staying on selected session. Updated useEffect dependencies to prevent unintended resets. Behavior now prevents "jerking" calendar movements.  
+*User Testing:* Informal testing with 6-year-old daughter Edie (non-technical user) confirmed the app's appeal—she found navigating the calendar and bookings panel "fun, like playing receptionist." This validates intuitive UI for diverse users, including children, ensuring broad accessibility and engagement. Tested on desktop with no issues reported.
+
+---
+
+## 6. Cancel a Booking
 
 **Story:**  
 As a user, I want to cancel a previously booked session so that I can free up my spot if I cannot attend.
@@ -171,8 +213,8 @@ As a user, I want to cancel a previously booked session so that I can free up my
 
 ---
 
-## 6. Trainer Session Management
-## 7. Admin Attendance Management
+## 7. Trainer Session Management
+## 8. Admin Attendance Management
 
 **Story:**  
 As an admin, I want to mark clients as attended or no-show for past sessions so that attendance records are accurate and no-shows are tracked.
@@ -211,7 +253,7 @@ As a trainer, I want to create, edit, and delete sessions so that I can manage m
 
 ---
 
-## 7. Track Bookings
+## 8. Track Bookings
 
 **Story:**  
 As a user, I want to view my past and upcoming bookings so that I can track my gym activities.
@@ -232,7 +274,7 @@ As a user, I want to view my past and upcoming bookings so that I can track my g
 
 ---
 
-## 8. Accessibility
+## 9. Accessibility
 
 **Story:**  
 As a visually impaired or mobility-challenged user, I want to navigate GymFlex using assistive technologies so that I can independently browse, book, and manage sessions.
@@ -255,7 +297,7 @@ As a visually impaired or mobility-challenged user, I want to navigate GymFlex u
 
 ---
 
-## 9. Security & Data Protection
+## 10. Security & Data Protection
 
 **Story:**  
 As a developer, I want to ensure that no sensitive information (passwords, API keys, secrets) has been accidentally committed to version control so that user data and system credentials remain secure.

@@ -88,6 +88,20 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
         };
     }, [showBookingsPanel]);
 
+    // Find the next session date with bookings from the given date
+    const findNextSessionWithBookings = (sessions, fromDate) => {
+        const sortedDates = [...new Set(sessions.map(s => s.date))].sort();
+        const startIdx = sortedDates.findIndex(d => d > fromDate); // Start from next day
+        for (let i = startIdx; i < sortedDates.length; i++) {
+            const date = sortedDates[i];
+            const sessionsOnDate = sessions.filter(s => s.date === date);
+            if (sessionsOnDate.some(s => s.attendees && s.attendees.length > 0)) {
+                return date;
+            }
+        }
+        return null;
+    };
+
     return (
         <>
             <div>
@@ -132,11 +146,14 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
                             </button>
                             <button
                                 className="btn btn-sm btn-outline-secondary"
-                                onClick={() => setSelectedAdminDate(moment().format('YYYY-MM-DD'))}
-                                title="Today"
-                                disabled={currentDate === moment().format('YYYY-MM-DD')}
+                                onClick={() => {
+                                    const nextSessionDate = findNextSessionWithBookings(adminSessions, currentDate);
+                                    if (nextSessionDate) setSelectedAdminDate(nextSessionDate);
+                                }}
+                                title="Next session with bookings"
+                                disabled={!findNextSessionWithBookings(adminSessions, currentDate)}
                             >
-                                Today
+                                Next Session
                             </button>
                             <button
                                 className="btn btn-sm btn-outline-secondary"

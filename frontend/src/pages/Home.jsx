@@ -267,36 +267,20 @@ const Home = () => {
         }
     }, [currentDayIndex, groupedBookings, currentUser, showBookingsPanel]);
 
-    // When client bookings panel opens, scroll into view AFTER the expand transition completes
+    // When client bookings panel opens, scroll to top so calendar and buttons are at top
     useEffect(() => {
-        if (!showBookingsPanel || !clientPanelRef.current || currentUser?.is_staff) return;
+        if (!showBookingsPanel || currentUser?.is_staff) return;
 
-        const el = clientPanelRef.current;
-        const scrollNow = () => {
+        const scrollToTop = () => {
             try {
-                el.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (_) {
-                // Fallback for older browsers
-                const top = el.getBoundingClientRect().top + window.scrollY - 8;
-                window.scrollTo(0, top);
+                window.scrollTo(0, 0);
             }
         };
 
-        const onTransitionEnd = (e) => {
-            if (e && e.propertyName && e.propertyName !== 'max-height') return;
-            scrollNow();
-            el.removeEventListener('transitionend', onTransitionEnd);
-        };
-
-        // Listen for the max-height transition to finish, then scroll
-        el.addEventListener('transitionend', onTransitionEnd);
-        // Fallback timer slightly longer than CSS transition (300ms)
-        const t = setTimeout(scrollNow, 350);
-
-        return () => {
-            el.removeEventListener('transitionend', onTransitionEnd);
-            clearTimeout(t);
-        };
+        // Scroll immediately
+        scrollToTop();
     }, [showBookingsPanel, currentUser]);
 
     // Get current month label for mobile header
@@ -463,7 +447,7 @@ const Home = () => {
                         </div>
                     )}
                     {/* Always render calendar and legend below header */}
-                    <div className="calendar-container">
+                    <div className="calendar-container" style={{ position: 'sticky', top: 0, zIndex: 10, background: '#e0f7ff' }}>
                         <CalendarView
                             sessions={sessions}
                             activityFilter={activityFilter}
