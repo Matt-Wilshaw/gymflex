@@ -479,7 +479,9 @@ const Home = () => {
                     {currentUser && (
                         <div style={{ textAlign: 'left', marginBottom: '1.2rem', marginLeft: '2px' }}>
                             <span style={{ margin: 0, fontWeight: 500, color: '#2c3e50', fontSize: '20px' }}>
-                                Welcome, {currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)}
+                                Welcome, {typeof currentUser.username === 'string' && currentUser.username
+                                  ? currentUser.username.charAt(0).toUpperCase() + currentUser.username.slice(1)
+                                  : ''}
                             </span>
                         </div>
                     )}

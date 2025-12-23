@@ -24,7 +24,7 @@ export default function useSessions() {
     const fetchSessions = async (activityFilter) => {
         try {
             const res = await api.get(`/sessions/`);
-            let filtered = res.data;
+            let filtered = Array.isArray(res.data) ? res.data : [];
             if (activityFilter) filtered = filtered.filter((s) => s.activity_type === activityFilter);
             setSessions(filtered);
             return filtered;
@@ -41,7 +41,8 @@ export default function useSessions() {
         setBookingsLoading(true);
         try {
             const res = await api.get(`/sessions/`);
-            const userBooked = res.data.filter((s) => s.booked === true);
+            const data = Array.isArray(res.data) ? res.data : [];
+            const userBooked = data.filter((s) => s.booked === true);
             setBookedSessions(userBooked);
             return userBooked;
         } catch (err) {
