@@ -73,6 +73,8 @@ const Home = () => {
 
     // Ref for client bookings panel scroll behavior
     const clientPanelRef = useRef(null);
+    // Ref for admin bookings panel when embedded in this page
+    const adminPanelRef = useRef(null);
 
     // JWT token stored in localStorage
     const token = localStorage.getItem(ACCESS_TOKEN) || "";
@@ -105,23 +107,27 @@ const Home = () => {
 
     // Control page overflow based on loading state and bookings panel visibility
     useEffect(() => {
+        // Ensure both <html> and <body> allow scrolling except during initial loading.
+        const setOverflow = (value) => {
+            try {
+                document.body.style.overflow = value;
+            } catch (_) {}
+            try {
+                document.documentElement.style.overflow = value;
+            } catch (_) {}
+        };
+
         if (initialLoading) {
-            // Hide scroll during loading
-            document.body.style.overflow = 'hidden';
-        } else if (!currentUser?.is_staff && !showBookingsPanel) {
-            // Hide scroll when bookings panel is closed for clients
-            document.body.style.overflow = 'hidden';
-        } else if (currentUser?.is_staff && !showBookingsPanel) {
-            // Hide scroll when bookings panel is closed for admins
-            document.body.style.overflow = 'hidden';
+            setOverflow('hidden');
         } else {
-            // Show scroll when bookings panel is open
-            document.body.style.overflow = 'auto';
+            // Allow page scrolling. The bookings panel is now inline and the
+            // page should be the only scroll container.
+            setOverflow('auto');
         }
 
-        // Cleanup on unmount
+        // Cleanup on unmount — restore to browser default
         return () => {
-            document.body.style.overflow = 'auto';
+            setOverflow('');
         };
     }, [initialLoading, showBookingsPanel, currentUser]);
 
@@ -267,20 +273,12 @@ const Home = () => {
         }
     }, [currentDayIndex, groupedBookings, currentUser, showBookingsPanel]);
 
-    // When client bookings panel opens, scroll to top so calendar and buttons are at top
+    // When bookings panel opens, do not auto-scroll — leaving the page
+    // position unchanged avoids jumps on short/mobile screens. Users can
+    // scroll manually; this prevents the panel opening from forcing a
+    // scroll-to-top or abrupt layout jump.
     useEffect(() => {
-        if (!showBookingsPanel || currentUser?.is_staff) return;
-
-        const scrollToTop = () => {
-            try {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } catch (_) {
-                window.scrollTo(0, 0);
-            }
-        };
-
-        // Scroll immediately
-        scrollToTop();
+        // Intentionally no-op to avoid viewport jumps when expanding the panel.
     }, [showBookingsPanel, currentUser]);
 
     // Get current month label for mobile header
@@ -293,6 +291,7 @@ const Home = () => {
     // Visible month (YYYY-MM) tracked from CalendarView
     const [visibleMonth, setVisibleMonth] = useState(moment(selectedClientDate).format('YYYY-MM'));
     const [visibleMonthHasBookings, setVisibleMonthHasBookings] = useState(false);
+    // The bookings panel will render inline (static) so opening it pushes page content down.
 
     // Update visibleMonthHasBookings when sortedUpcomingBookings or visibleMonth changes
     const isInitialMount = useRef(true);
@@ -357,7 +356,8 @@ const Home = () => {
             minHeight: "100dvh",
             paddingLeft: window.innerWidth < 768 ? "12px" : "22px",
             paddingRight: window.innerWidth < 768 ? "12px" : "22px",
-            paddingTop: window.innerWidth < 768 ? "6px" : "9px"
+            paddingTop: window.innerWidth < 768 ? "6px" : "9px",
+            paddingBottom: window.innerWidth < 768 ? "60px" : "48px"
         }}>
             <style>{`.today-btn[aria-disabled="true"]{ cursor: not-allowed !important; }`}</style>
             {/* Show loading screen until initial data is loaded */}
@@ -519,40 +519,45 @@ const Home = () => {
 
                     {/* My Bookings / Admin View */}
                     <div className="mb-4" style={{ marginTop: window.innerWidth < 768 ? '6px' : '8px' }}>
-                        {currentUser?.is_staff ? (
-                            <AdminBookingsList
-                                currentUser={currentUser}
-                                adminSessions={adminSessions}
-                                selectedAdminDate={selectedAdminDate}
-                                setSelectedAdminDate={setSelectedAdminDate}
-                                adminLoading={adminLoading}
-                                removeAttendee={removeAttendee}
-                                markAttendance={markAttendance}
-                                showBookingsPanel={showBookingsPanel}
-                                setShowBookingsPanel={setShowBookingsPanel}
-                            />
-                        ) : (
-                            <React.Fragment>
-                                {/* Client Bookings Toggle Button */}
-                                <button
-                                    className="today-btn"
-                                    onClick={(e) => {
-                                        const today = moment().format('YYYY-MM-DD');
-                                        const todayMonth = moment().format('YYYY-MM');
-                                        if (showBookingsPanel) {
-                                            // closing
-                                            setShowBookingsPanel(false);
-                                            setUserClosedPanel(true);
-                                            if (visibleMonth === todayMonth) {
+                        {/* Toggle Button for clients and admins (admins will open admin panel) */}
+                        {currentUser && (
+                            <button
+                                className={
+                                    showBookingsPanel
+                                        ? "today-btn open-bookings-btn"
+                                            : (currentUser?.is_staff ? "today-btn admin-closed-btn" : "today-btn client-closed-btn")
+                                }
+                                onClick={(e) => {
+                                    const today = moment().format('YYYY-MM-DD');
+                                    const todayMonth = moment().format('YYYY-MM');
+                                    if (showBookingsPanel) {
+                                        // closing
+                                        setShowBookingsPanel(false);
+                                        setUserClosedPanel(true);
+                                        if (visibleMonth === todayMonth) {
+                                            if (currentUser?.is_staff) {
+                                                setSelectedAdminDate(today);
+                                            } else {
                                                 setSelectedClientDate(today);
+                                            }
+                                        } else {
+                                            if (currentUser?.is_staff) {
+                                                setSelectedAdminDate(null);
                                             } else {
                                                 setSelectedClientDate(null);
                                             }
+                                        }
+                                    } else {
+                                        // opening
+                                        setShowBookingsPanel(true);
+                                        setUserClosedPanel(false);
+                                        if (currentUser?.is_staff) {
+                                            const sessionsInMonth = adminSessions.filter(s => moment(s.date).format('YYYY-MM') === visibleMonth);
+                                            if (sessionsInMonth.length > 0) {
+                                                setSelectedAdminDate(sessionsInMonth[0].date);
+                                            }
                                         } else {
-                                            // opening
-                                            setShowBookingsPanel(true);
-                                            setUserClosedPanel(false);
-                                            // find sessions in visibleMonth
+                                            // find sessions in visibleMonth for client
                                             const sessionsInMonth = sortedUpcomingBookings.filter(s => moment(s.date).format('YYYY-MM') === visibleMonth);
                                             if (sessionsInMonth.length > 0) {
                                                 setSelectedClientDate(sessionsInMonth[0].date);
@@ -560,33 +565,77 @@ const Home = () => {
                                                 if (idx >= 0) setCurrentDayIndex(idx);
                                             }
                                         }
-                                    }}
-                                    title={!visibleMonthHasBookings ? "No bookings in this month" : (showBookingsPanel ? "Hide bookings panel" : "Open Bookings panel")}
-                                    aria-disabled={!visibleMonthHasBookings}
-                                    style={{ minWidth: '120px', whiteSpace: 'nowrap', textAlign: 'center', padding: '4px 6px', fontSize: '12px', marginRight: '8px', ...(!visibleMonthHasBookings ? { opacity: 0.65, cursor: 'not-allowed' } : { cursor: 'pointer' }) }}
-                                >
-                                    {!visibleMonthHasBookings ? (
+                                    }
+                                }}
+                                title={!visibleMonthHasBookings ? "No bookings in this month" : (showBookingsPanel ? "Hide bookings panel" : "Open Bookings panel")}
+                                aria-disabled={currentUser?.is_staff ? false : !visibleMonthHasBookings}
+                                style={{
+                                    minWidth: '120px',
+                                    whiteSpace: 'nowrap',
+                                    textAlign: 'center',
+                                    padding: '4px 6px',
+                                    fontSize: '12px',
+                                    marginRight: '8px',
+                                    background: showBookingsPanel ? '#e0f7ff' : 'transparent',
+                                    border: showBookingsPanel ? '1px solid #3498db' : 'none',
+                                    borderRadius: showBookingsPanel ? '4px' : '0',
+                                    ...((currentUser?.is_staff || visibleMonthHasBookings) ? { cursor: 'pointer' } : { opacity: 0.65, cursor: 'not-allowed' })
+                                }}
+                            >
+                                {currentUser?.is_staff ? (
+                                    (showBookingsPanel ? "Hide Bookings" : "Open Bookings")
+                                ) : (
+                                    !visibleMonthHasBookings ? (
                                         "No Bookings"
                                     ) : (
                                         (showBookingsPanel ? "Hide Bookings" : "Open Bookings")
-                                    )}
-                                </button>
+                                    )
+                                )}
+                            </button>
+                        )}
 
-                                {/* Collapsible Client Bookings Panel */}
-                                <div
-                                    ref={clientPanelRef}
-                                    style={{
-                                        maxHeight: showBookingsPanel ? "1000px" : "0",
-                                        overflow: "hidden",
-                                        transition: "max-height 0.3s ease-in-out",
-                                    }}
-                                >
+                        {/* Collapsible Panel (shared for client & admin) */}
+                        <div
+                            ref={currentUser?.is_staff ? adminPanelRef : clientPanelRef}
+                            style={
+                                showBookingsPanel
+                                    ? {
+                                        position: 'static',
+                                        overflow: 'visible',
+                                        transition: 'opacity 0.15s ease',
+                                        background: 'rgba(255, 255, 255, 0.98)',
+                                        borderRadius: '8px',
+                                        padding: '16px',
+                                    }
+                                    : {
+                                        maxHeight: '0',
+                                        overflow: 'hidden',
+                                        transition: 'max-height 0.3s ease-in-out',
+                                    }
+                            }
+                        >
+                            {currentUser?.is_staff ? (
+                                <AdminBookingsList
+                                    currentUser={currentUser}
+                                    adminSessions={adminSessions}
+                                    selectedAdminDate={selectedAdminDate}
+                                    setSelectedAdminDate={setSelectedAdminDate}
+                                    adminLoading={adminLoading}
+                                    removeAttendee={removeAttendee}
+                                    markAttendance={markAttendance}
+                                    showBookingsPanel={showBookingsPanel}
+                                    setShowBookingsPanel={setShowBookingsPanel}
+                                    embedded={true}
+                                />
+                            ) : (
+                                // Client content unchanged
+                                <>
                                     {bookingsLoading ? (
                                         <p style={{ color: "#666", padding: "12px" }}>Loading your bookings...</p>
                                     ) : sortedUpcomingBookings.length === 0 ? (
                                         <p style={{ color: "#666", padding: "12px" }}>You have no upcoming bookings.</p>
                                     ) : (
-                                        <div className="bookings-panel-inner" style={{ background: 'rgba(255, 255, 255, 0.95)', borderRadius: '8px', padding: '16px' }}>
+                                        <div className="bookings-panel-inner" style={{ background: 'rgba(255, 255, 255, 0.95)', borderRadius: '8px', padding: '16px', overflow: 'visible' }}>
                                             {/* Navigation Controls */}
                                             {groupedBookings.length > 1 && (
                                                 <div style={{
@@ -653,8 +702,6 @@ const Home = () => {
                                                 </div>
                                             )}
 
-                                            {/* Disclaimer for clients about cancellation restriction */}
-
                                             {/* Date Display - Above Bookings List */}
                                             <div style={{ fontSize: '14px', fontWeight: 500, color: '#333', marginBottom: '12px', marginTop: '8px' }}>
                                                 📅 {moment(selectedClientDate).format('ddd DD/MM/YY')}
@@ -717,9 +764,9 @@ const Home = () => {
                                             </div>
                                         </div>
                                     )}
-                                </div>
-                            </React.Fragment>
-                        )}
+                                </>
+                            )}
+                        </div>
                     </div>
 
                     {/* Modal */}

@@ -147,9 +147,6 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
 
         //
         const isToday = moment().format("YYYY-MM-DD") === dateStr;
-        if (isToday && !currentUser?.is_staff) {
-            console.log('selectedAdminDate:', selectedAdminDate, 'currentUser.is_staff:', currentUser?.is_staff);
-        }
 
         const isSelected = (currentUser?.is_staff && selectedAdminDate && moment(selectedAdminDate).format("YYYY-MM-DD") === dateStr) ||
             (!currentUser?.is_staff && selectedClientDate && moment(selectedClientDate).format("YYYY-MM-DD") === dateStr);

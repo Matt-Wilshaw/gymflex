@@ -5,7 +5,7 @@ import moment from "moment";
 // component shows sessions for the currently-selected admin date (or all
 // sessions) and renders attendee names with a Remove button. For past sessions,
 // it also shows attendance status and allows toggling attended/no-show.
-const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setSelectedAdminDate, adminLoading, removeAttendee, markAttendance, showBookingsPanel, setShowBookingsPanel }) => {
+const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setSelectedAdminDate, adminLoading, removeAttendee, markAttendance, showBookingsPanel, setShowBookingsPanel, embedded = false }) => {
     // Track which sessions are expanded (by session id)
     const [expandedSessions, setExpandedSessions] = useState({});
     const panelRef = useRef(null);
@@ -57,7 +57,9 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
     );
 
     // When panel opens, scroll into view AFTER the expand transition completes
+    // Only applies when component manages its own panel (not embedded)
     useEffect(() => {
+        if (embedded) return;
         if (!showBookingsPanel || !panelRef.current) return;
 
         const el = panelRef.current;
@@ -65,7 +67,6 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
             try {
                 el.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
             } catch (_) {
-                // Fallback for older browsers
                 const top = el.getBoundingClientRect().top + window.scrollY - 8;
                 window.scrollTo(0, top);
             }
@@ -77,16 +78,14 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
             el.removeEventListener('transitionend', onTransitionEnd);
         };
 
-        // Listen for the max-height transition to finish, then scroll
         el.addEventListener('transitionend', onTransitionEnd);
-        // Fallback timer slightly longer than CSS transition (300ms)
         const t = setTimeout(scrollNow, 350);
 
         return () => {
             el.removeEventListener('transitionend', onTransitionEnd);
             clearTimeout(t);
         };
-    }, [showBookingsPanel]);
+    }, [showBookingsPanel, embedded]);
 
     // Find the next session date with bookings from the given date
     const findNextSessionWithBookings = (sessions, fromDate) => {
@@ -102,36 +101,19 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
         return null;
     };
 
-    return (
+    // Render either the full self-contained UI (with internal toggle/panel)
+    // or just the inner content when embedded in `Home.jsx` which provides
+    // the external toggle and panel container.
+    const innerContent = (
         <>
-            <div>
-                {/* Toggle bookings button */}
-                <div style={{ marginBottom: 12 }}>
-                    <button
-                        className="today-btn"
-                        onClick={() => setShowBookingsPanel(!showBookingsPanel)}
-                        title={showBookingsPanel ? "Hide bookings panel" : "Open bookings panel"}
-                    >
-                        {showBookingsPanel ? "Hide Bookings" : "Open Bookings"}
-                    </button>
-                </div>
-                <div
-                    ref={panelRef}
-                    style={{
-                        maxHeight: showBookingsPanel ? '2000px' : '0',
-                        overflow: 'hidden',
-                        transition: 'max-height 0.3s ease-in-out',
-                        opacity: showBookingsPanel ? 1 : 0,
-                    }}
-                >
-                    {/* In-panel date context and navigation */}
-                    <div style={{
-                        padding: '6px 8px',
-                        background: '#f8f9fa',
-                        border: '1px solid #e9ecef',
-                        borderRadius: 6,
-                        marginBottom: 8
-                    }}>
+            {/* In-panel date context and navigation */}
+            <div style={{
+                padding: '6px 8px',
+                background: '#f8f9fa',
+                border: '1px solid #e9ecef',
+                borderRadius: 6,
+                marginBottom: 8
+            }}>
                         <div className="d-flex align-items-center gap-2 mb-2">
                             <button
                                 className="btn btn-sm btn-outline-secondary"
@@ -171,118 +153,155 @@ const AdminBookingsList = ({ currentUser, adminSessions, selectedAdminDate, setS
                             Showing: {moment(currentDate).format('ddd DD/MM/YY')}
                         </div>
                     </div>
-                    {adminLoading && adminSessions.length === 0 ? (
-                        <div style={{ color: '#666' }}>Loading sessions...</div>
-                    ) : displayed.length === 0 ? (
-                        <div style={{ color: '#666' }}>No sessions for this date.</div>
-                    ) : (
-                        <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
-                            {displayed.map((s) => {
-                                const isExpanded = expandedSessions[s.id];
-                                const bookedCount = s.attendees ? s.attendees.length : 0;
+                {adminLoading && adminSessions.length === 0 ? (
+                    <div style={{ color: '#666' }}>Loading sessions...</div>
+                ) : displayed.length === 0 ? (
+                    <div style={{ color: '#666' }}>No sessions for this date.</div>
+                ) : (
+                    <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
+                        {displayed.map((s) => {
+                            const isExpanded = expandedSessions[s.id];
+                            const bookedCount = s.attendees ? s.attendees.length : 0;
 
-                                return (
-                                    <li key={s.id} style={{
-                                        marginBottom: 8,
-                                        border: '1px solid #ddd',
-                                        borderRadius: 6,
-                                        padding: 10,
-                                        background: '#f8f9fa'
-                                    }}>
-                                        <div
-                                            style={{
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center',
-                                                cursor: 'pointer',
-                                                userSelect: 'none'
-                                            }}
-                                            onClick={() => toggleSession(s.id)}
-                                        >
-                                            <div>
-                                                <strong>{s.activity_type.toUpperCase()}</strong> @ {s.time.slice(0, 5)}
-                                                <span style={{ marginLeft: 8, color: "#666" }}>
-                                                    ({bookedCount}/{s.capacity} booked)
-                                                </span>
-                                            </div>
-                                            <span style={{ color: '#666', fontSize: 18 }}>
-                                                {isExpanded ? '▼' : '▶'}
+                            return (
+                                <li key={s.id} style={{
+                                    marginBottom: 8,
+                                    border: '1px solid #ddd',
+                                    borderRadius: 6,
+                                    padding: 10,
+                                    background: '#f8f9fa'
+                                }}>
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            cursor: 'pointer',
+                                            userSelect: 'none'
+                                        }}
+                                        onClick={() => toggleSession(s.id)}
+                                    >
+                                        <div>
+                                            <strong>{s.activity_type.toUpperCase()}</strong> @ {s.time.slice(0, 5)}
+                                            <span style={{ marginLeft: 8, color: "#666" }}>
+                                                ({bookedCount}/{s.capacity} booked)
                                             </span>
                                         </div>
+                                        <span style={{ color: '#666', fontSize: 18 }}>
+                                            {isExpanded ? '▼' : '▶'}
+                                        </span>
+                                    </div>
 
-                                        {isExpanded && (
-                                            <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid #ddd' }}>
-                                                {s.attendees && s.attendees.length > 0 ? (
-                                                    <div style={{ fontSize: 13, color: '#333' }}>
-                                                        {s.attendees.map((a, i) => {
-                                                            const isPast = moment(s.date).add(s.time.slice(0, 5), 'hours').isBefore(moment());
-                                                            const isNoShow = isPast && typeof a === 'object' && a.attended === false;
-                                                            return (
-                                                                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, padding: 6, background: 'white', borderRadius: 4 }}>
-                                                                    <div>
-                                                                        <span style={isNoShow ? { textDecoration: 'line-through', color: '#888' } : {}}>
-                                                                            {typeof a === 'object' ? (a.username.charAt(0).toUpperCase() + a.username.slice(1)) : `User ${a}`}
+                                    {isExpanded && (
+                                        <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid #ddd' }}>
+                                            {s.attendees && s.attendees.length > 0 ? (
+                                                <div style={{ fontSize: 13, color: '#333' }}>
+                                                    {s.attendees.map((a, i) => {
+                                                        const isPast = moment(s.date).add(s.time.slice(0, 5), 'hours').isBefore(moment());
+                                                        const isNoShow = isPast && typeof a === 'object' && a.attended === false;
+                                                        return (
+                                                            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, padding: 6, background: 'white', borderRadius: 4 }}>
+                                                                <div>
+                                                                    <span style={isNoShow ? { textDecoration: 'line-through', color: '#888' } : {}}>
+                                                                        {typeof a === 'object' ? (a.username.charAt(0).toUpperCase() + a.username.slice(1)) : `User ${a}`}
+                                                                    </span>
+                                                                    {isPast && typeof a === 'object' && a.attended !== undefined && (
+                                                                        <span style={{ marginLeft: 12, color: a.attended ? 'green' : 'red', fontWeight: 600 }}>
+                                                                            {a.attended ? 'Attended' : 'No Show'}
                                                                         </span>
-                                                                        {isPast && typeof a === 'object' && a.attended !== undefined && (
-                                                                            <span style={{ marginLeft: 12, color: a.attended ? 'green' : 'red', fontWeight: 600 }}>
-                                                                                {a.attended ? 'Attended' : 'No Show'}
-                                                                            </span>
-                                                                        )}
-                                                                    </div>
-                                                                    <div style={{ display: 'flex', gap: 8 }}>
+                                                                    )}
+                                                                </div>
+                                                                <div style={{ display: 'flex', gap: 8 }}>
+                                                                    <button
+                                                                        onClick={() => removeAttendee(s.id, typeof a === 'object' ? a.id : a)}
+                                                                        style={{
+                                                                            padding: '4px 8px',
+                                                                            fontSize: 12,
+                                                                            borderRadius: 6,
+                                                                            border: '1px solid rgba(0,0,0,0.1)',
+                                                                            background: '#dc3545',
+                                                                            color: 'white',
+                                                                            cursor: 'pointer',
+                                                                        }}
+                                                                        title="Remove attendee"
+                                                                    >
+                                                                        Remove
+                                                                    </button>
+                                                                    {isPast && typeof a === 'object' && a.attendance_id && (
                                                                         <button
-                                                                            onClick={() => removeAttendee(s.id, typeof a === 'object' ? a.id : a)}
+                                                                            onClick={() => markAttendance(s.id, a.attendance_id, !a.attended)}
                                                                             style={{
                                                                                 padding: '4px 8px',
                                                                                 fontSize: 12,
                                                                                 borderRadius: 6,
                                                                                 border: '1px solid rgba(0,0,0,0.1)',
-                                                                                background: '#dc3545',
+                                                                                background: a.attended ? '#ffc107' : '#198754',
                                                                                 color: 'white',
                                                                                 cursor: 'pointer',
                                                                             }}
-                                                                            title="Remove attendee"
+                                                                            title={a.attended ? 'Mark as No Show' : 'Mark as Attended'}
                                                                         >
-                                                                            Remove
+                                                                            {a.attended ? 'Mark No Show' : 'Mark Attended'}
                                                                         </button>
-                                                                        {isPast && typeof a === 'object' && a.attendance_id && (
-                                                                            <button
-                                                                                onClick={() => markAttendance(s.id, a.attendance_id, !a.attended)}
-                                                                                style={{
-                                                                                    padding: '4px 8px',
-                                                                                    fontSize: 12,
-                                                                                    borderRadius: 6,
-                                                                                    border: '1px solid rgba(0,0,0,0.1)',
-                                                                                    background: a.attended ? '#ffc107' : '#198754',
-                                                                                    color: 'white',
-                                                                                    cursor: 'pointer',
-                                                                                }}
-                                                                                title={a.attended ? 'Mark as No Show' : 'Mark as Attended'}
-                                                                            >
-                                                                                {a.attended ? 'Mark No Show' : 'Mark Attended'}
-                                                                            </button>
-                                                                        )}
-                                                                    </div>
+                                                                    )}
                                                                 </div>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                ) : adminLoading ? (
-                                                    <div style={{ fontSize: 13, color: '#666', fontStyle: 'italic' }}>Loading...</div>
-                                                ) : (
-                                                    <div style={{ fontSize: 13, color: '#666', fontStyle: 'italic' }}>No bookings</div>
-                                                )}
-                                            </div>
-                                        )}
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    )}
-                </div>
-            </div>
-        </>
-    );
-};
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            ) : adminLoading ? (
+                                                <div style={{ fontSize: 13, color: '#666', fontStyle: 'italic' }}>Loading...</div>
+                                            ) : (
+                                                <div style={{ fontSize: 13, color: '#666', fontStyle: 'italic' }}>No bookings</div>
+                                            )}
+                                        </div>
+                                    )}
+                                </li>
+                            );
+                        })}
+                    </ul>
+                )}
+            </>
+        );
 
-export default AdminBookingsList;
+        if (embedded) {
+            // When embedded, simply return the inner content (the list and controls)
+            // The parent is responsible for the panel container and transitions.
+            return (
+                <div ref={panelRef}>
+                    {innerContent}
+                </div>
+            );
+        }
+
+        // Default: self-contained component (renders its own toggle + panel)
+        return (
+            <>
+                <div>
+                    {/* Toggle bookings button */}
+                    <div style={{ marginBottom: 12 }}>
+                        <button
+                            className="today-btn"
+                            onClick={() => setShowBookingsPanel(!showBookingsPanel)}
+                            title={showBookingsPanel ? "Hide bookings panel" : "Open bookings panel"}
+                        >
+                            {showBookingsPanel ? "Hide Bookings" : "Open Bookings"}
+                        </button>
+                    </div>
+                    <div
+                        ref={panelRef}
+                        style={{
+                            maxHeight: showBookingsPanel ? '2000px' : '0',
+                            overflow: 'hidden',
+                            transition: 'max-height 0.3s ease-in-out',
+                            opacity: showBookingsPanel ? 1 : 0,
+                        }}
+                    >
+                        {innerContent}
+                    </div>
+                </div>
+            </>
+        );
+    };
+
+    export default AdminBookingsList;

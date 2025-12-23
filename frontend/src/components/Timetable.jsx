@@ -31,8 +31,7 @@ export default function Timetable() {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
-                // Log the fetched data to check in console
-                console.log("Fetched sessions:", res.data);
+                // fetched data available in `res.data`
 
                 // Map each session to an event for the calendar
                 const mappedEvents = res.data.map((session) => ({

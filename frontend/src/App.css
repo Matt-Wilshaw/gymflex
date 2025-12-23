@@ -398,6 +398,29 @@
         padding: 0;
         display: block;
         position: static;
+      }
+
+      /* Keep `.open-bookings-btn` inline with original layout (bottom-left under calendar)
+         — do not force fixed positioning so the button remains in document flow. */
+      .open-bookings-btn {
+        /* Keep the toggle visible outside the scrollable bookings panel.
+           Increased bottom offset to visually match the client's spacing. */
+        position: fixed !important;
+        bottom: 48px !important;
+        left: 16px !important;
+        z-index: 99999 !important;
+        background: #e0f7ff !important;
+        border: 1px solid #3498db !important;
+        border-radius: 6px !important;
+        box-shadow: 0 6px 20px rgba(52,152,219,0.12) !important;
+        padding: 6px 10px !important;
+      }
+
+      /* Extra bottom spacing for client's and admin's closed bookings button */
+      .client-closed-btn,
+      .admin-closed-btn {
+        margin-bottom: 18px !important;
+      }
         background: none;
         border: none;
         box-shadow: none;
