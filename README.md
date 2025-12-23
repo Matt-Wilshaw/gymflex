@@ -22,8 +22,8 @@ Production (Heroku) app: https://gymflex-5bb1d582f94c.herokuapp.com/
   - [Features](#features)
   - [Admin Access](#admin-access)
   - [Technologies Used](#technologies-used)
-- [Design Choices](#design-choices)
-  - [Wireframes](#wireframes)
+- [Skeleton (Wireframes \& Layout)](#skeleton-wireframes--layout)
+- [Surface (Visual Design)](#surface-visual-design)
     - [Colour Palette](#colour-palette)
     - [Typography](#typography)
     - [Accessibility](#accessibility)
@@ -176,9 +176,8 @@ Use your admin credentials to log in.
 
 ---
 
-# Design Choices
 
-## Wireframes
+# Skeleton (Wireframes & Layout)
 
 Wireframes were created to guide the design and layout of GymFlex across devices. These visual blueprints helped ensure a consistent and user-friendly experience on all screen sizes.
 
@@ -195,6 +194,10 @@ Wireframes were created to guide the design and layout of GymFlex across devices
 > The Notes section (for trainers or users to add session notes) was not implemented in the initial release. This decision was made to prioritise delivering a fully working core project focused on booking, session management, and user experience. Notes functionality is planned for a future release, as it does not hinder the main use of the site and can be added without disrupting existing workflows.
 
 ---
+
+# Surface (Visual Design)
+
+The Surface plane defines the sensory experience of GymFlex, including visual design, color, typography, and accessibility.
 
 ### Colour Palette
 GymFlex uses a calming blue theme to evoke trust, professionalism, and energy—perfect for a fitness platform. The colours promote a clean, modern look while ensuring accessibility.
