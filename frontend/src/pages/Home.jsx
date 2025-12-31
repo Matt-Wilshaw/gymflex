@@ -65,13 +65,13 @@ const Home = () => {
     // Toggle visibility of bookings panel (admin and client)
     const [showBookingsPanel, setShowBookingsPanel] = useState(false); // always collapsed on initial load
 
-    // Track selected date for client calendar view - initialize with today's date like admin does
+    // Track selected date for client calendar view - initialise with today's date like admin does
     // Always default to today's date on initial load
     const [selectedClientDate, setSelectedClientDate] = useState(() => moment().format("YYYY-MM-DD"));
     // Track if user manually closed the bookings panel
     const [userClosedPanel, setUserClosedPanel] = useState(true); // true on initial load to prevent auto-open
 
-    // Ref for client bookings panel scroll behavior
+    // Ref for client bookings panel scroll behaviour
     const clientPanelRef = useRef(null);
     // Ref for admin bookings panel when embedded in this page
     const adminPanelRef = useRef(null);

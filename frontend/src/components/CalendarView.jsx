@@ -35,7 +35,7 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
     // or when the bookings panel explicitly sets it), update the visible
     // month so the user can see the selected day. We avoid updating
     // calendarDate on normal month navigation to preserve the blue
-    // highlighted today's date behavior.
+    // highlighted today's date behaviour.
     useEffect(() => {
         if (!currentUser?.is_staff && selectedClientDate) {
             setCalendarDate(moment(selectedClientDate).toDate());
@@ -137,7 +137,6 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
 
     // DateCellWrapper: computes the events for the given day and renders
     // a small emoji bar plus a session-count button anchored to the cell.
-    // Note the UK spelling of 'behaviour' in comments below to match
     // project convention.
     const DateCellWrapper = ({ children, value }) => {
         const dateStr = moment(value).format("YYYY-MM-DD");
@@ -511,7 +510,7 @@ const CalendarView = ({ sessions, activityFilter, setActivityFilter, handleDrill
                         display: none !important;
                     }
                     
-                    /* Ensure emoji bar stays centered on all small screens */
+                    /* Ensure emoji bar stays centred on all small screens */
                     .emoji-bar-filtered {
                         left: 50% !important;
                         top: 50% !important;

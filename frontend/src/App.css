@@ -227,14 +227,14 @@
                                                                        display: block !important;
                                                                    }
 
-                                                                   /* Center the blue session count circle on mobile (≤576px) */
+                                                                  /* Centre the blue session count circle on mobile (≤576px) */
                                                                    .session-count-circle {
                                                                        left: 50% !important;
                                                                        right: auto !important;
                                                                        transform: translateX(-50%) !important;
                                                                    }
 
-                                                                   /* Position checkmark above the centered circle on mobile */
+                                                                  /* Position checkmark above the centred circle on mobile */
                                                                    .booking-checkmark {
                                                                        left: 50% !important;
                                                                        right: auto !important;
@@ -414,7 +414,7 @@
         display: inline-block !important;
       }
 
-      /* ========== CLEAN & PROFESSIONAL BLUE/WHITE COLOR SCHEME ========== */
+      /* ========== CLEAN & PROFESSIONAL BLUE/WHITE COLOUR SCHEME ========== */
 
       /* ========== AUTH PAGES (LOGIN & REGISTER) ========== */
       .auth-container {
