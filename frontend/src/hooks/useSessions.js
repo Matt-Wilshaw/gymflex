@@ -5,7 +5,6 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 
 // useSessions: centralises session fetching and mutation logic. This hook
 // returns the session lists and helper functions used by the Home page.
-// Use UK spelling in comments: we say 'behaviour' and 'initialise'.
 export default function useSessions() {
     const [sessions, setSessions] = useState([]);
     const [bookedSessions, setBookedSessions] = useState([]);

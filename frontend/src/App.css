@@ -1,3 +1,403 @@
+                                                               .welcome-message-mobile {
+                                                                   margin-top: 2px !important;
+                                                               }
+
+                                                               .today-btn {
+                                                                   font-size: 15px !important;
+                                                                   padding: 2px 16px !important;
+                                                                   border-radius: 8px !important;
+                                                                   background: #3498db !important;
+                                                                   border: 1.5px solid #3498db !important;
+                                                                   color: #fff !important;
+                                                                   font-weight: 600 !important;
+                                                                   box-shadow: 0 1px 4px rgba(52, 152, 219, 0.08) !important;
+                                                                   transition: border 0.2s !important;
+                                                                   cursor: pointer !important;
+                                                                   display: inline-flex !important;
+                                                                   align-items: center !important;
+                                                                   justify-content: center !important;
+                                                               }
+
+                                                               .arrow-btn {
+                                                                   font-size: 13px !important;
+                                                                   padding: 2px 10px !important;
+                                                                   border-radius: 12px !important;
+                                                                   background: #3498db !important;
+                                                                   border: 1.5px solid #3498db !important;
+                                                                   color: #fff !important;
+                                                                   font-weight: 600 !important;
+                                                                   box-shadow: 0 1px 4px rgba(52, 152, 219, 0.08) !important;
+                                                                   transition: border 0.2s !important;
+                                                                   cursor: pointer !important;
+                                                                   display: inline-flex !important;
+                                                                   align-items: center !important;
+                                                                   justify-content: center !important;
+                                                               }
+
+                                                               .show-bookings-btn {
+                                                                   font-size: 15px !important;
+                                                                   padding: 2px 16px !important;
+                                                                   background: #3498db !important;
+                                                                   border: 1.5px solid #3498db !important;
+                                                                   color: #fff !important;
+                                                                   font-weight: 600 !important;
+                                                                   box-shadow: 0 1px 4px rgba(52, 152, 219, 0.08) !important;
+                                                                   transition: border 0.2s !important;
+                                                                   cursor: pointer !important;
+                                                                   display: inline-flex !important;
+                                                                   align-items: center !important;
+                                                                   justify-content: center !important;
+                                                                   min-width: 120px !important;
+                                                                   max-width: 120px !important;
+                                                                   width: 120px !important;
+                                                                   text-align: center !important;
+                                                               }
+
+                                                               .calendar-month-label {
+                                                                   margin-top: 6px !important;
+                                                               }
+
+                                                               /* Only bunch up the day rows, not the header */
+                                                               .rbc-month-row:not(.rbc-row.rbc-month-header),
+                                                               .rbc-row:not(.rbc-row.rbc-month-header),
+                                                               .rbc-row-bg {
+                                                                   min-height: 48px !important;
+                                                               }
+
+                                                               /* Force all calendar rows to be bunched up on mobile */
+                                                               .rbc-month-view .rbc-month-row,
+                                                               .rbc-month-view .rbc-row,
+                                                               .rbc-row-bg {
+                                                                   min-height: 48px !important;
+                                                               }
+
+                                                               /* Mobile Styles */
+
+                                                               .mobile-legend {
+                                                                   display: none;
+                                                               }
+
+                                                               /* Desktop and larger tablets (above 768px) */
+                                                               @media (min-width: 769px) {
+
+                                                                   /* Reduce perceived height without adding scrollbars */
+                                                                   .rbc-calendar {
+                                                                       height: auto;
+                                                                   }
+
+                                                                   /* Keep the month header row slim on desktop (match mobile rules) */
+                                                                   .rbc-header {
+                                                                       padding: 4px !important;
+                                                                       line-height: 1 !important;
+                                                                       margin: 0 !important;
+                                                                       min-height: 0 !important;
+                                                                       height: auto !important;
+                                                                       max-height: 30px !important;
+                                                                       font-size: 13px !important;
+                                                                   }
+
+                                                                   .rbc-header span {
+                                                                       line-height: 1 !important;
+                                                                       padding: 0 !important;
+                                                                       margin: 0 !important;
+                                                                   }
+
+                                                                   /* Remove spacing from header wrapper like mobile */
+                                                                   .rbc-month-header {
+                                                                       margin: 0 !important;
+                                                                       padding: 0 !important;
+                                                                       margin-bottom: 0 !important;
+                                                                   }
+
+                                                                   .rbc-row.rbc-month-header {
+                                                                       margin: 0 !important;
+                                                                       padding: 0 !important;
+                                                                       margin-bottom: 0 !important;
+                                                                       min-height: 0 !important;
+                                                                   }
+
+                                                                   /* Make month rows shorter to prevent scrolling */
+                                                                   .rbc-month-row,
+                                                                   .rbc-row,
+                                                                   .rbc-row-bg {
+                                                                       min-height: 70px;
+                                                                   }
+
+                                                                   /* Slightly tighten toolbar spacing */
+                                                                   .rbc-toolbar {
+                                                                       padding: 6px 8px;
+                                                                   }
+
+                                                                   /* Trim extra bottom spacing */
+                                                                   .rbc-month-view {
+                                                                       min-height: 470px !important;
+                                                                       margin-bottom: 10px !important;
+                                                                   }
+
+                                                                   .rbc-month-row,
+                                                                   .rbc-row,
+                                                                   .rbc-row-bg {
+                                                                       min-height: 48px !important;
+                                                                   }
+
+                                                                   /* Make column borders more visible on desktop */
+                                                                   .rbc-header+.rbc-header {
+                                                                       border-left: 3px solid #666 !important;
+                                                                   }
+
+                                                                   .rbc-day-bg+.rbc-day-bg {
+                                                                       border-left: 3px solid #666 !important;
+                                                                   }
+
+                                                                   /* Make row borders more visible */
+                                                                   .rbc-month-row {
+                                                                       border-top: 3px solid #666 !important;
+                                                                   }
+                                                               }
+
+                                                               /* Tablets and smaller devices (below 768px) */
+                                                               @media (max-width: 768px) and (min-width: 577px) {
+
+                                                                   /* Show emojis on tablets (577px-768px) - keep grid layout for 2 rows */
+                                                                   .emoji-bar {
+                                                                       display: grid !important;
+                                                                   }
+
+                                                                   /* Keep checkmark to the right on tablets */
+                                                                   .booking-checkmark {
+                                                                       right: 8px !important;
+                                                                       left: auto !important;
+                                                                       transform: none !important;
+                                                                       bottom: 6px !important;
+                                                                   }
+
+                                                                   /* Make header row thin like desktop */
+                                                                   .rbc-header {
+                                                                       padding: 4px !important;
+                                                                       min-height: auto !important;
+                                                                       line-height: 1 !important;
+                                                                       font-size: 13px !important;
+                                                                   }
+
+                                                                   /* Make column borders more visible */
+                                                                   .rbc-header+.rbc-header {
+                                                                       border-left: 3px solid #666 !important;
+                                                                   }
+
+                                                                   .rbc-day-bg+.rbc-day-bg {
+                                                                       border-left: 3px solid #666 !important;
+                                                                   }
+
+                                                                   /* Make row borders more visible */
+                                                                   .rbc-month-row {
+                                                                       border-top: 3px solid #666 !important;
+                                                                   }
+                                                               }
+
+                                                               /* Mobile only (below 577px) */
+                                                               @media (max-width: 576px) {
+
+                                                                   /* Hide emoji bar on small mobile UNLESS filtering is active */
+                                                                   .emoji-bar:not(.emoji-bar-filtered) {
+                                                                       display: none !important;
+                                                                   }
+
+                                                                   /* Show emoji bar when filtering by activity - position above checkmark */
+                                                                   .emoji-bar-filtered {
+                                                                       display: flex !important;
+                                                                       position: absolute !important;
+                                                                       bottom: 56px !important;
+                                                                       left: 50% !important;
+                                                                       transform: translateX(-50%) !important;
+                                                                       width: 100% !important;
+                                                                       justify-content: center !important;
+                                                                       align-items: center !important;
+                                                                       pointer-events: none !important;
+                                                                       z-index: 5 !important;
+                                                                       font-size: 16px !important;
+                                                                   }
+
+                                                                   /* Hide activity legend with emojis on small mobile */
+                                                                   .activity-legend {
+                                                                       display: none !important;
+                                                                   }
+
+                                                                   /* Show mobile legend */
+                                                                   .mobile-legend {
+                                                                       display: block !important;
+                                                                   }
+
+                                                                   /* Center the blue session count circle on mobile (≤576px) */
+                                                                   .session-count-circle {
+                                                                       left: 50% !important;
+                                                                       right: auto !important;
+                                                                       transform: translateX(-50%) !important;
+                                                                   }
+
+                                                                   /* Position checkmark above the centered circle on mobile */
+                                                                   .booking-checkmark {
+                                                                       left: 50% !important;
+                                                                       right: auto !important;
+                                                                       transform: translateX(-50%) !important;
+                                                                       bottom: 30px !important;
+                                                                       z-index: 10 !important;
+                                                                   }
+
+                                                                   /* Make vertical borders more visible on mobile */
+                                                                   .rbc-header+.rbc-header {
+                                                                       border-left: 3px solid #666 !important;
+                                                                   }
+
+                                                                   .rbc-day-bg+.rbc-day-bg {
+                                                                       border-left: 3px solid #666 !important;
+                                                                   }
+
+                                                                   /* Make horizontal borders more visible on mobile */
+                                                                   .rbc-month-row {
+                                                                       border-top: 3px solid #666 !important;
+                                                                   }
+                                                               }
+
+                                                               /* All devices below 768px */
+                                                               @media (max-width: 768px) {
+
+                                                                   /* Header row - thin like desktop */
+                                                                   .rbc-header {
+                                                                       padding: 4px !important;
+
+                                                                       /* Keep the month header row slim on desktop (match mobile rules) */
+                                                                       .rbc-header {
+                                                                           padding: 4px !important;
+                                                                           line-height: 1 !important;
+                                                                           margin: 0 !important;
+                                                                           min-height: 0 !important;
+                                                                           height: auto !important;
+                                                                           max-height: 30px !important;
+                                                                           font-size: 13px !important;
+                                                                       }
+
+                                                                       .rbc-header span {
+                                                                           line-height: 1 !important;
+                                                                           padding: 0 !important;
+                                                                           margin: 0 !important;
+                                                                       }
+
+                                                                       /* Remove spacing from header wrapper like mobile */
+                                                                       .rbc-month-header {
+                                                                           margin: 0 !important;
+                                                                           padding: 0 !important;
+                                                                           margin-bottom: 0 !important;
+                                                                       }
+
+                                                                       .rbc-row.rbc-month-header {
+                                                                           margin: 0 !important;
+                                                                           padding: 0 !important;
+                                                                           margin-bottom: 0 !important;
+                                                                           min-height: 0 !important;
+                                                                       }
+
+                                                                       line-height: 1 !important;
+                                                                       margin: 0 !important;
+                                                                       min-height: 0 !important;
+                                                                       height: auto !important;
+                                                                       max-height: 30px !important;
+                                                                   }
+
+                                                                   .rbc-header span {
+                                                                       line-height: 1 !important;
+                                                                       padding: 0 !important;
+                                                                       margin: 0 !important;
+                                                                   }
+
+                                                                   /* Remove spacing from header wrapper */
+                                                                   .rbc-month-header {
+                                                                       margin: 0 !important;
+                                                                       padding: 0 !important;
+                                                                       margin-bottom: 0 !important;
+                                                                   }
+
+                                                                   .rbc-row.rbc-month-header {
+                                                                       margin: 0 !important;
+                                                                       padding: 0 !important;
+                                                                       margin-bottom: 0 !important;
+                                                                       min-height: 0 !important;
+                                                                   }
+
+                                                                   /* Make vertical borders more visible */
+                                                                   .rbc-header+.rbc-header {
+                                                                       border-left: 3px solid #666 !important;
+                                                                   }
+
+                                                                   .rbc-day-bg+.rbc-day-bg {
+                                                                       border-left: 3px solid #666 !important;
+                                                                   }
+
+                                                                   /* Make horizontal borders more visible */
+                                                                   .rbc-month-row {
+                                                                       border-top: 3px solid #666 !important;
+                                                                   }
+
+                                                                   /* Calendar container mobile adjustments */
+                                                                   .calendar-container {
+                                                                       margin-bottom: 0 !important;
+                                                                       padding-bottom: 0 !important;
+                                                                   }
+
+                                                                   /* Remove all spacing from calendar wrapper */
+                                                                   .calendar-container>div {
+                                                                       margin-bottom: 0 !important;
+                                                                       padding-bottom: 0 !important;
+                                                                       min-height: auto !important;
+                                                                   }
+
+                                                                   /* Remove bottom spacing from calendar itself */
+                                                                   .rbc-calendar {
+                                                                       margin-bottom: 0 !important;
+                                                                       padding-bottom: 0 !important;
+                                                                   }
+
+                                                                   /* Remove spacing from month view */
+                                                                   .rbc-month-view {
+                                                                       margin-bottom: 0 !important;
+                                                                       padding-bottom: 0 !important;
+                                                                   }
+
+                                                                   /* Legend info mobile spacing - remove all gaps */
+                                                                   .legend-info {
+                                                                       margin-top: 0 !important;
+                                                                       padding-top: 0 !important;
+                                                                       margin-bottom: 0.5rem !important;
+                                                                       line-height: 1.2 !important;
+
+                                                                       .rbc-month-view {
+                                                                           min-height: 505px !important;
+                                                                           margin-bottom: 15px !important;
+                                                                       }
+
+                                                                       flex-direction: column !important;
+                                                                       align-items: center !important;
+                                                                       gap: 10px !important;
+                                                                   }
+
+                                                                   .custom-calendar-toolbar>div:first-child {
+                                                                       order: 1;
+                                                                       width: 100%;
+                                                                       justify-content: center !important;
+                                                                   }
+
+                                                                   .calendar-month-label {
+                                                                       order: 2;
+                                                                       width: 100%;
+                                                                       text-align: center !important;
+                                                                       font-size: 16px !important;
+                                                                   }
+
+                                                                   .custom-calendar-toolbar>div:last-child {
+                                                                       display: none !important;
+                                                                   }
+
+                                                                   /* Calendar height adjustments */
+                                                                   .rbc-calendar {
   /* Mobile adjustments */
   @media (max-width: 576px) {
     .calendar-container {

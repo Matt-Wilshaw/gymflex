@@ -5,7 +5,7 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
-import "./mobile.css";
+import "./App.css";
 
 // The main App component that sets up routing for the GymFlex application
 export default function App() {

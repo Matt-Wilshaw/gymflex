@@ -551,12 +551,7 @@ const Home = () => {
                                         // opening
                                         setShowBookingsPanel(true);
                                         setUserClosedPanel(false);
-                                        if (currentUser?.is_staff) {
-                                            const sessionsInMonth = adminSessions.filter(s => moment(s.date).format('YYYY-MM') === visibleMonth);
-                                            if (sessionsInMonth.length > 0) {
-                                                setSelectedAdminDate(sessionsInMonth[0].date);
-                                            }
-                                        } else {
+                                        if (!currentUser?.is_staff) {
                                             // find sessions in visibleMonth for client
                                             const sessionsInMonth = sortedUpcomingBookings.filter(s => moment(s.date).format('YYYY-MM') === visibleMonth);
                                             if (sessionsInMonth.length > 0) {
