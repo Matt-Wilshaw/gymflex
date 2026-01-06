@@ -6,9 +6,9 @@ For a full technical breakdown of the system architecture (including middleware,
 - [GymFlex Testing Documentation](#gymflex-testing-documentation)
   - [Introduction](#introduction-1)
   - [Responsiveness Testing](#responsiveness-testing)
-  - [Lighthouse Testing](#lighthouse-testing)
   - [HTML Validator Testing](#html-validator-testing)
   - [CSS Validator Testing](#css-validator-testing)
+  - [Lighthouse Testing](#lighthouse-testing)
 - [User Stories](#user-stories)
   - [1. Book a Session](#1-book-a-session)
   - [2. Calendar and Bookings Panel Navigation](#2-calendar-and-bookings-panel-navigation)
@@ -118,10 +118,8 @@ All discovered bugs, fixes, and retests are documented throughout this file.
 
 For additional project details and technical information, including instructions on running the site, please refer to the [README.md](./README.md)
 
-----
-- And sessions are updated in real-time if changes occur
+---
 
-**Tasks:**  
 ## Responsiveness Testing
 
 GymFlex was tested at the following breakpoints to ensure a consistent experience:
@@ -142,14 +140,10 @@ GymFlex was tested at the following breakpoints to ensure a consistent experienc
 3. Set the width to each breakpoint above and verify layout, navigation, and usability.
 4. Take screenshots and save them in the appropriate `readme-images/` subfolder.
 
-**Note:** Some online preview tools (e.g., Am I Responsive) may not display Heroku apps due to iframe or CORS restrictions. Use browser dev tools for best results.
+**Note:** Some online preview tools (e.g. Am I Responsive) may not display Heroku apps due to iframe or CORS restrictions. Use browser dev tools for best results.
 - [x] Design timetable UI  
 - [x] Implement backend session retrieval  
 - [x] Test real-time updates or refresh functionality  
-
-## Lighthouse Testing
-
----
 
 ## HTML Validator Testing
 
@@ -205,6 +199,8 @@ CSS validation helps ensure that GymFlex stylesheets follow web standards, impro
 **Notes:**
 - Minor warnings (e.g., use of -webkit- or -ms- prefixes) are intentional for compatibility and do not affect user experience.
 - Regular CSS validation is recommended after major style changes to maintain code quality.
+
+## Lighthouse Testing
 
 Lighthouse is an open-source, automated tool from Google for improving the quality of web pages. It audits web applications for performance, accessibility, best practices, SEO, and progressive web app (PWA) features. Lighthouse provides actionable insights and scores that help developers identify and fix issues affecting user experience and discoverability.
 

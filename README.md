@@ -176,21 +176,23 @@ Use your admin credentials to log in.
 
 ---
 
-
 # Skeleton (Wireframes & Layout)
 
 Wireframes were created to guide the design and layout of GymFlex across devices. These visual blueprints helped ensure a consistent and user-friendly experience on all screen sizes.
 
 **Tablet Wireframe:**
+
 ![Tablet Wireframe](readme-images/tablet/wireframe-tablet.png)
 
 **Desktop Wireframe:**
+
 ![Desktop Wireframe](readme-images/desktop/wireframe-desktop.png)
 
 **Mobile Wireframe:**
+
 ![Mobile Wireframe](readme-images/mobile/wireframe-mobile.png)
 
-> **Note on the Notes Feature:**
+> **Notes Feature:**
 > The Notes section (for trainers or users to add session notes) was not implemented in the initial release. This decision was made to prioritise delivering a fully working core project focused on booking, session management, and user experience. Notes functionality is planned for a future release, as it does not hinder the main use of the site and can be added without disrupting existing workflows.
 
 ---
@@ -558,7 +560,6 @@ This will restore the core data for development and testing.
 
 ## Credits
 
-
 This project was made possible with the help of the following resources:
 
 - **React** (https://react.dev/) — Frontend framework
@@ -579,6 +580,5 @@ Icons, images, and other assets are either original, generated for this project,
 Additional support and solutions were found via:
 - **YouTube** — Video tutorials and walkthroughs for Django, React, and deployment
 - **Stack Overflow** (https://stackoverflow.com/) — Community Q&A for troubleshooting and code examples
-- **ChatGPT** — AI assistance for code explanations, debugging, and documentation
+- **ChatGPT** — AI assistance for code explanations, debugging, and documentation.
 
-Special thanks to the maintainers and communities of these open-source projects, and to the wider developer community for their invaluable tools, tutorials, and support.
