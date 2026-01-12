@@ -18,6 +18,7 @@ For a full technical breakdown of the system architecture (including middleware,
   - [6. Track Bookings](#6-track-bookings)
   - [7. Accessibility](#7-accessibility)
   - [8. Security \& Data Protection](#8-security--data-protection)
+  - [9. Register / Create Account](#9-register--create-account)
   - [Manual Test: NotFound (404) Page](#manual-test-notfound-404-page)
   - [Appendix: Adding Test Data](#appendix-adding-test-data)
     - [Using Django Admin](#using-django-admin)
@@ -381,7 +382,6 @@ All tasks completed.
 - [x] Implement session CRUD functionality  
 - [x] Test session updates on client dashboards  
 
-
 ---
 
 ## 6. Track Bookings
@@ -448,6 +448,27 @@ As a developer, I want to ensure that no sensitive information (passwords, API k
 - [x] Audit Git history for accidentally committed secrets
 - [x] Document findings and risk assessment
 
+---
+
+## 9. Register / Create Account
+
+**Story:**
+As a visitor, I want to create an account so that I can log in, book sessions, and access personalised features.
+
+**Acceptance Criteria:**
+- Given the register form is completed with a unique username and valid password
+- When the user submits the form
+- Then an account is created and the user receives appropriate authentication tokens (or is prompted to log in)
+
+**Tasks:**
+- [x] Verify frontend register form posts to the correct backend endpoint
+- [x] Ensure backend returns tokens on successful registration (or frontend performs token exchange)
+- [x] Ensure user is directed to home upon successful registration
+- [x] Test registration flow and authentication
+- [x] When registration is completed it should confirm to the user and automatically populate login username field with new user
+
+---
+
 **Bug Tracking / Notes:**  
 Historical audit completed on November 26, 2025. One `.env` file was found in early commit (f6811aa) but contained only non-sensitive localhost URL (`VITE_API_URL="http://localhost:8000"`). No passwords, API keys, or secrets were leaked. Risk level: Very Low. `.gitignore` now properly configured to prevent future leaks.
 
@@ -468,7 +489,11 @@ Historical audit completed on November 26, 2025. One `.env` file was found in ea
 | 11  | Login / Routing                    | After successful login, the app showed a blank page instead of navigating to Home.                                      |  Medium  | Fixed  | Cause: `navigate` was referenced before initialization in `frontend/src/pages/Home.jsx`, causing a runtime error that left a blank screen. Fix: Initialized `navigate` via `useNavigate()` and ensured post-login navigation flows through `ProtectedRoute`. Deployed with Heroku release v40.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | 12  | Calendar / Client Navigation       | Client calendar didn't follow booking navigation arrows - stayed on current month when using ← → buttons.               |  Medium  | Fixed  | Cause: Multiple issues compounded - (1) `upcomingBookings` array recreated on every render causing unstable useMemo dependencies, (2) `selectedClientDate` not initialized so calendar defaulted to today, (3) `selectedAdminDate` was checked first even for clients causing today to always be selected, (4) React Big Calendar's default "today" styling showed extra border. Fix: Wrapped `sortedUpcomingBookings` in useMemo with `bookedSessions` dependency; initialized `selectedClientDate` with today's date like admin; fixed `isSelected` logic to check `currentUser?.is_staff` before using `selectedAdminDate`; added comprehensive CSS overrides to remove all default "today" styling. Calendar now properly navigates to booking month and highlights selected date with blue border. |
 | 13  | Calendar / Month Navigation        | Calendar month navigation arrows (← Today →) didn't work - clicking them had no effect.                                 |  Medium  | Fixed  | Cause: `onNavigate` handler in CalendarView.jsx only logged the new date without updating state, so the calendar stayed on the current month. Fix: Updated `onNavigate` to call `setSelectedAdminDate(dateStr)` for admin users, allowing proper month-to-month navigation. For clients, the handler now allows manual navigation while still respecting booking arrow overrides. Deployed with Heroku release v58.                                                                                                                                                                                                                                                                                                                                                                                     |
+
 | 14  | Calendar / Client Month Navigation | Client users couldn't navigate between months using calendar toolbar arrows.                                            |  Medium  | Fixed  | Cause: `setSelectedClientDate` was not passed to CalendarView component, and `onNavigate` handler didn't update client date state - only admin state was updated. Fix: Passed `setSelectedClientDate` from Home.jsx to CalendarView, added it to component props, and updated `onNavigate` handler to call `setSelectedClientDate(dateStr)` for non-staff users. Clients can now use ← Today → buttons to navigate months independently of their booking arrows.                                                                                                                                                                                                                                                                                                                                        |
+
+
+| 15  | User Registration / Frontend       | Frontend registration POSTs to incorrect endpoint (`/api/register/`), causing 404 and a generic "Registration failed" message in the UI. |  Medium  | Fixed  | Cause: `frontend/src/pages/Register.jsx` posted to `/api/register/` while the backend exposes `/api/user/register/` (and `/api/users/register/`).<br>Fix: Updated `frontend/src/pages/Register.jsx` to post to `/user/register/` to match `backend/backend/urls.py`. Verified registration via the backend endpoint (PowerShell `Invoke-RestMethod`) and confirmed a new user is created. Consider returning tokens on register if automatic login is desired. |
 
 ---
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import api from "../api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 
@@ -9,6 +9,9 @@ const Login = () => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
+    const [success, setSuccess] = useState("");
+    const passwordRef = React.useRef(null);
 
     // Prevent body scroll on login page
     React.useEffect(() => {
@@ -16,6 +19,19 @@ const Login = () => {
         document.body.style.margin = '0';
         document.body.style.padding = '0';
         document.documentElement.style.overflow = 'hidden';
+
+        // If navigated from registration, prefill username and show success
+        if (location?.state?.username) {
+            setUsername(location.state.username);
+        }
+        if (location?.state?.success) {
+            setSuccess(location.state.success);
+            // Clear success message after a short delay
+            setTimeout(() => setSuccess(""), 5000);
+        }
+
+        // Focus password field when page loads
+        setTimeout(() => passwordRef.current?.focus(), 100);
 
         return () => {
             document.body.style.overflow = '';
@@ -81,6 +97,7 @@ const Login = () => {
                         placeholder="Password"
                         value={password}
                         onChange={e => setPassword(e.target.value)}
+                        ref={passwordRef}
                         required
                         style={{ padding: "0.65rem", borderRadius: 8, border: "1px solid #e0e0e0", fontSize: 15 }}
                     />
@@ -103,6 +120,7 @@ const Login = () => {
                         Don't have an account? Register
                     </Link>
                 </div>
+                {success && <div style={{ color: "#155724", background: '#d4edda', padding: '8px', borderRadius: 8, marginTop: 10 }}>{success}</div>}
                 {error && <div style={{ color: "#dc3545", marginTop: 10, fontWeight: 500, fontSize: 13 }}>{error}</div>}
             </div>
         </div>

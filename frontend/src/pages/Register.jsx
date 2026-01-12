@@ -43,13 +43,12 @@ const Register = () => {
 
         try {
             // Make POST request to Django backend register endpoint
-            const res = await api.post("/register/", { username, password });
+            await api.post("/user/register/", { username, password });
 
-            // Store access and refresh tokens in local storage
-            localStorage.setItem(ACCESS_TOKEN, res.data.access);
-            localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-
-            navigate("/"); // Redirect user to home page on successful registration
+            // After successful registration, redirect user to login page
+            // (require explicit login to avoid routing/token edge-cases)
+            // Pass username and success message to login page for better UX
+            navigate("/login", { state: { username, success: 'Registration successful. Please log in.' } });
         } catch (err) {
             // Set error message if registration fails
             setError("Registration failed. Username may already exist.");
