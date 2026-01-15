@@ -2,14 +2,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx'; // Main App component containing all routes and pages
+import { Toaster } from 'react-hot-toast';
 
 // Create the root of the React application and render the App component
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    {/* 
-      React.StrictMode is a development tool that highlights potential problems
-      in the application. It does not affect production build behaviour.
-    */}
+    {/* Global Toaster rendered at app root so it's not affected by local stacking contexts */}
+    <Toaster position="top-center" containerStyle={{ zIndex: 100000 }} />
     <App />
   </React.StrictMode>,
 );

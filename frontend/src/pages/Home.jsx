@@ -808,7 +808,7 @@ const Home = () => {
                     />
                 </React.Fragment>
             )}
-            <Toaster position="top-center" />
+            {/* Toaster moved to application root in `src/main.jsx` */}
         </div>
     );
 }

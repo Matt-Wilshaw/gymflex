@@ -820,10 +820,9 @@
       .client-closed-btn,
       .admin-closed-btn {
         margin-bottom: 18px !important;
-      }
-        background: none;
-        border: none;
-        box-shadow: none;
+        background: none !important;
+        border: none !important;
+        box-shadow: none !important;
       }
 
       /* Legend info styles */
