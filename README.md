@@ -35,7 +35,6 @@ Production (Heroku) app: https://gymflex-5bb1d582f94c.herokuapp.com/
     - [Sessions \& Booking](#sessions--booking)
     - [User Profiles](#user-profiles)
     - [Trainer/Admin Features](#traineradmin-features)
-    - [Future Enhancements](#future-enhancements)
   - [Database Structure](#database-structure)
     - [User Table (`auth_user`)](#user-table-auth_user)
     - [Session Table (`Session`)](#session-table-session)
@@ -56,7 +55,8 @@ Production (Heroku) app: https://gymflex-5bb1d582f94c.herokuapp.com/
     - [2. Install dependencies:](#2-install-dependencies)
     - [3. Start the React development server:](#3-start-the-react-development-server)
   - [Key Outline](#key-outline)
-  - [Future Enhancements](#future-enhancements-1)
+  - [Future Enhancements](#future-enhancements)
+    - [Security \& Account Verification](#security--account-verification)
 - [GymFlex Deployment Guide](#gymflex-deployment-guide)
   - [Prerequisites](#prerequisites)
   - [Steps](#steps)
@@ -199,7 +199,7 @@ Wireframes were created to guide the design and layout of GymFlex across devices
 
 # Surface (Visual Design)
 
-The Surface plane defines the sensory experience of GymFlex, including visual design, color, typography, and accessibility.
+The Surface plane defines the sensory experience of GymFlex, including visual design, colour, typography, and accessibility.
 
 ### Colour Palette
 GymFlex uses a calming blue theme to evoke trust, professionalism, and energy—perfect for a fitness platform. The colours promote a clean, modern look while ensuring accessibility.
@@ -250,7 +250,7 @@ Use this environment for manual end-to-end verification (JWT login, session list
 
 #### Smoke Test (Production)
 Run these quick steps after each deploy to verify core functionality:
-1. Obtain tokens: `POST /api/token/` with valid JSON credentials; expect `200` and `{"access","refresh"}`.
+1. Obtain tokens: `POST /api/token/` with valid JSON credentials; expect `200` and {"access": "<token>", "refresh": "<token>"}.
 2. List sessions: `GET /api/sessions/` with `Authorization: Bearer <access>`; expect `200` and an array. Confirm masking (trainer shows `TBA` if viewing an unbooked session as non-staff).
 3. Book a session: `POST /api/sessions/{id}/book/` (same Authorization); expect `200` and `booked: true`, `available_slots` decrements.
 4. Toggle (unbook): Repeat step 3 on same session; expect `booked: false`, `available_slots` increments.
@@ -301,10 +301,6 @@ Use this checklist as a single source of truth for GymFlex development. Update i
 ### Trainer/Admin Features
 - [x] Create, edit, delete sessions  
 - [x] View client bookings   
-
-### Future Enhancements
-- [x] Calendar view for trainers  
-- [x] Improved responsive design and accessibility  
 
 ## Database Structure
 
@@ -403,7 +399,7 @@ cd frontend
 npm install
 
 ### 3. Start the React development server:
-npm start
+`npm run dev`
 
 Visit in your browser: http://localhost:5173/
 
@@ -437,6 +433,18 @@ GymFlex helps users manage their gym experience efficiently, solving common frus
 * Social media integration for sharing sessions and achievements
 * Advanced search filters for finding specific sessions
 * Group chat for trainers and clients to discuss workouts
+  
+### Security & Account Verification
+
+Note: In the current development build, user registration does not require email verification. For production deployments, implement email confirmation and account activation before granting access to protected features.
+
+Suggested mitigations:
+- Email confirmation with time-limited activation links (e.g., Django Allauth or custom signed tokens)
+- CAPTCHA on registration to reduce automated signups
+- API rate-limiting or signup throttling
+- Admin approval for privileged/trainer accounts
+
+These measures help prevent spam accounts and protect trainer resources and booking integrity.
 
 ---
 

@@ -19,6 +19,7 @@ For a full technical breakdown of the system architecture (including middleware,
   - [7. Accessibility](#7-accessibility)
   - [8. Security \& Data Protection](#8-security--data-protection)
   - [9. Register / Create Account](#9-register--create-account)
+    - [Security Note: Unverified Sign-ups](#security-note-unverified-sign-ups)
   - [Manual Test: NotFound (404) Page](#manual-test-notfound-404-page)
   - [Appendix: Adding Test Data](#appendix-adding-test-data)
     - [Using Django Admin](#using-django-admin)
@@ -299,7 +300,7 @@ As a user, I want to navigate the calendar and toggle the bookings panel so that
 - [x] Test navigation with panel open
 
 **Bug Tracking / Notes:**  
-Fixed issue where opening panel in non-current month would reset to first day instead of staying on selected session. Updated useEffect dependencies to prevent unintended resets. Behavior now prevents "jerking" calendar movements.  
+Fixed issue where opening panel in non-current month would reset to first day instead of staying on selected session. Updated useEffect dependencies to prevent unintended resets. Behaviour now prevents "jerking" calendar movements.  
 *User Testing:* Informal testing with 6-year-old daughter Edie (non-technical user) confirmed the app's appeal—she found navigating the calendar and bookings panel "fun, like playing receptionist." This validates intuitive UI for diverse users, including children, ensuring broad accessibility and engagement. Tested on desktop with no issues reported.
 
 ---
@@ -363,12 +364,12 @@ All tasks completed.
 **Story:**  
 - Given I am an admin viewing a past session  
 - When I click the "Mark No Show" or "Mark Attended" button next to a client  
-- And the UI reflects the change (strikethrough for no-show, color for attended)
+- And the UI reflects the change (strikethrough for no-show, colour for attended)
 
 **Acceptance Criteria:**
 - Given I am an admin viewing a past session
 - When I click the "Mark No Show" or "Mark Attended" button next to a client
-- Then the UI reflects the change (strikethrough for no-show, color for attended)
+- Then the UI reflects the change (strikethrough for no-show, colour for attended)
 
 All tasks completed.
 - And users are notified of changes if applicable
@@ -377,7 +378,7 @@ All tasks completed.
 
 - [x] Implement attendance toggle button in admin bookings list
 - [x] Update backend to support attendance status changes
-- [x] Test UI feedback (strikethrough, color)
+- [x] Test UI feedback (strikethrough, colour)
 - [x] Design trainer dashboard UI  
 - [x] Implement session CRUD functionality  
 - [x] Test session updates on client dashboards  
@@ -471,6 +472,25 @@ As a visitor, I want to create an account so that I can log in, book sessions, a
 
 **Bug Tracking / Notes:**  
 Historical audit completed on November 26, 2025. One `.env` file was found in early commit (f6811aa) but contained only non-sensitive localhost URL (`VITE_API_URL="http://localhost:8000"`). No passwords, API keys, or secrets were leaked. Risk level: Very Low. `.gitignore` now properly configured to prevent future leaks.
+
+---
+
+### Security Note: Unverified Sign-ups
+
+Finding: The current registration flow allows any visitor to create an account without verifying an email address. This enables automated or malicious actors to mass-create accounts.
+
+Risk: Medium — in a public deployment this can lead to spam accounts, resource abuse, or fraudulent bookings.
+
+Recommendations:
+- Require email confirmation with time-limited activation tokens (Django Allauth or custom signed tokens).
+- Add CAPTCHA or bot-detection on the registration form.
+- Implement signup rate-limiting / throttling at the API layer.
+- Consider admin approval for privileged/trainer accounts.
+
+Acceptance criteria:
+- New accounts must confirm their email before accessing protected pages or creating bookings.
+- Registration responses clearly indicate when verification is required and how to proceed.
+- Automated tests verify token expiry, resend flows, and signup throttling.
 
 ---
 
