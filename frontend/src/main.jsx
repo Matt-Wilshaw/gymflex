@@ -7,22 +7,7 @@ import { Toaster } from 'react-hot-toast';
 
 // Create the root of the React application and render the App component
 // Global error handlers to capture unhandled promise rejections and errors
-if (typeof window !== 'undefined') {
-  window.addEventListener('unhandledrejection', (e) => {
-    try {
-      // Log full rejection reason and stack for production debugging
-      // eslint-disable-next-line no-console
-      console.error('Unhandled promise rejection captured:', e.reason);
-    } catch (_) {}
-  });
-
-  window.addEventListener('error', (err) => {
-    try {
-      // eslint-disable-next-line no-console
-      console.error('Global error captured:', err.error || err.message, err.filename, err.lineno, err.colno);
-    } catch (_) {}
-  });
-}
+// (Previous temporary global error handlers removed for production readiness)
 // Clear stored tokens on initial app load so the app always starts at the login screen.
 // This prevents silently restoring the previous session from localStorage.
 if (typeof window !== 'undefined') {

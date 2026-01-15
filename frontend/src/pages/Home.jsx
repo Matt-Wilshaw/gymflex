@@ -204,9 +204,7 @@ const Home = () => {
     const adminMarkAttendance = async (sessionId, attendanceId, attended) => {
         try {
             const res = await markAttendance(sessionId, attendanceId, attended);
-            console.log('adminMarkAttendance response:', res);
             const attendedLabel = res?.attended ? 'Attended' : 'No-show';
-            console.log('adminMarkAttendance will show toast:', attendedLabel);
             toast.success(`Booking status: ${attendedLabel}`);
         } catch (err) {
             console.error('Error marking attendance:', err);
