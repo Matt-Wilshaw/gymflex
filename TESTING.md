@@ -233,6 +233,8 @@ For GymFlex, Lighthouse was used to audit both the local development build and t
 **Notes:**
 - Some metrics (e.g., performance) may vary between local and production due to network and server differences.
 - For the most accurate results, run Lighthouse in an incognito window with no extensions enabled.
+ - Note: Lighthouse audits on production were performed against the Heroku app running on an Eco dyno; dyno sleeping and cold starts can reduce the Performance score and introduce variability in audit runs.
+ - During testing we experimented with making session and booking API queries more atomic to reduce race conditions. Those changes introduced regressions that briefly broke site behaviour, so they were rolled back to deliver a stable MVP. Making server-side queries atomic and safe is a planned future enhancement.
 
 ---
 
