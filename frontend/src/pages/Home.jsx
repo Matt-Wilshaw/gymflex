@@ -164,19 +164,53 @@ const Home = () => {
     };
 
     // Remove an attendee from a session (admin only)
-    const removeAttendee = async (sessionId, attendeeId) => {
-        if (!window.confirm("Remove this attendee from the session?")) return;
-        try {
-            await hookRemoveAttendee(sessionId, attendeeId);
-            toast.success("Attendee removed.");
-        } catch (err) {
-            console.error("Error removing attendee:", err);
-            toast.error(err.response?.data?.detail || "Failed to remove attendee.");
-        }
+    const removeAttendee = (sessionId, attendeeId) => {
+        // Use a non-blocking toast confirmation instead of native confirm
+        toast((t) => (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div>Remove this attendee from the session?</div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                    <button
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            try {
+                                await hookRemoveAttendee(sessionId, attendeeId);
+                                // Keep exact toast wording required by UI
+                                toast.success("Booking status: Removed");
+                            } catch (err) {
+                                console.error("Error removing attendee:", err);
+                                toast.error(err.response?.data?.detail || "Failed to remove attendee.");
+                            }
+                        }}
+                        style={{ padding: '6px 10px', borderRadius: 6, border: 'none', background: '#dc3545', color: 'white', cursor: 'pointer' }}
+                    >
+                        Confirm
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        style={{ padding: '6px 10px', borderRadius: 6, border: '1px solid #ccc', background: 'white', cursor: 'pointer' }}
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        ), { duration: 10000 });
     };
 
     // Logout user and clear tokens
     const handleLogout = () => hookHandleLogout(navigate);
+
+    // Admin wrapper for marking attendance so we can show a consistent booking-status toast
+    const adminMarkAttendance = async (sessionId, attendanceId, attended) => {
+        try {
+            const res = await markAttendance(sessionId, attendanceId, attended);
+            const attendedLabel = res?.attended ? 'Attended' : 'No-show';
+            toast.success(`Booking status: ${ attendedLabel}`);
+        } catch (err) {
+            console.error('Error marking attendance:', err);
+            toast.error(err.response?.data?.detail || 'Failed to update attendance.');
+        }
+    };
 
     // Clicking a calendar day → open modal showing sessions (non-admin).
     // For admins, filter the admin sessions list to that date instead.
@@ -617,7 +651,7 @@ const Home = () => {
                                     setSelectedAdminDate={setSelectedAdminDate}
                                     adminLoading={adminLoading}
                                     removeAttendee={removeAttendee}
-                                    markAttendance={markAttendance}
+                                    markAttendance={adminMarkAttendance}
                                     showBookingsPanel={showBookingsPanel}
                                     setShowBookingsPanel={setShowBookingsPanel}
                                     embedded={true}

@@ -118,11 +118,11 @@ export default function useSessions() {
     // markAttendance: admin action to toggle attended status for a booking
     const markAttendance = async (sessionId, attendanceId, attended) => {
         try {
-            await api.post(`/sessions/${sessionId}/mark_attendance/`, { attendance_id: attendanceId, attended });
+            const res = await api.post(`/sessions/${sessionId}/mark_attendance/`, { attendance_id: attendanceId, attended });
             await fetchAllSessions();
             await fetchSessions();
             await fetchBookedSessions();
-            return true;
+            return res.data;
         } catch (err) {
             console.error("Error marking attendance:", err);
             throw err;
