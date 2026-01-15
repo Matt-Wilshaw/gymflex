@@ -256,7 +256,7 @@ class SessionViewSet(viewsets.ModelViewSet):
             # Prevent cancelling booking after the session has started
             if session_datetime < datetime.now():
                 return Response(
-                    {"status": "past", "message": "Cannot cancel after session start"},
+                    {"status": "Past", "message": "Cannot cancel after session start"},
                     status=400
                 )
             # Prevent cancelling booking within 30 minutes of session start (for non-staff)
@@ -268,14 +268,14 @@ class SessionViewSet(viewsets.ModelViewSet):
                         status=400
                     )
             session.attendees.remove(user)
-            return Response({"status": "unbooked"})
+            return Response({"status": "Unbooked"})
         else:
             # Check capacity before adding
             if session.attendees.count() < session.capacity:
                 session.attendees.add(user)
-                return Response({"status": "booked"})
+                return Response({"status": "Booked"})
             else:
-                return Response({"status": "full"}, status=400)
+                return Response({"status": "Full"}, status=400)
 
     @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated, IsTrainerOrReadOnly])
     def remove_attendee(self, request, pk=None):

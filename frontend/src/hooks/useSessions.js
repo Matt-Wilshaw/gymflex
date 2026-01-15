@@ -119,6 +119,7 @@ export default function useSessions() {
     const markAttendance = async (sessionId, attendanceId, attended) => {
         try {
             const res = await api.post(`/sessions/${sessionId}/mark_attendance/`, { attendance_id: attendanceId, attended });
+            console.log('useSessions.markAttendance res.data:', res.data);
             await fetchAllSessions();
             await fetchSessions();
             await fetchBookedSessions();
