@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx'; // Main App component containing all routes and pages
+import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants.js';
 import { Toaster } from 'react-hot-toast';
 
 // Create the root of the React application and render the App component
@@ -21,6 +22,14 @@ if (typeof window !== 'undefined') {
       console.error('Global error captured:', err.error || err.message, err.filename, err.lineno, err.colno);
     } catch (_) {}
   });
+}
+// Clear stored tokens on initial app load so the app always starts at the login screen.
+// This prevents silently restoring the previous session from localStorage.
+if (typeof window !== 'undefined') {
+  try {
+    localStorage.removeItem(ACCESS_TOKEN);
+    localStorage.removeItem(REFRESH_TOKEN);
+  } catch (_) {}
 }
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
