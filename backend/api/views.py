@@ -20,6 +20,7 @@ from rest_framework import generics, viewsets, permissions
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.throttling import ScopedRateThrottle
 from .models import Note, Session, SessionAttendee
 from .serializers import UserSerializer, NoteSerializer, SessionSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -118,6 +119,8 @@ class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]  # Public endpoint - anyone can register
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "register"
 
 
 # -----------------------------

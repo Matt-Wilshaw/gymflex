@@ -1,6 +1,7 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework.throttling import ScopedRateThrottle
 
 class CaseInsensitiveTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -10,3 +11,5 @@ class CaseInsensitiveTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class CaseInsensitiveTokenObtainPairView(TokenObtainPairView):
     serializer_class = CaseInsensitiveTokenObtainPairSerializer
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "login"

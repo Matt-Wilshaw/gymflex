@@ -23,7 +23,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # DEBUG: Shows detailed error pages when True - should always be False in production
 # ALLOWED_HOSTS: List of domain names that Django will serve - prevents HTTP Host header attacks
 SECRET_KEY = os.environ.get('SECRET_KEY', "django-insecure-nma=xi6x2p-crjg^ifqqkapyu1qjd0l=+wn)-rijk_o%$!k3w_")
-DEBUG = False  # Force DEBUG off to enable custom error pages and static file serving
+
+IS_HEROKU = os.environ.get("DYNO") is not None
+
+DEBUG = False
+
 ALLOWED_HOSTS = ['gymflex-5bb1d582f94c.herokuapp.com', '.herokuapp.com', 'localhost', '127.0.0.1']
 
 # REST Framework configuration - handles API behaviour
@@ -37,6 +41,24 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+
+    # Rate limiting (throttling)
+    # - Global throttles are intentionally generous to avoid impacting normal usage
+    # - Sensitive endpoints (login/register) use ScopedRateThrottle with stricter limits
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+        "rest_framework.throttling.ScopedRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        # Global defaults
+        "anon": "200/day",
+        "user": "2000/day",
+
+        # Scoped throttles for auth endpoints
+        "login": "10/min",
+        "register": "5/hour",
+    },
 }
 
 # JWT token lifetime settings
@@ -148,16 +170,26 @@ USE_I18N = True           # Enable Django's internationalisation system
 USE_TZ = True             # Use timezone-aware datetimes
 
 # Static files configuration (CSS, JavaScript, images)
-STATIC_URL = "static/"  # URL prefix for static files
+STATIC_URL = "/static/"  # URL prefix for static files
 STATIC_ROOT = BASE_DIR / "staticfiles"  # Directory where collectstatic gathers files
 STATICFILES_DIRS = [
     # Include React's built assets in static files
     BASE_DIR.parent / "frontend" / "dist" / "assets",
     BASE_DIR.parent / "frontend" / "public",
 ]
+
+# With DEBUG=False, Django's dev server will not serve static files.
+# WhiteNoise can still serve them locally if it is allowed to use Django's finders.
+WHITENOISE_USE_FINDERS = not IS_HEROKU
+
 # Use WhiteNoise's storage backend for efficient static file serving with compression
-# For development, we disable manifest checking to avoid errors with missing files
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage" if DEBUG else "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# In production (e.g., Heroku), use manifest storage for cache-busting.
+# For local development, avoid requiring collectstatic/manifest to prevent admin styling issues.
+STATICFILES_STORAGE = (
+    "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    if IS_HEROKU
+    else "whitenoise.storage.CompressedStaticFilesStorage"
+)
 
 # Default primary key field type for models
 # BigAutoField allows for larger range of IDs than standard AutoField

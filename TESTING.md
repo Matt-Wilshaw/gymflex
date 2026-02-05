@@ -453,6 +453,39 @@ As a developer, I want to ensure that no sensitive information (passwords, API k
 - [x] Audit Git history for accidentally committed secrets
 - [x] Document findings and risk assessment
 
+**API Rate Limiting (Throttling):**
+- The authentication endpoints are rate-limited to reduce brute-force login attempts and automated sign-ups.
+- Expected behaviour when exceeded: HTTP `429 Too Many Requests` with a DRF throttle message.
+- Endpoints covered:
+  - `POST /api/token/` (login)
+  - `POST /api/user/register/` (registration)
+
+**Manual Check (Optional):**
+- Login throttle is configured as `10/min`.
+  - Make 11 quick requests to `POST /api/token/` with an invalid password; expect `429` on (or shortly after) the 11th request.
+- Registration throttle is configured as `5/hour`.
+  - Attempt to register 6 times within an hour (e.g., with unique usernames); expect `429` on (or shortly after) the 6th request.
+
+**Authentication & Authorisation (Evidence):**
+- Protected endpoints require a valid JWT access token.
+- Evidence (automated):
+  - `GET /api/sessions/` returns `401` when unauthenticated.
+  - `GET /api/sessions/` returns `200` when authenticated.
+  - `POST /api/sessions/{id}/book/` requires authentication and is covered by an automated booking toggle test.
+
+**JWT Handling & Storage (Frontend):**
+- The frontend stores the access/refresh tokens in `localStorage`.
+- Risk note: `localStorage` tokens are vulnerable to token theft if an XSS vulnerability exists.
+- Mitigation (future): consider using `HttpOnly` secure cookies for tokens in production and adding additional hardening (e.g., Content Security Policy).
+
+**CORS / Deployment Hardening:**
+- Development config currently allows all origins (`CORS_ALLOW_ALL_ORIGINS = True`).
+- For production, restrict CORS to a specific allow-list (e.g., only the deployed frontend origin) and review whether credentials should be enabled.
+
+**Known Limitations (Current):**
+- Email verification is not enforced for new accounts.
+- Password reset / account recovery is not implemented yet.
+
 ---
 
 ## 9. Register / Create Account
@@ -488,7 +521,7 @@ Risk: Medium — in a public deployment this can lead to spam accounts, resource
 Recommendations:
 - Require email confirmation with time-limited activation tokens (Django Allauth or custom signed tokens).
 - Add CAPTCHA or bot-detection on the registration form.
-- Implement signup rate-limiting / throttling at the API layer.
+- Implement signup rate-limiting / throttling at the API layer. (Implemented: see “API Rate Limiting (Throttling)” above.)
 - Consider admin approval for privileged/trainer accounts.
 
 Acceptance criteria:
