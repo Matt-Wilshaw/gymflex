@@ -1,10 +1,41 @@
+# GymFlex Testing Documentation
+
 ## Introduction
 
 This document outlines the testing process for **GymFlex**, a gym management web application that allows users to register, book sessions, and interact with trainers through an intuitive interface.
 For a full technical breakdown of the system architecture (including middleware, data flow, and masking logic), see the [Architecture Document](./docs/ARCHITECTURE.md).
 
+Testing was conducted to ensure that all features of GymFlex function as intended, that the user experience is consistent across devices and browsers, and that both clients and trainers can interact with the system without errors or usability issues.
+
+Both **manual** and **automated** testing methods were used to validate the functionality, usability, and accessibility of the application.
+
+Key areas covered in testing include:
+- User registration and authentication  
+- Session booking and cancellation  
+- Trainer session management (creating, editing, and deleting sessions as a trainer; verifying permissions and UI for trainers)
+- Data integrity and permission control  
+- Cross-browser and mobile responsiveness  
+- Accessibility compliance (WCAG standards)
+
+For each user story, **black box testing** was applied — evaluating the system purely from the user's perspective without knowledge of internal code logic.  
+
+All discovered bugs, fixes, and retests are documented throughout this file.
+
+For additional project details and technical information, including instructions on running the site, please refer to the [README.md](./README.md)
+
+
+## Table of Contents
+
 - [GymFlex Testing Documentation](#gymflex-testing-documentation)
-  - [Introduction](#introduction-1)
+  - [Introduction](#introduction)
+  - [Table of Contents](#table-of-contents)
+  - [Testing Strategy](#testing-strategy)
+    - [Behaviour-Driven Development (BDD)](#behaviour-driven-development-bdd)
+    - [Test-Driven Development (TDD) / Automated Tests](#test-driven-development-tdd--automated-tests)
+  - [Testing Environments](#testing-environments)
+    - [Local Development (http://localhost:8000/api, frontend at http://localhost:5173/)](#local-development-httplocalhost8000api-frontend-at-httplocalhost5173)
+    - [Production (Heroku) (https://gymflex-5bb1d582f94c.herokuapp.com)](#production-heroku-httpsgymflex-5bb1d582f94cherokuappcom)
+    - [Workflow Summary](#workflow-summary)
   - [Responsiveness Testing](#responsiveness-testing)
   - [HTML Validator Testing](#html-validator-testing)
   - [CSS Validator Testing](#css-validator-testing)
@@ -26,31 +57,35 @@ For a full technical breakdown of the system architecture (including middleware,
     - [Using Django Shell](#using-django-shell)
     - [Using Django Fixtures](#using-django-fixtures)
 
+---
 
-Testing was conducted to ensure that all features of GymFlex function as intended, that the user experience is consistent across devices and browsers, and that both clients and trainers can interact with the system without errors or usability issues.
+## Testing Strategy
 
-The testing strategy followed a combination of **Behaviour-Driven Development (BDD)** and **Test-Driven Development (TDD)** principles:
+### Behaviour-Driven Development (BDD)
 
-- **BDD (Behaviour-Driven Development):** Focused on real-world user stories, such as *“As a user, I want to book a session so that I can reserve my spot in advance.”*  
-- **TDD (Test-Driven Development):** Automated tests were written before implementing each feature to ensure correctness and maintainable code.
+BDD evidence in this project is primarily captured through the **User Stories** section below. Each user story is tested using black-box steps and expected outcomes, reflecting real-world user flows (e.g., discover → book → cancel).
 
-Both **manual** and **automated** testing methods were used to validate the functionality, usability, and accessibility of the application.
+### Test-Driven Development (TDD) / Automated Tests
 
-Key areas covered in testing include:
-- User registration and authentication  
-- Session booking and cancellation  
-- Trainer session management  
-- Data integrity and permission control  
-- Cross-browser and mobile responsiveness  
-- Accessibility compliance (WCAG standards)
+Automated tests are implemented for key backend API workflows using Django REST Framework's test client.
 
-For each user story, **black box testing** was applied — evaluating the system purely from the user's perspective without knowledge of internal code logic.  
+- **Location:** `backend/api/tests.py`
+- **Coverage (high level):**
+  - JWT token obtain (`POST /api/token/`)
+  - Auth protection on sessions list (`GET /api/sessions/`)
+  - Session booking toggle (`POST /api/sessions/{id}/book/`)
 
-All discovered bugs, fixes, and retests are documented throughout this file.
+Run backend automated tests locally (PowerShell, from the repository root):
 
-For additional project details and technical information, including instructions on running the site, please refer to the [README.md](./README.md)
+```powershell
+cd backend
+..\env\Scripts\Activate.ps1
+python manage.py test
+```
 
-----
+Note: Django creates a temporary test database for the run and destroys it afterwards.
+
+**Latest run (local):** 05 February 2026 — `python manage.py test` — Found 4 test(s), all passing (OK).
 
 ## Testing Environments
 
@@ -90,38 +125,6 @@ GymFlex is tested in two environments with different purposes and workflows:
 
 ---
 
-# GymFlex Testing Documentation
-
-## Introduction
-
-This document outlines the testing process for **GymFlex**, a gym management web application that allows users to register, book sessions, and interact with trainers through an intuitive interface.
-For a full technical breakdown of the system architecture (including middleware, data flow, and masking logic), see the [Architecture Document](./docs/ARCHITECTURE.md).
-
-Testing was conducted to ensure that all features of GymFlex function as intended, that the user experience is consistent across devices and browsers, and that both clients and trainers can interact with the system without errors or usability issues.
-
-The testing strategy followed a combination of **Behaviour-Driven Development (BDD)** and **Test-Driven Development (TDD)** principles:
-
-- **BDD (Behaviour-Driven Development):** Focused on real-world user stories, such as *“As a user, I want to book a session so that I can reserve my spot in advance.”*  
-- **TDD (Test-Driven Development):** Automated tests were written before implementing each feature to ensure correctness and maintainable code.
-
-Both **manual** and **automated** testing methods were used to validate the functionality, usability, and accessibility of the application.
-
-Key areas covered in testing include:
-- User registration and authentication  
-- Session booking and cancellation  
-- Trainer session management (creating, editing, and deleting sessions as a trainer; verifying permissions and UI for trainers)
-- Data integrity and permission control  
-- Cross-browser and mobile responsiveness  
-- Accessibility compliance (WCAG standards)
-
-For each user story, **black box testing** was applied — evaluating the system purely from the user's perspective without knowledge of internal code logic.  
-
-All discovered bugs, fixes, and retests are documented throughout this file.
-
-For additional project details and technical information, including instructions on running the site, please refer to the [README.md](./README.md)
-
----
-
 ## Responsiveness Testing
 
 GymFlex was tested at the following breakpoints to ensure a consistent experience:
@@ -143,8 +146,7 @@ GymFlex was tested at the following breakpoints to ensure a consistent experienc
 4. Take screenshots and save them in the appropriate `readme-images/` subfolder.
 
 **Note:** Some online preview tools (e.g. Am I Responsive) may not display Heroku apps due to iframe or CORS restrictions. Use browser dev tools for best results.
-- [x] Design timetable UI  
-- [x] Implement backend session retrieval  
+
 - [x] Test real-time updates or refresh functionality  
 
 ## HTML Validator Testing
@@ -548,15 +550,9 @@ Acceptance criteria:
 
 1. **Create a superuser** (if needed):
 
-```bash
-# Activate virtual environment
-# Windows
-.\venv\Scripts\activate
-
-# macOS/Linux
-source venv/bin/activate
-
-# Create superuser
+```powershell
+# From the repository root
+.\env\Scripts\Activate.ps1
 cd backend
 python manage.py createsuperuser
 ```
@@ -568,10 +564,10 @@ python manage.py createsuperuser
 
 1. **Open Django shell**:
 
-```bash
-# Activate environment and navigate to backend
-.\venv\Scripts\activate
+```powershell
+# From the repository root
 cd backend
+..\env\Scripts\Activate.ps1
 python manage.py shell
 ```
 
@@ -583,30 +579,32 @@ from api.models import Session
 from datetime import time, timedelta
 from django.utils import timezone
 
-# Get existing users
-admin_trainer = User.objects.get(username='admin')
-test_user = User.objects.get(username='client')
+# Get existing users (update usernames as needed for your local fixtures)
+trainer = User.objects.filter(is_staff=True).first()
+client = User.objects.get(username='client')
 
-# Create sessions
-session1, created = Session.objects.get_or_create(
-    title="Morning Strength",
-    trainer=admin_trainer,
+# Create sessions (Session model uses activity_type/date/time/capacity)
+session1 = Session.objects.create(
+    activity_type="weights",
+    trainer=trainer,
     date=timezone.now().date() + timedelta(days=1),
     time=time(9, 0),
-    capacity=12
+    duration_minutes=60,
+    capacity=12,
 )
 
-session2, created = Session.objects.get_or_create(
-    title="Evening Cardio",
-    trainer=admin_trainer,
+session2 = Session.objects.create(
+    activity_type="cardio",
+    trainer=trainer,
     date=timezone.now().date() + timedelta(days=1),
     time=time(18, 0),
-    capacity=15
+    duration_minutes=60,
+    capacity=15,
 )
 
 # Add test user as attendee (via SessionAttendee join table)
-session1.attendees.add(test_user)
-session2.attendees.add(test_user)
+session1.attendees.add(client)
+session2.attendees.add(client)
 ```
 
 3. **Verify data**: Check via admin panel or API endpoint (`GET /api/sessions/`).
