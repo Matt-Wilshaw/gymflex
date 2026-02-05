@@ -56,7 +56,14 @@ Production (Heroku) app: https://gymflex-5bb1d582f94c.herokuapp.com/
     - [3. Start the React development server:](#3-start-the-react-development-server)
   - [Key Outline](#key-outline)
   - [Future Enhancements](#future-enhancements)
+    - [User Experience](#user-experience)
+    - [Communication \& Notifications](#communication--notifications)
+    - [Trainer/Admin Tools](#traineradmin-tools)
+    - [Monetisation](#monetisation)
+    - [Social \& Community](#social--community)
+    - [Health, Safety \& Onboarding](#health-safety--onboarding)
     - [Security \& Account Verification](#security--account-verification)
+      - [Password Reset (Account Recovery)](#password-reset-account-recovery)
 - [GymFlex Deployment Guide](#gymflex-deployment-guide)
   - [Prerequisites](#prerequisites)
   - [Steps](#steps)
@@ -425,16 +432,72 @@ GymFlex helps users manage their gym experience efficiently, solving common frus
 
 ## Future Enhancements
 
-* Email notifications for booking confirmations and reminders
-* Note and feedback system for trainers
-* Personalised workout plans based on goals and preferences
-* Ratings and reviews for trainers
-* Integration with payment systems
-* Social media integration for sharing sessions and achievements
-* Advanced search filters for finding specific sessions
-* Group chat for trainers and clients to discuss workouts
+This project delivers the core booking and session management experience. The items below are realistic next steps that would improve usability, security, and overall feature depth.
+
+### User Experience
+
+* Advanced search and filtering (by trainer, class type, time range, availability)
+* Improved session discovery (featured sessions, “recommended for you”, saved filters)
+* Better profile management (membership status, preferences, notification settings)
+
+### Communication & Notifications
+
+* Email notifications for booking confirmations, cancellations, and reminders
+* Optional in-app notifications (e.g., upcoming session reminders on login)
+* Trainer broadcast messages for session updates (e.g., class moved/changed)
+
+### Trainer/Admin Tools
+
+* Notes and feedback system for trainers (per-user or per-session)
+* Attendance tracking and reporting (no-shows, trends over time)
+* Ratings and reviews for trainers (with moderation)
+
+### Monetisation
+
+* Integration with payment systems (subscriptions, per-class payments)
+* Purchase history / invoices and basic billing management
+
+### Social & Community
+
+* Group chat or forum-style discussion for members and trainers
+* Social sharing (optional) for milestones and booked sessions
+
+### Health, Safety & Onboarding
+
+At the moment, sign-up only captures minimal credentials. For a fitness application, a future version should gather additional user information (with clear consent) to support safer training recommendations and to help protect trainers and participants.
+
+Potential onboarding data (examples):
+* Basic profile: full name, email, age band (or DOB), emergency contact
+* Fitness background: experience level, goals, injuries/limitations, preferences
+* Health & readiness screening: PAR-Q style questions and medical disclaimers
+
+How this helps:
+* Enables trainers to tailor sessions and reduce risk for users who are unfit for certain activities
+* Improves overall session suitability and safety (e.g., matching intensity to experience)
+
+Optional AI-assisted support (future scope):
+* Suggest suitable session types based on declared goals/limitations
+* Flag potential risk factors for trainer review (not automated “approval/denial”)
+
+Privacy & safety notes:
+* Collect the minimum data required, store it securely, and allow users to edit/delete
+* Clearly state that AI suggestions are informational and do not replace medical advice
+* Consider role-based access so only trainers/admins can see sensitive onboarding details
   
 ### Security & Account Verification
+
+#### Password Reset (Account Recovery)
+
+The current build does not include a “Forgot password?” flow. A future version should support secure password resets via email:
+
+* User requests reset using their email/username
+* System emails a time-limited, single-use reset link (token-based)
+* User sets a new password, invalidating the token
+
+Security considerations:
+* Don’t reveal whether an email/username exists (return a generic success message)
+* Rate-limit reset requests to reduce abuse
+* Use short token expiry and HTTPS links in production
 
 Note: In the current development build, user registration does not require email verification. For production deployments, implement email confirmation and account activation before granting access to protected features.
 
