@@ -22,6 +22,8 @@ Production (Heroku) app: https://gymflex-5bb1d582f94c.herokuapp.com/
   - [Features](#features)
   - [Admin Access](#admin-access)
   - [Technologies Used](#technologies-used)
+  - [Security Features (Summary)](#security-features-summary)
+  - [Templates](#templates)
 - [Skeleton (Wireframes \& Layout)](#skeleton-wireframes--layout)
 - [Surface (Visual Design)](#surface-visual-design)
     - [Colour Palette](#colour-palette)
@@ -33,13 +35,16 @@ Production (Heroku) app: https://gymflex-5bb1d582f94c.herokuapp.com/
   - [Development Checklist](#development-checklist)
     - [Authentication \& User Management](#authentication--user-management)
     - [Sessions \& Booking](#sessions--booking)
-    - [User Profiles](#user-profiles)
+    - [User Accounts](#user-accounts)
     - [Trainer/Admin Features](#traineradmin-features)
   - [Database Structure](#database-structure)
+    - [Schema (Source of Truth)](#schema-source-of-truth)
     - [User Table (`auth_user`)](#user-table-auth_user)
     - [Session Table (`Session`)](#session-table-session)
     - [SessionAttendee Table (`SessionAttendee`)](#sessionattendee-table-sessionattendee)
+    - [Notes Table (`Note`) (Legacy / Not used in current UI)](#notes-table-note-legacy--not-used-in-current-ui)
     - [Relationships](#relationships)
+  - [CRUD Coverage (Unit 3)](#crud-coverage-unit-3)
   - [Installation / Setup](#installation--setup)
     - [1. Clone the repository](#1-clone-the-repository)
     - [2. Create a virtual environment (optional but recommended)](#2-create-a-virtual-environment-optional-but-recommended)
@@ -71,12 +76,13 @@ Production (Heroku) app: https://gymflex-5bb1d582f94c.herokuapp.com/
     - [2. Add PostgreSQL Add-on](#2-add-postgresql-add-on)
     - [3. Set Environment Variables](#3-set-environment-variables)
     - [4. Prepare Your Django App](#4-prepare-your-django-app)
-    - [5. Collect Static Files](#5-collect-static-files)
+    - [5. Static Files](#5-static-files)
     - [6. Apply Database Migrations](#6-apply-database-migrations)
     - [7. Push Code to Heroku](#7-push-code-to-heroku)
     - [8. Open the App](#8-open-the-app)
     - [Optional: Monitor Logs](#optional-monitor-logs)
   - [Tips](#tips)
+    - [Deployed buildpacks (reference)](#deployed-buildpacks-reference)
   - [Author](#author)
   - [Restoring Development Data](#restoring-development-data)
   - [Credits](#credits)
@@ -149,7 +155,8 @@ The platform is structured around key user flows:
 
 * User registration and authentication
 * Trainer and client profile management
-* Create, view, edit, and cancel bookings (CRUD functionality)
+* Book and cancel (toggle) session bookings
+* Staff/admin attendance management (mark attended / no-show)
 * Interactive calendar view for gym sessions powered by react-big-calendar
 * Toast notifications for user feedback (booking confirmations, errors)
 * Activity filtering on calendar with visual emoji indicators
@@ -180,6 +187,31 @@ Use your admin credentials to log in.
 * **Hosting:** Heroku
 * **Version Control:** Git & GitHub
 * **Authentication:** JWT (JSON Web Token)
+
+---
+
+## Security Features (Summary)
+
+GymFlex includes basic security measures appropriate for an MVP full stack booking application:
+
+- **Authentication:** JWT-based authentication for API access.
+- **Authorisation:** Most API endpoints require authentication by default; staff-only permissions are applied to session creation/editing/deleting.
+- **Rate limiting:** Login and registration endpoints are throttled to reduce abuse.
+- **Secrets management:** Secrets are supplied via environment variables in production (Heroku config vars). The repository does not contain production secret keys.
+- **Production safety:** `DEBUG` is disabled in production.
+
+For full security testing notes (including expected `401` and `429` behaviour), see [TESTING.md](./TESTING.md).
+
+---
+
+## Templates
+
+Although the main user interface is a React single-page application, Django templates are used in the backend for:
+
+- **DRF API root branding:** [backend/api/templates/api_root.html](backend/api/templates/api_root.html)
+- **Custom 404 page:** [backend/api/templates/404.html](backend/api/templates/404.html)
+
+These templates demonstrate use of template inheritance/blocks (and provide a friendly fallback page) alongside the SPA.
 
 ---
 
@@ -300,14 +332,14 @@ Use this checklist as a single source of truth for GymFlex development. Update i
 - [x] Cancel/unbook session  
 - [x] View booking status/history  
 
-### User Profiles
-- [x] View profile details (username, membership type)  
-- [x] Edit profile  
-- [x] Display past bookings  
+### User Accounts
+- [x] Register / login
+- [x] Role-based UI (staff/admin vs client) using `/api/users/me/`
 
 ### Trainer/Admin Features
-- [x] Create, edit, delete sessions  
-- [x] View client bookings   
+- [x] Manage sessions via Django admin (`/admin/`)  
+- [x] View client bookings and remove attendees (staff UI)
+- [x] Mark attendance (attended / no-show)
 
 ## Database Structure
 
@@ -317,6 +349,15 @@ The database is normalised to avoid duplication and maintain clear relationships
 - Trainers (`is_staff=True`) can create and manage sessions.
 - Clients can view sessions and book/unbook them.
 - Each session is linked to a trainer and can have multiple attendees (tracked via the SessionAttendee join table).
+
+### Schema (Source of Truth)
+
+The authoritative schema for GymFlex is defined in the Django models and migrations:
+
+- Models: [backend/api/models.py](backend/api/models.py)
+- Migrations: [backend/api/migrations](backend/api/migrations)
+
+For assessment purposes, the tables/fields below summarise what is implemented in the current build.
 
 ---
 
@@ -340,10 +381,11 @@ Stores all gym sessions.
 | Field      | Description                                                     |
 | ---------- | --------------------------------------------------------------- |
 | id         | Primary Key                                                     |
-| title      | Session name or type                                            |
+| activity_type | Session type (cardio/weights/yoga/hiit/pilates)               |
 | trainer_id | FK → `User.id` (who runs the session)                           |
 | date       | Session date                                                    |
-| time       | Session time                                                    |
+| time       | Session start time                                              |
+| duration_minutes | Session length (minutes)                                  |
 | capacity   | Maximum number of clients                                       |
 | attendees  | ManyToMany → Users who booked the session (via SessionAttendee) |
 
@@ -363,11 +405,42 @@ This table enables users to book multiple sessions and sessions to have multiple
 
 ---
 
+### Notes Table (`Note`) (Legacy / Not used in current UI)
+
+The backend includes a simple `Note` model and API endpoints from an earlier iteration. It is not used by the current GymFlex React UI, but it remains in the database schema.
+
+| Field      | Description |
+| ---------- | ----------- |
+| id         | Primary Key |
+| title      | Note title |
+| created_at | Created timestamp |
+| updated_at | Updated timestamp |
+| author_id  | FK → `User.id` |
+
+---
+
 ### Relationships
 
 - `trainer_sessions` links trainers to the sessions they run (One-to-Many).  
 - `booked_sessions` links users to sessions they have booked (Many-to-Many).  
 - Trainers can create/edit/delete sessions; clients can only view and book/unbook.  
+
+---
+
+## CRUD Coverage (Unit 3)
+
+This project supports CRUD operations across the core domain (sessions and bookings). Some operations are exposed in the React UI for clients and staff (with immediate feedback via toast notifications and refreshed API data); full session CRUD is available to staff via Django admin and protected API endpoints.
+
+**Entity: Session (staff/trainer)**
+- **Create:** Django admin (`/admin/`) or `POST /api/sessions/` (staff only)
+- **Read:** React dashboard calendar (`GET /api/sessions/`) for all authenticated users
+- **Update:** Django admin or `PUT/PATCH /api/sessions/{id}/` (staff only)
+- **Delete:** Django admin or `DELETE /api/sessions/{id}/` (staff only)
+
+**Entity: Booking (SessionAttendee)**
+- **Create/Delete (toggle):** React UI booking action → `POST /api/sessions/{id}/book/`
+- **Update (attendance):** Staff UI → `POST /api/sessions/{id}/mark_attendance/` (sets attended/no-show)
+- **Delete (remove attendee):** Staff UI → `POST /api/sessions/{id}/remove_attendee/`
 
 ## Installation / Setup
 
@@ -414,7 +487,7 @@ Visit in your browser: http://localhost:5173/
 
 * Make sure you have Python 3.11+ installed.
 * Use `.env` for environment variables like `SECRET_KEY` and database settings.
-* If using PostgreSQL locally, update `settings.py` with your local database credentials.
+* If using PostgreSQL locally, set `DATABASE_URL` in `.env` (see [.env.example](.env.example)).
 
 ---
 
@@ -513,7 +586,7 @@ These measures help prevent spam accounts and protect trainer resources and book
 
 # GymFlex Deployment Guide
 
-This document explains how to deploy GymFlex to Heroku.
+This document explains how GymFlex is deployed to Heroku.
 
 ## Prerequisites
 
@@ -527,7 +600,7 @@ This document explains how to deploy GymFlex to Heroku.
 
 ```bash
 heroku login
-heroku create gymflex-app
+heroku create <your-app-name>
 ```
 
 ### 2. Add PostgreSQL Add-on
@@ -542,21 +615,22 @@ heroku addons:create heroku-postgresql:hobby-dev
 ### 3. Set Environment Variables
 
 ```bash
-heroku config:set DEBUG=False
 heroku config:set SECRET_KEY='your-secret-key'
-heroku config:set ALLOWED_HOSTS='your-heroku-app.herokuapp.com'
 ```
 
-* Include any other environment variables (e.g., JWT settings, API keys).
+Notes:
+
+- This project is configured to read `DATABASE_URL` automatically when present (Heroku sets this for Postgres).
+- `DEBUG` is kept off in production.
+- `ALLOWED_HOSTS` is already set to include `*.herokuapp.com`.
 
 ### 4. Prepare Your Django App
 
-* Ensure requirements.txt and Procfile are present:
+Ensure requirements.txt and Procfile are present:
 
-```text
-# Procfile
-web: gunicorn backend.wsgi
-```
+This repository uses a root Procfile which runs migrations in a release phase:
+
+- Procfile: [Procfile](Procfile)
 
 * Optionally, specify Python version in runtime.txt:
 
@@ -564,19 +638,22 @@ web: gunicorn backend.wsgi
 python-3.11.8
 ```
 
-### 5. Collect Static Files
+### 5. Static Files
+
+Static files are collected during the Heroku build.
+If you need to re-run manually for troubleshooting:
 
 ```bash
-heroku run python manage.py collectstatic --noinput
+heroku run python backend/manage.py collectstatic --noinput
 ```
-
-* Prepares all static files for production.
 
 ### 6. Apply Database Migrations
 
 ```bash
-heroku run python manage.py migrate
+heroku run python backend/manage.py migrate
 ```
+
+Note: In the deployed configuration, migrations are also executed automatically on release via the Procfile.
 
 ### 7. Push Code to Heroku
 
@@ -605,6 +682,10 @@ heroku logs --tail
 * Make sure ALLOWED_HOSTS includes your Heroku domain.
 * Configure django-cors-headers for your frontend domain if using React separately.
 * Use whitenoise to serve static files in production.
+
+### Deployed buildpacks (reference)
+
+This app uses **Node.js** (to build the React frontend) and **Python** (to run Django). Heroku builds the frontend first, then installs Python dependencies and runs `collectstatic`.
 
 ---
 

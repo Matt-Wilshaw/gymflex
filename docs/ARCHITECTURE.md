@@ -24,12 +24,17 @@ Browser → Heroku Router → Gunicorn (WSGI) → Django (middleware + URL routi
 ## Database Selection Logic
 In `settings.py`:
 ```python
+# Default: SQLite for local development
 DATABASES = {
-    "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600
-    )
+  "default": {
+    "ENGINE": "django.db.backends.sqlite3",
+    "NAME": BASE_DIR / "db.sqlite3",
+  }
 }
+
+# Production (Heroku): if DATABASE_URL exists, use PostgreSQL
+if "DATABASE_URL" in os.environ:
+  DATABASES["default"] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 ```
 Decision:
 1. If `DATABASE_URL` env var exists (Heroku sets it when the Postgres addon is provisioned) → parse and configure **PostgreSQL**.

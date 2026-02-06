@@ -10,6 +10,7 @@ from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
 import os
+import secrets
 
 # Load environment variables from .env file (used for local development)
 load_dotenv()
@@ -22,9 +23,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECRET_KEY: Used for cryptographic signing - should be kept secret in production
 # DEBUG: Shows detailed error pages when True - should always be False in production
 # ALLOWED_HOSTS: List of domain names that Django will serve - prevents HTTP Host header attacks
-SECRET_KEY = os.environ.get('SECRET_KEY', "django-insecure-nma=xi6x2p-crjg^ifqqkapyu1qjd0l=+wn)-rijk_o%$!k3w_")
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 IS_HEROKU = os.environ.get("DYNO") is not None
+
+# If SECRET_KEY isn't provided via environment variables, create or reuse a
+# machine-local key that is not committed to git. This keeps the repository
+# free of secrets while allowing stable local development.
+if not SECRET_KEY:
+    local_secret_path = BASE_DIR / ".local_secret_key"
+    try:
+        if local_secret_path.exists():
+            SECRET_KEY = local_secret_path.read_text(encoding="utf-8").strip()
+        else:
+            SECRET_KEY = secrets.token_urlsafe(50)
+            local_secret_path.write_text(SECRET_KEY, encoding="utf-8")
+    except OSError:
+        # Fallback: generate an in-memory key (tokens will reset on restart)
+        SECRET_KEY = secrets.token_urlsafe(50)
 
 DEBUG = False
 
@@ -197,7 +213,17 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Cross-Origin Resource Sharing (CORS) configuration
 # These settings control which domains can make requests to this API
-CORS_ALLOW_ALL_ORIGINS = True  # Development mode: allow requests from any origin
+if IS_HEROKU:
+    # In production, the frontend is served from the same origin as the API,
+    # so permissive CORS isn't required.
+    CORS_ALLOW_ALL_ORIGINS = False
+    CORS_ALLOWED_ORIGINS = [
+        "https://gymflex-5bb1d582f94c.herokuapp.com",
+    ]
+else:
+    # Local development: allow the Vite dev server to call the API.
+    CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ALLOW_CREDENTIALS = True  # Allow cookies/auth headers in cross-origin requests
 
 # Cross-Site Request Forgery (CSRF) protection settings
@@ -213,5 +239,5 @@ CSRF_USE_SESSIONS = False     # Don't store CSRF token in session (use cookie in
 # These control how authentication cookies behave across requests
 SESSION_COOKIE_SAMESITE = 'Lax'  # Prevent CSRF whilst allowing normal navigation
 CSRF_COOKIE_SAMESITE = 'Lax'     # Same protection for CSRF token cookie
-SESSION_COOKIE_SECURE = True     # Require HTTPS for session cookie (production security)
-CSRF_COOKIE_SECURE = True        # Require HTTPS for CSRF cookie (production security)
+SESSION_COOKIE_SECURE = IS_HEROKU     # Require HTTPS for session cookie (production)
+CSRF_COOKIE_SECURE = IS_HEROKU        # Require HTTPS for CSRF cookie (production)

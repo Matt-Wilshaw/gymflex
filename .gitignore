@@ -20,6 +20,9 @@ backend/db.sqlite3
 .env
 .env.local
 
+# Local-only generated secrets (created automatically if SECRET_KEY isn't set)
+backend/.local_secret_key
+
 # Build outputs
 frontend/dist/
 backend/staticfiles/
